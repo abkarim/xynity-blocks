@@ -1,0 +1,25 @@
+{
+  "name": "xynity-blocks",
+  "version": "1.0.0",
+  "description": "Wordpress blocks for building site with FSE",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abkarim/xynity-blocks.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/abkarim/xynity-blocks/issues"
+  },
+  "devDependencies": {
+    "@prettier/plugin-php": "^0.19.4",
+    "eslint": "^8.36.0",
+    "prettier": "2.8.7"
+  },
+  "homepage": "https://github.com/abkarim/xynity-blocks#readme"
+}
