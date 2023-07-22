@@ -9,6 +9,9 @@ if (!defined("ABSPATH")) {
     exit();
 }
 
+require_once XYNITY_BLOCKS_PATH . "includes/classes/Dashboard.php";
+require_once XYNITY_BLOCKS_PATH . "includes/classes/ThemeActions.php";
+
 final class Plugin
 {
     private static $_instance = null;
@@ -95,5 +98,9 @@ final class Plugin
      */
     public function init()
     {
+        // Handle menu options
+        new Dashboard();
+        // Handles Theme actions
+        new ThemeActions();
     }
 }
