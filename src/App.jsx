@@ -12,8 +12,8 @@ const MenuButton = ({ targetPath, currentPath, changePath, children }) => {
             role="button"
             className={`${
                 targetPath === currentPath &&
-                "text-blue-600 hover:text-blue-600 !border-blue-400 "
-            } text-base py-4 border-b-2 border-[rgba(0,0,0,0)] font-bold hover:!border-gray-300 hover:text-gray-900 text-gray-500 transition-all duration-200`}
+                "!text-blue-600 hover:text-blue-600 !border-blue-400 hover:!border-blue-400"
+            } text-base py-4 border-b-2 border-[rgba(0,0,0,0)] font-bold hover:border-gray-300 hover:text-gray-900 text-gray-500 transition-all duration-200`}
             onClick={() => changePath(targetPath)}>
             {children}
         </button>
@@ -101,7 +101,7 @@ const App = () => {
     return (
         <div className="-ml-5">
             <Header changePath={handlePath} currentPath={path} />
-            <div className="mx-auto mt-10 max-w-7xl">
+            <div className="mx-auto mt-6 max-w-7xl">
                 {path === null && <Intro />}
                 {path === "blocks" && <Blocks />}
                 {path === "settings" && <Settings />}
