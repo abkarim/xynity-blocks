@@ -49,6 +49,20 @@ class Dashboard
         );
 
         /**
+         * Add Blocks submenu
+         *
+         * @since 0.1.0
+         */
+        add_submenu_page(
+            "xynity-blocks",
+            "Blocks",
+            "Blocks",
+            "manage_options",
+            "xynity-blocks&path=blocks",
+            [$this, "render_element_cb"]
+        );
+
+        /**
          * Add default css properties page
          * Read CSS property from theme.json and display it as editable
          * Apply changes
@@ -57,10 +71,10 @@ class Dashboard
          */
         add_submenu_page(
             "xynity-blocks",
-            "Default properties",
-            "Default properties",
+            "Settings",
+            "Settings",
             "manage_options",
-            "default-css-properties",
+            "xynity-blocks&path=settings",
             [$this, "render_element_cb"]
         );
     }
@@ -92,10 +106,15 @@ class Dashboard
             "xynity-blocks-admin-main",
             XYNITY_BLOCKS_URL . "/dashboard/index.js",
             ["wp-element"],
-            XYNITY_BLOCKS_VERSION,
+            defined("WP_DEBUG") ? false : XYNITY_BLOCKS_VERSION,
             true
         );
 
-        wp_enqueue_script("xynity-blocks-admin-main");
+        /**
+         * Loads when xynity's page accessed
+         */
+        if ("toplevel_page_xynity-blocks" === $hook) {
+            wp_enqueue_script("xynity-blocks-admin-main");
+        }
     }
 }
