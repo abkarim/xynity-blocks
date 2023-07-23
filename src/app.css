@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Background color */
+#wpwrap {
+    background: #f3f3f3;
+}
