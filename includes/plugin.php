@@ -91,6 +91,29 @@ final class Plugin
     }
 
     /**
+     * Update plugin action links
+     *
+     * Called by filter hook from this->init function
+     *
+     * @param array
+     * @since 0.1.0
+     * @access public
+     */
+    public function update_plugin_action_links($links)
+    {
+        $url = get_admin_url() . "admin.php?page=xynity-blocks&path=settings";
+        $settings_link =
+            '<a href="' .
+            $url .
+            '">' .
+            __("Settings", XYNITY_BLOCKS_TEXT_DOMAIN) .
+            "</a>";
+        // Add settings link as first link
+        array_unshift($links, $settings_link);
+        return $links;
+    }
+
+    /**
      * Initialize function
      *
      * @since 0.1.0
@@ -98,6 +121,12 @@ final class Plugin
      */
     public function init()
     {
+        // Update action links in plugin page
+        add_filter("plugin_action_links_" . XYNITY_BLOCKS_BASENAME, [
+            $this,
+            "update_plugin_action_links",
+        ]);
+
         // Handle menu options
         new Dashboard();
         // Handles Theme actions
