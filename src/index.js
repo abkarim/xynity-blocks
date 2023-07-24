@@ -1,6 +1,8 @@
-import App from "./App.jsx";
-import { render } from "@wordpress/element";
+import { createRoot } from "react-dom/client";
 
+import App from "./App.jsx";
 import "./app.css";
 
-render(<App />, document.getElementById("xynity-blocks-main-container"));
+const container = document.getElementById("xynity-blocks-main-container");
+const root = createRoot(container); // createRoot(container!) if you use TypeScript
+root.render(<App />);
