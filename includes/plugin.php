@@ -121,6 +121,14 @@ final class Plugin
      */
     public function init()
     {
+        /**
+         * TODO
+         *
+         * pass static data with wp localize scripts
+         * like plugin version
+         * etc
+         */
+
         // Update action links in plugin page
         add_filter("plugin_action_links_" . XYNITY_BLOCKS_BASENAME, [
             $this,
