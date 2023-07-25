@@ -11,6 +11,7 @@ if (!defined("ABSPATH")) {
 
 require_once XYNITY_BLOCKS_PATH . "includes/classes/Dashboard.php";
 require_once XYNITY_BLOCKS_PATH . "includes/classes/ThemeActions.php";
+require_once XYNITY_BLOCKS_PATH . "includes/classes/AJAX.php";
 
 final class Plugin
 {
@@ -121,14 +122,6 @@ final class Plugin
      */
     public function init()
     {
-        /**
-         * TODO
-         *
-         * pass static data with wp localize scripts
-         * like plugin version
-         * etc
-         */
-
         // Update action links in plugin page
         add_filter("plugin_action_links_" . XYNITY_BLOCKS_BASENAME, [
             $this,
@@ -139,5 +132,7 @@ final class Plugin
         new Dashboard();
         // Handles Theme actions
         new ThemeActions();
+        // Handle AJAX
+        new AJAX();
     }
 }

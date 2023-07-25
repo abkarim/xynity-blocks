@@ -115,6 +115,29 @@ class Dashboard
          */
         if ("toplevel_page_xynity-blocks" === $hook) {
             wp_enqueue_script("xynity-blocks-admin-main");
+
+            /**
+             * Pass data to JavaScript to use in frontend
+             *
+             * @since 0.1.0
+             */
+            wp_localize_script(
+                "xynity-blocks-admin-main",
+                "plugin_info_from_backend",
+                [
+                    "plugin_version" => XYNITY_BLOCKS_VERSION,
+                    "ajax_nonce" => wp_create_nonce(XYNITY_BLOCKS_NONCE),
+                    "ajax_url" => admin_url("admin-ajax.php"),
+                ]
+            );
+            wp_localize_script(
+                "xynity-blocks-admin-main",
+                "editor_options_from_backend",
+                [
+                    "default" => ThemeActions::get_default_editor_options(),
+                    "current" => ThemeActions::get_current_editor_options(),
+                ]
+            );
         }
     }
 }
