@@ -47,6 +47,8 @@ if (!function_exists("xynity_blocks_init")) {
         define("XYNITY_BLOCKS_PATH", plugin_dir_path(__FILE__));
         define("XYNITY_BLOCKS_URL", plugin_dir_url(__FILE__));
         define("XYNITY_BLOCKS_BASENAME", plugin_basename(__FILE__));
+        // TODO generate random value
+        define("XYNITY_BLOCKS_NONCE", "settings_update_nonce123");
 
         // Load plugin file
         require_once __DIR__ . "/includes/plugin.php";
