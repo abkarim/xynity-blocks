@@ -21,7 +21,6 @@ const MenuButton = ({ targetPath, currentPath, changePath, children }) => {
 };
 
 const Header = ({ currentPath, changePath }) => {
-    const version = "0.1.0";
     return (
         <div className="bg-white border-b shadow">
             <header className="flex items-center justify-between mx-auto max-w-7xl">
@@ -47,7 +46,9 @@ const Header = ({ currentPath, changePath }) => {
                     </MenuButton>
                 </div>
                 <div>
-                    <span className="inline-block">{version}</span>
+                    <span className="inline-block">
+                        {plugin_info_from_backend.plugin_version}
+                    </span>
                 </div>
             </header>
         </div>
