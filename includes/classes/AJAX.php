@@ -15,20 +15,40 @@ class AJAX
     /**
      * Validate request
      *
-     * @return bool
+     * @param string
      * @since 0.1.0
      * @access private
      */
-    private function is_valid_request()
+    private function block_incoming_request_if_invalid()
     {
-        if (
-            check_ajax_referer(XYNITY_BLOCKS_NONCE, "_ajax_nonce", false) !==
-                false &&
-            current_user_can("manage_options")
-        ) {
-            return true;
+        if (!isset($_SERVER["HTTP_X_WP_NONCE"])) {
+            wp_send_json_error("unauthorized request", 403);
+            return wp_die();
         }
-        return false;
+
+        // Validate the nonce
+        $nonce = $_SERVER["HTTP_X_WP_NONCE"];
+
+        if (
+            wp_verify_nonce($nonce, XYNITY_BLOCKS_NONCE) === false ||
+            !current_user_can("manage_options")
+        ) {
+            wp_send_json_error("unauthorized request", 403);
+            return wp_die();
+        }
+
+        if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+            wp_send_json_error("method not allowed", 405);
+            wp_die();
+        }
+
+        if (
+            !isset($_SERVER["CONTENT_TYPE"]) ||
+            $_SERVER["CONTENT_TYPE"] != "application/json"
+        ) {
+            wp_send_json_error("content type must be application/json", 400);
+            wp_die();
+        }
     }
 
     /**
@@ -50,21 +70,18 @@ class AJAX
      */
     public function update_settings()
     {
-        if ($this->is_valid_request() === false) {
-            wp_send_json_error("unauthorized request", 403);
+        // Get form data
+        $data = file_get_contents("php://input");
+
+        $this->block_incoming_request_if_invalid();
+
+        if (!($request_data = json_decode($data))) {
+            wp_send_json_error("data is not valid json", 400);
             return wp_die();
         }
 
-        // Get form data
-        $json_data = isset($_POST["data"]) ? $_POST["data"] : null;
-
-        // TODO json decode and serialized array
-
         // Update data
-        update_option(
-            XYNITY_BLOCKS_TEXT_DOMAIN . "_settings_option",
-            $json_data
-        );
+        update_option(XYNITY_BLOCKS_TEXT_DOMAIN . "_settings_option", $data);
 
         wp_send_json_success("updated successfully", 200);
         wp_die();
