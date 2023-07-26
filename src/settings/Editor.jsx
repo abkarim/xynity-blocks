@@ -60,10 +60,13 @@ const Editor = () => {
 
         formData.append("action", "xynity_blocks_settings_update");
         formData.append("_ajax_nonce", plugin_info_from_backend.ajax_nonce);
-        formData.append("data", {
-            contentSize: `${data.contentSize.value}${data.contentSize.unit}`,
-            wideSize: `${data.wideSize.value}${data.wideSize.unit}`,
-        });
+        formData.append(
+            "data",
+            JSON.stringify({
+                contentSize: `${data.contentSize.value}${data.contentSize.unit}`,
+                wideSize: `${data.wideSize.value}${data.wideSize.unit}`,
+            })
+        );
 
         // Update data
         const update = async () => {

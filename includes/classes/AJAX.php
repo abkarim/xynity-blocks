@@ -1,6 +1,8 @@
 <?php
 namespace Xynity_Blocks;
 
+use JsonSerializable;
+
 /**
  * Prevent direct access
  */
@@ -56,18 +58,12 @@ class AJAX
         // Get form data
         $json_data = isset($_POST["data"]) ? $_POST["data"] : null;
 
-        // Decode and verify json data
-        $data = json_decode($json_data, true);
-
-        if ($data === false || $data === null) {
-            wp_send_json_error("invalid json", 400);
-            return wp_die();
-        }
+        // TODO json decode and serialized array
 
         // Update data
         update_option(
             XYNITY_BLOCKS_TEXT_DOMAIN . "_settings_option",
-            serialize($data)
+            $json_data
         );
 
         wp_send_json_success("updated successfully", 200);

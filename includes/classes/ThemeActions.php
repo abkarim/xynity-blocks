@@ -97,8 +97,32 @@ class ThemeActions
      */
     public static function get_current_editor_options()
     {
+        self::fetch_data_from_database();
+
         $data = self::get_theme_json_file_data();
+
+        if (
+            self::$editors_current_data !== null &&
+            !empty(self::$editors_current_data)
+        ) {
+            var_dump(self::$editors_current_data);
+        }
+
         return $data->settings->layout;
+    }
+
+    /**
+     * Fetch data from database
+     *
+     * @since 0.1.0
+     * @access private
+     */
+    private static function fetch_data_from_database()
+    {
+        self::$editors_current_data = get_option(
+            XYNITY_BLOCKS_TEXT_DOMAIN . "_settings_option",
+            null
+        );
     }
 
     /**
@@ -113,19 +137,13 @@ class ThemeActions
      */
     private function should_update_theme_json_data()
     {
-        self::$editors_current_data = get_option(
-            XYNITY_BLOCKS_TEXT_DOMAIN . "_editors_option",
-            null
-        );
-
-        self::$colors_current_data = get_option(
-            XYNITY_BLOCKS_TEXT_DOMAIN . "_editors_option",
-            null
-        );
+        $this->fetch_data_from_database();
 
         if (
-            self::$colors_current_data !== null ||
-            self::$editors_current_data !== null
+            (self::$colors_current_data !== null &&
+                !empty(self::$colors_current_data)) ||
+            (self::$editors_current_data !== null &&
+                !empty(self::$editors_current_data))
         ) {
             return true;
         }
