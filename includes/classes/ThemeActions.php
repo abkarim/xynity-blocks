@@ -1,8 +1,6 @@
 <?php
 namespace Xynity_Blocks;
 
-use function PHPSTORM_META\type;
-
 /**
  * Prevent direct access
  */
@@ -23,6 +21,8 @@ class ThemeActions
      */
     public function __construct()
     {
+        $this->fetch_data_from_database();
+
         if ($this->should_update_theme_json_data()) {
             add_filter("wp_theme_json_data_theme", [
                 $this,
@@ -41,7 +41,28 @@ class ThemeActions
      */
     public static function update_theme_json_data($theme_json)
     {
-        return $theme_json;
+        $modifiedData = [
+            "version" => 2,
+            "settings" => [],
+        ];
+
+        // Update editor settings data
+        if (self::$editors_current_data !== null) {
+            $editor_settings = [
+                "layout" => json_decode(self::$editors_current_data, true),
+            ];
+
+            $modifiedData["settings"] = array_merge_recursive(
+                $modifiedData["settings"],
+                $editor_settings
+            );
+        }
+
+        // Update colors data
+        if (self::$colors_current_data !== null) {
+        }
+
+        return $theme_json->update_with($modifiedData);
     }
 
     /**
@@ -105,7 +126,7 @@ class ThemeActions
             self::$editors_current_data !== null &&
             !empty(self::$editors_current_data)
         ) {
-            var_dump(self::$editors_current_data);
+            return json_decode(self::$editors_current_data);
         }
 
         return $data->settings->layout;
@@ -123,6 +144,10 @@ class ThemeActions
             XYNITY_BLOCKS_TEXT_DOMAIN . "_settings_option",
             null
         );
+        self::$colors_current_data = get_option(
+            XYNITY_BLOCKS_TEXT_DOMAIN . "_colors_option",
+            null
+        );
     }
 
     /**
@@ -137,13 +162,9 @@ class ThemeActions
      */
     private function should_update_theme_json_data()
     {
-        $this->fetch_data_from_database();
-
         if (
-            (self::$colors_current_data !== null &&
-                !empty(self::$colors_current_data)) ||
-            (self::$editors_current_data !== null &&
-                !empty(self::$editors_current_data))
+            self::$colors_current_data !== null ||
+            self::$editors_current_data !== null
         ) {
             return true;
         }
