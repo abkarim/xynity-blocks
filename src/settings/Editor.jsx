@@ -56,24 +56,30 @@ const Editor = () => {
             initialLoad.current = false;
             return;
         }
-        const formData = new FormData();
 
-        formData.append("action", "xynity_blocks_settings_update");
-        formData.append("_ajax_nonce", plugin_info_from_backend.ajax_nonce);
-        formData.append(
-            "data",
-            JSON.stringify({
-                contentSize: `${data.contentSize.value}${data.contentSize.unit}`,
-                wideSize: `${data.wideSize.value}${data.wideSize.unit}`,
-            })
-        );
+        const requestData = {
+            contentSize: `${data.contentSize.value}${data.contentSize.unit}`,
+            wideSize: `${data.wideSize.value}${data.wideSize.unit}`,
+        };
 
         // Update data
         const update = async () => {
-            const response = await fetch(plugin_info_from_backend.ajax_url, {
-                method: "POST",
-                body: formData,
-            });
+            const response = await fetch(
+                `${
+                    plugin_info_from_backend.ajax_url
+                }?action=${encodeURIComponent(
+                    "xynity_blocks_settings_update"
+                )}`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-WP-Nonce": plugin_info_from_backend.ajax_nonce,
+                    },
+                    credentials: "same-origin",
+                    body: JSON.stringify(requestData),
+                }
+            );
 
             const response_data = (await response.json()).data;
 
