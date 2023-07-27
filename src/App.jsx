@@ -96,6 +96,8 @@ const App = () => {
             // We got a
             // But we need a's parent li
             currentLink.parentElement.classList.add("current");
+        } else {
+            container.querySelector(".wp-first-item").classList.add("current");
         }
     }, [path]);
 
