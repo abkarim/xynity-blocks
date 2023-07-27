@@ -1,26 +1,21 @@
-import { useEffect, useReducer, useRef } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 import Input from "../components/Input.jsx";
 import UnitSelect from "../components/UnitSelect.jsx";
 import getUnitAndValue from "../util/getUnitAndValue.js";
 import { useNotificationUpdate } from "../context/notification.jsx";
 
 console.log({ editor_options_from_backend, plugin_info_from_backend });
+console.log(getUnitAndValue(editor_options_from_backend.current.contentSize));
 
+/**
+ * editor_options_from_backend is localized by WordPress
+ * from: Dashboard->load_javascript()
+ */
 const initialState = {
-    contentSize: {
-        value:
-            getUnitAndValue(editor_options_from_backend.current.contentSize)
-                .value * 1,
-        unit: getUnitAndValue(editor_options_from_backend.current.contentSize)
-            .unit,
-    },
-    wideSize: {
-        value:
-            getUnitAndValue(editor_options_from_backend.current.wideSize)
-                .value * 1,
-        unit: getUnitAndValue(editor_options_from_backend.current.wideSize)
-            .unit,
-    },
+    contentSize: getUnitAndValue(
+        editor_options_from_backend.current.contentSize
+    ),
+    wideSize: getUnitAndValue(editor_options_from_backend.current.wideSize),
 };
 
 const reducer = (state, action) => {
@@ -49,8 +44,11 @@ const reducer = (state, action) => {
 };
 
 const Option = ({ title, description, data, dispatch, inputName }) => {
+    const defaultData = editor_options_from_backend.default[inputName];
+    const currentData = `${data[inputName].value}${data[inputName].unit}`;
+
     return (
-        <div className="flex items-start justify-between w-full p-5 border-b">
+        <div className="relative flex items-start justify-between w-full p-5 border-b">
             <div>
                 <h3 className="text-xl">{title}</h3>
                 <p>{description}</p>
@@ -84,6 +82,16 @@ const Option = ({ title, description, data, dispatch, inputName }) => {
                     }
                 />
             </fieldset>
+            {currentData !== defaultData && (
+                <>
+                    <div className="absolute inline-block w-3 h-3 bg-yellow-300 rounded-full cursor-pointer peer top-2 right-1 aspect-square"></div>
+                    <i className="absolute hidden text-3xl text-orange-500 peer-hover:inline-block -right-1 -top-3 fi fi-rr-caret-down"></i>
+                    <p className="absolute hidden p-2 text-white bg-orange-500 rounded-sm peer-hover:block -right-3 -top-8">
+                        (Edited) Default value was
+                        <span className="font-bold">{defaultData}</span>
+                    </p>
+                </>
+            )}
         </div>
     );
 };
