@@ -35,9 +35,11 @@ export default function Notification({ ...props }) {
         }, 200);
 
         // Clear notification after 5 seconds
-        setTimeout(() => {
+        const timer = setTimeout(() => {
             removeNotification();
         }, 5000);
+
+        return () => clearTimeout(timer);
     }, [notification]);
 
     const { fgClass } = typeMap[notification.type] || typeMap.default;
