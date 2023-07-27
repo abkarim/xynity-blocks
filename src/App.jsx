@@ -47,6 +47,10 @@ const Header = ({ currentPath, changePath }) => {
                 </div>
                 <div>
                     <span className="inline-block">
+                        {/**
+                         * plugin_info_from_backend is localized by WordPress
+                         * from: Dashboard->load_javascript()
+                         */}
                         {plugin_info_from_backend.plugin_version}
                     </span>
                 </div>
@@ -66,9 +70,6 @@ const App = () => {
     };
 
     /**
-     * TODO
-     *  BUG current class is not adding
-     *
      * Handle links on WordPress dashboard menu
      * manage active and deactivate state
      *
