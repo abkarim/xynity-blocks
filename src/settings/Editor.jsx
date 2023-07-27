@@ -48,6 +48,46 @@ const reducer = (state, action) => {
     }
 };
 
+const Option = ({ title, description, data, dispatch, inputName }) => {
+    return (
+        <div className="flex items-start justify-between w-full p-5 border-b">
+            <div>
+                <h3 className="text-xl">{title}</h3>
+                <p>{description}</p>
+            </div>
+            <fieldset className="flex items-center w-48">
+                <Input
+                    className="rounded-tl-none rounded-bl-none"
+                    value={data[inputName].value}
+                    name={inputName}
+                    onInput={(e) =>
+                        dispatch({
+                            type: "value",
+                            payload: {
+                                name: e.target.name,
+                                value: e.target.value,
+                            },
+                        })
+                    }
+                />
+                <UnitSelect
+                    value={data[inputName].unit}
+                    name={inputName}
+                    onChange={(e) =>
+                        dispatch({
+                            type: "unit",
+                            payload: {
+                                name: e.target.name,
+                                value: e.target.value,
+                            },
+                        })
+                    }
+                />
+            </fieldset>
+        </div>
+    );
+};
+
 const Editor = () => {
     const initialLoad = useRef(null);
     const [data, dispatch] = useReducer(reducer, initialState);
@@ -99,80 +139,37 @@ const Editor = () => {
             }
         };
 
-        update();
+        /**
+         * Request should be sent after 1 second
+         * of last edit
+         */
+        const timer = setTimeout(() => {
+            update();
+        }, [1000]);
+
+        return () => clearTimeout(timer);
     }, [data]);
 
     return (
         <section>
-            <div className="flex items-start justify-between w-full p-5 border-b">
-                <div>
-                    <h3 className="text-xl">Default Content Width</h3>
-                    <p>Container Block&apos;s default Content Width.</p>
-                </div>
-                <fieldset className="flex items-center w-48">
-                    <Input
-                        className="rounded-tl-none rounded-bl-none"
-                        value={data.contentSize.value}
-                        name="contentSize"
-                        onInput={(e) =>
-                            dispatch({
-                                type: "value",
-                                payload: {
-                                    name: e.target.name,
-                                    value: e.target.value,
-                                },
-                            })
-                        }
-                    />
-                    <UnitSelect
-                        name="contentSize"
-                        value={data.contentSize.unit}
-                        onChange={(e) =>
-                            dispatch({
-                                type: "unit",
-                                payload: {
-                                    name: e.target.name,
-                                    value: e.target.value,
-                                },
-                            })
-                        }
-                    />
-                </fieldset>
-            </div>
-            <div className="flex items-start justify-between w-full p-5 border-b">
-                <div>
-                    <h3 className="text-xl">Default Wide Size</h3>
-                    <p>Default width size for wide blocks.</p>
-                </div>
-                <fieldset className="flex items-center w-48">
-                    <Input
-                        className="rounded-tl-none rounded-bl-none"
-                        value={data.wideSize.value}
-                        name="wideSize"
-                        onInput={(e) =>
-                            dispatch({
-                                type: "value",
-                                payload: {
-                                    name: e.target.name,
-                                    value: e.target.value,
-                                },
-                            })
-                        }
-                    />
-                    <UnitSelect
-                        value={data.wideSize.unit}
-                        name="wideSize"
-                        onChange={(e) =>
-                            dispatch({
-                                type: "unit",
-                                payload: {
-                                    name: e.target.name,
-                                    value: e.target.value,
-                                },
-                            })
-                        }
-                    />
-                </fieldset>
+            <div>
+                <h3 className="py-1 pl-5 text-sm font-bold text-gray-600 uppercase border-b">
+                    Layout
+                </h3>
+                <Option
+                    title="Default Content Width"
+                    description="Container Block's default Content Width"
+                    dispatch={dispatch}
+                    data={data}
+                    inputName="contentSize"
+                />
+                <Option
+                    title="Default Wide Size"
+                    description="Default width size for wide blocks"
+                    dispatch={dispatch}
+                    data={data}
+                    inputName="wideSize"
+                />
             </div>
         </section>
     );
