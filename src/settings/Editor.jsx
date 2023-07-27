@@ -2,6 +2,7 @@ import { useEffect, useReducer, useRef } from "react";
 import Input from "../components/Input.jsx";
 import UnitSelect from "../components/UnitSelect.jsx";
 import getUnitAndValue from "../util/getUnitAndValue.js";
+import { useNotificationUpdate } from "../context/notification.jsx";
 
 console.log({ editor_options_from_backend, plugin_info_from_backend });
 
@@ -51,6 +52,8 @@ const Editor = () => {
     const initialLoad = useRef(null);
     const [data, dispatch] = useReducer(reducer, initialState);
 
+    const setNotification = useNotificationUpdate();
+
     useEffect(() => {
         if (initialLoad.current === null) {
             initialLoad.current = false;
@@ -84,9 +87,15 @@ const Editor = () => {
             const response_data = (await response.json()).data;
 
             if (response.ok) {
-                console.log(response_data);
+                setNotification({
+                    text: response_data,
+                    type: "success",
+                });
             } else {
-                console.error(response_data);
+                setNotification({
+                    text: response_data,
+                    type: "error",
+                });
             }
         };
 
