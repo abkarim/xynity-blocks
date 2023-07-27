@@ -1,5 +1,22 @@
 # xynity-blocks
 
-Wordpress blocks for building site with FSE
+Extends Block Themes functionality and Adds Wordpress blocks.
 
-## Work in Progress
+## Recommendations
+
+-   **Theme** Twenty Twenty Three
+
+## Frontend Library/Framework
+
+-   React
+-   Webpack
+-   Babel
+-   Tailwindcss
+-   Postcss
+-   @flaticon/flaticon-uicons
+
+## File structure
+
+-   Frontend  
+    development dir - `/src`  
+    build dir - `/dashboard`
