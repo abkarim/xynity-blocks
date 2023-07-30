@@ -5,17 +5,23 @@ import getUnitAndValue from "../util/getUnitAndValue.js";
 import { useNotificationUpdate } from "../context/notification.jsx";
 
 console.log({ editor_options_from_backend, plugin_info_from_backend });
-console.log(getUnitAndValue(editor_options_from_backend.current.contentSize));
 
 /**
  * editor_options_from_backend is localized by WordPress
  * from: Dashboard->load_javascript()
  */
 const initialState = {
-    contentSize: getUnitAndValue(
-        editor_options_from_backend.current.contentSize
-    ),
-    wideSize: getUnitAndValue(editor_options_from_backend.current.wideSize),
+    layout: {
+        contentSize: getUnitAndValue(
+            editor_options_from_backend.current.layout.contentSize
+        ),
+        wideSize: getUnitAndValue(
+            editor_options_from_backend.current.layout.wideSize
+        ),
+    },
+    spacing: {
+        spacingScale: editor_options_from_backend.current.spacing.spacingScale,
+    },
 };
 
 const reducer = (state, action) => {
@@ -23,18 +29,36 @@ const reducer = (state, action) => {
         case "value":
             return {
                 ...state,
-                [action.payload.name]: {
-                    ...state[action.payload.name],
-                    value: action.payload.value * 1,
+                [action.category]: {
+                    ...state[action.category],
+                    [action.payload.name]: {
+                        ...state[action.category][action.payload.name],
+                        value: action.payload.value * 1,
+                    },
                 },
             };
 
         case "unit":
             return {
                 ...state,
-                [action.payload.name]: {
-                    ...state[action.payload.name],
-                    unit: action.payload.value,
+                [action.category]: {
+                    ...state[action.category],
+                    [action.payload.name]: {
+                        ...state[action.category][action.payload.name],
+                        unit: action.payload.value,
+                    },
+                },
+            };
+
+        case "raw":
+            return {
+                ...state,
+                [action.category]: {
+                    ...state[action.category],
+                    [action.payload.name]: {
+                        ...state[action.category][action.payload.name],
+                        ...action.payload.data,
+                    },
                 },
             };
 
@@ -43,9 +67,30 @@ const reducer = (state, action) => {
     }
 };
 
-const Option = ({ title, description, data, dispatch, inputName }) => {
-    const defaultData = editor_options_from_backend.default[inputName];
-    const currentData = `${data[inputName].value}${data[inputName].unit}`;
+const ChangeIndicator = ({ defaultValue }) => {
+    return (
+        <>
+            <div className="absolute inline-block w-3 h-3 p-1 bg-yellow-300 rounded-full cursor-pointer peer top-2 right-1 aspect-square"></div>
+            <i className="absolute hidden text-3xl text-orange-500 peer-hover:inline-block -right-1 -top-3 fi fi-rr-caret-down"></i>
+            <p className="absolute hidden p-2 text-white bg-orange-500 rounded-sm peer-hover:block -right-3 -top-8">
+                (Edited) Default value was&nbsp;
+                <span className="font-bold">{defaultValue}</span>
+            </p>
+        </>
+    );
+};
+
+const Option = ({
+    title,
+    description,
+    data,
+    category,
+    dispatch,
+    inputName,
+}) => {
+    const defaultData =
+        editor_options_from_backend.default[category][inputName];
+    const currentData = `${data[category][inputName].value}${data[category][inputName].unit}`;
 
     return (
         <div className="relative flex items-start justify-between w-full p-5 border-b">
@@ -56,11 +101,12 @@ const Option = ({ title, description, data, dispatch, inputName }) => {
             <fieldset className="flex items-center w-48">
                 <Input
                     className="rounded-tl-none rounded-bl-none"
-                    value={data[inputName].value}
+                    value={data[category][inputName].value}
                     name={inputName}
                     onInput={(e) =>
                         dispatch({
                             type: "value",
+                            category: category,
                             payload: {
                                 name: e.target.name,
                                 value: e.target.value,
@@ -69,11 +115,12 @@ const Option = ({ title, description, data, dispatch, inputName }) => {
                     }
                 />
                 <UnitSelect
-                    value={data[inputName].unit}
+                    value={data[category][inputName].unit}
                     name={inputName}
                     onChange={(e) =>
                         dispatch({
                             type: "unit",
+                            category: category,
                             payload: {
                                 name: e.target.name,
                                 value: e.target.value,
@@ -83,14 +130,7 @@ const Option = ({ title, description, data, dispatch, inputName }) => {
                 />
             </fieldset>
             {currentData !== defaultData && (
-                <>
-                    <div className="absolute inline-block w-3 h-3 bg-yellow-300 rounded-full cursor-pointer peer top-2 right-1 aspect-square"></div>
-                    <i className="absolute hidden text-3xl text-orange-500 peer-hover:inline-block -right-1 -top-3 fi fi-rr-caret-down"></i>
-                    <p className="absolute hidden p-2 text-white bg-orange-500 rounded-sm peer-hover:block -right-3 -top-8">
-                        (Edited) Default value was
-                        <span className="font-bold">{defaultData}</span>
-                    </p>
-                </>
+                <ChangeIndicator defaultValue={defaultData} />
             )}
         </div>
     );
@@ -99,6 +139,8 @@ const Option = ({ title, description, data, dispatch, inputName }) => {
 const Editor = () => {
     const initialLoad = useRef(null);
     const [data, dispatch] = useReducer(reducer, initialState);
+
+    console.log({ data });
 
     const setNotification = useNotificationUpdate();
 
@@ -109,8 +151,15 @@ const Editor = () => {
         }
 
         const requestData = {
-            contentSize: `${data.contentSize.value}${data.contentSize.unit}`,
-            wideSize: `${data.wideSize.value}${data.wideSize.unit}`,
+            layout: {
+                contentSize: `${data.layout.contentSize.value}${data.layout.contentSize.unit}`,
+                wideSize: `${data.layout.wideSize.value}${data.layout.wideSize.unit}`,
+            },
+            spacing: {
+                spacingScale: {
+                    steps: data.spacing.spacingScale.steps,
+                },
+            },
         };
 
         // Update data
@@ -161,7 +210,7 @@ const Editor = () => {
     return (
         <section>
             <div>
-                <h3 className="py-1 pl-5 text-sm font-bold text-gray-600 uppercase border-b">
+                <h3 className="py-1 pl-5 text-sm font-bold text-gray-600 uppercase border-b bg-gray-50">
                     Layout
                 </h3>
                 <Option
@@ -169,6 +218,7 @@ const Editor = () => {
                     description="Container Block's default Content Width"
                     dispatch={dispatch}
                     data={data}
+                    category="layout"
                     inputName="contentSize"
                 />
                 <Option
@@ -176,8 +226,52 @@ const Editor = () => {
                     description="Default width size for wide blocks"
                     dispatch={dispatch}
                     data={data}
+                    category="layout"
                     inputName="wideSize"
                 />
+            </div>
+            <div>
+                <h3 className="py-1 pl-5 text-sm font-bold text-gray-600 uppercase border-b bg-gray-50">
+                    Spacing
+                </h3>
+                <div className="relative flex items-start justify-between w-full p-5 border-b">
+                    <div>
+                        <h3 className="text-xl">Spacing Scale</h3>
+                        <p>
+                            Scaling space used in slider increment or decrement
+                            of sizes
+                        </p>
+                    </div>
+                    <fieldset className="flex items-center w-48">
+                        <Input
+                            className="rounded-tl-none rounded-bl-none"
+                            value={data.spacing.spacingScale.steps}
+                            name="spacingScale"
+                            onInput={(e) =>
+                                dispatch({
+                                    type: "raw",
+                                    category: "spacing",
+                                    payload: {
+                                        name: e.target.name,
+                                        data: {
+                                            steps: e.target.value * 1,
+                                        },
+                                    },
+                                })
+                            }
+                        />
+                    </fieldset>
+                    {data.spacing.spacingScale.steps !==
+                        editor_options_from_backend.default.spacing.spacingScale
+                            .steps && (
+                        <ChangeIndicator
+                            defaultValue={
+                                editor_options_from_backend.default.spacing
+                                    .spacingScale.steps
+                            }
+                        />
+                    )}
+                </div>
             </div>
         </section>
     );
