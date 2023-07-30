@@ -105,7 +105,12 @@ class ThemeActions
     public static function get_default_editor_options()
     {
         $data = self::get_theme_json_file_data();
-        return $data->settings->layout;
+        $dataArray = [
+            "layout" => $data->settings->layout,
+            "spacing" => $data->settings->spacing,
+        ];
+
+        return $dataArray;
     }
 
     /**
@@ -129,7 +134,12 @@ class ThemeActions
             return json_decode(self::$editors_current_data);
         }
 
-        return $data->settings->layout;
+        $dataArray = [
+            "layout" => $data->settings->layout,
+            "spacing" => $data->settings->spacing,
+        ];
+
+        return $dataArray;
     }
 
     /**
