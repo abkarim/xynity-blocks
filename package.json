@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --mode=production --no-cache",
-    "start": "webpack --mode=development --watch"
+    "start": "webpack --mode=development --watch",
+    "extract": "rm -rf ./plugin && node extract-plugin"
   },
   "repository": {
     "type": "git",
@@ -21,8 +22,10 @@
   "devDependencies": {
     "@babel/preset-react": "^7.22.5",
     "@prettier/plugin-php": "^0.19.4",
+    "archiver": "^5.3.1",
     "autoprefixer": "^10.4.14",
     "eslint": "^8.36.0",
+    "fs-extra": "^11.1.0",
     "postcss": "^8.4.27",
     "postcss-loader": "^7.3.3",
     "prettier": "2.8.7",
