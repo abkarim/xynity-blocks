@@ -6,6 +6,11 @@ Extends Block Themes functionality and Adds Wordpress blocks.
 
 -   **Theme** Twenty Twenty Three
 
+## Commands
+
+-   **Build** `npm run build`
+-   **Extract plugin (without dev dependencies)** `npm run extract`
+
 ## Frontend Library/Framework
 
 -   React
