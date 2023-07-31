@@ -48,8 +48,10 @@ class ThemeActions
 
         // Update editor settings data
         if (self::$editors_current_data !== null) {
+            $decodedData = json_decode(self::$editors_current_data, true);
             $editor_settings = [
-                "layout" => json_decode(self::$editors_current_data, true),
+                "layout" => $decodedData["layout"],
+                "spacing" => $decodedData["spacing"],
             ];
 
             $modifiedData["settings"] = array_merge_recursive(
@@ -123,6 +125,13 @@ class ThemeActions
      */
     public static function get_current_editor_options()
     {
+        /**
+         * TODO
+         *
+         * Current data should not be fetched and returned directly
+         * it should contain all data that included in default data
+         */
+
         self::fetch_data_from_database();
 
         $data = self::get_theme_json_file_data();
