@@ -7,8 +7,6 @@ import unit from "../util/unit.js";
 import Select from "../components/Select.jsx";
 import isArrayEqual from "../util/isArrayEqual.js";
 
-console.log({ editor_options_from_backend, plugin_info_from_backend });
-
 /**
  * editor_options_from_backend is localized by WordPress
  * from: Dashboard->load_javascript()

@@ -1,8 +1,14 @@
-import { useState } from "react";
+import { Suspense, lazy, useState } from "react";
 import getSearchParam from "../util/getSearchParam";
 import appendSearchParam from "../util/appendSearchParam";
-import Editor from "./Editor.jsx";
-import Colors from "./Colors.jsx";
+const Editor = lazy(() => import("./Editor.jsx"));
+const Colors = lazy(() => import("./Colors.jsx"));
+
+console.log({
+    editor_options_from_backend,
+    plugin_info_from_backend,
+    colors_options_from_backend,
+});
 
 const SideBar = ({ currentOption, setOption }) => {
     const Option = ({ targetOption, children }) => {
@@ -45,8 +51,10 @@ const Settings = () => {
             <div className="flex justify-start mt-5 bg-white rounded-md shadow-md">
                 <SideBar currentOption={option} setOption={handleOption} />
                 <figure className="w-full">
-                    {option === "editor" && <Editor />}
-                    {option === "colors" && <Colors />}
+                    <Suspense fallback={<h1>Loading...</h1>}>
+                        {option === "editor" && <Editor />}
+                        {option === "colors" && <Colors />}
+                    </Suspense>
                 </figure>
             </div>
         </section>

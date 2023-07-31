@@ -1,9 +1,9 @@
-import { useLayoutEffect, useState } from "react";
+import { Suspense, lazy, useLayoutEffect, useState } from "react";
 import getSearchParam from "./util/getSearchParam.js";
 import appendSearchParam from "./util/appendSearchParam.js";
-import Intro from "./intro/App.jsx";
-import Settings from "./settings/App.jsx";
-import Blocks from "./blocks/App.jsx";
+const Intro = lazy(() => import("./intro/App.jsx"));
+const Settings = lazy(() => import("./settings/App.jsx"));
+const Blocks = lazy(() => import("./blocks/App.jsx"));
 
 const MenuButton = ({ targetPath, currentPath, changePath, children }) => {
     return (
@@ -98,6 +98,7 @@ const App = () => {
             // But we need a's parent li
             currentLink.parentElement.classList.add("current");
         } else {
+            // TODO: not working
             container
                 .querySelector(".wp-submenu .wp-first-item")
                 .classList.add("current");
@@ -108,9 +109,11 @@ const App = () => {
         <div className="-ml-5">
             <Header changePath={handlePath} currentPath={path} />
             <div className="mx-auto mt-6 max-w-7xl">
-                {path === null && <Intro />}
-                {path === "blocks" && <Blocks />}
-                {path === "settings" && <Settings />}
+                <Suspense fallback={<h1>Loading...</h1>}>
+                    {path === null && <Intro />}
+                    {path === "blocks" && <Blocks />}
+                    {path === "settings" && <Settings />}
+                </Suspense>
             </div>
         </div>
     );
