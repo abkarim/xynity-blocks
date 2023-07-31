@@ -134,8 +134,6 @@ class ThemeActions
 
         self::fetch_data_from_database();
 
-        $data = self::get_theme_json_file_data();
-
         if (
             self::$editors_current_data !== null &&
             !empty(self::$editors_current_data)
@@ -143,12 +141,54 @@ class ThemeActions
             return json_decode(self::$editors_current_data);
         }
 
+        return self::get_default_editor_options();
+    }
+
+    /**
+     * Get color options from Theme.json data
+     * Returns array with color options theme.json data
+     *
+     * @return array
+     * @since 0.1.0
+     * @access public
+     */
+    public static function get_default_color_options()
+    {
+        $data = self::get_theme_json_file_data();
         $dataArray = [
-            "layout" => $data->settings->layout,
-            "spacing" => $data->settings->spacing,
+            "palette" => $data->settings->color->palette,
         ];
 
         return $dataArray;
+    }
+
+    /**
+     * Get current editor options from Theme.json data
+     * Returns array with editor options from database
+     *
+     * @return array
+     * @since 0.1.0
+     * @access public
+     */
+    public static function get_current_color_options()
+    {
+        /**
+         * TODO
+         *
+         * Current data should not be fetched and returned directly
+         * it should contain all data that included in default data
+         */
+
+        self::fetch_data_from_database();
+
+        if (
+            self::$colors_current_data !== null &&
+            !empty(self::$colors_current_data)
+        ) {
+            return json_decode(self::$colors_current_data);
+        }
+
+        return self::get_default_color_options();
     }
 
     /**
