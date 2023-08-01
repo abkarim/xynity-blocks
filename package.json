@@ -34,7 +34,6 @@
   },
   "homepage": "https://github.com/abkarim/xynity-blocks#readme",
   "dependencies": {
-    "@flaticon/flaticon-uicons": "^2.2.0",
     "babel-loader": "^9.1.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"

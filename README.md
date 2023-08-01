@@ -18,7 +18,6 @@ Extends Block Themes functionality and Adds Wordpress blocks.
 -   Babel
 -   Tailwindcss
 -   Postcss
--   @flaticon/flaticon-uicons
 
 ## File structure
 
