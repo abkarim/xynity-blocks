@@ -60,6 +60,11 @@ class AJAX
             $this,
             "update_settings",
         ]);
+
+        add_action("wp_ajax_xynity_blocks_colors_update", [
+            $this,
+            "update_colors",
+        ]);
     }
 
     /**
@@ -82,6 +87,31 @@ class AJAX
 
         // Update data
         update_option(XYNITY_BLOCKS_TEXT_DOMAIN . "_settings_option", $data);
+
+        wp_send_json_success("updated successfully", 200);
+        wp_die();
+    }
+
+    /**
+     * Update colors
+     *
+     * @since 0.1.0
+     * @access public
+     */
+    public function update_colors()
+    {
+        // Get form data
+        $data = file_get_contents("php://input");
+
+        $this->block_incoming_request_if_invalid();
+
+        if (!($request_data = json_decode($data))) {
+            wp_send_json_error("data is not valid json", 400);
+            return wp_die();
+        }
+
+        // Update data
+        update_option(XYNITY_BLOCKS_TEXT_DOMAIN . "_colors_option", $data);
 
         wp_send_json_success("updated successfully", 200);
         wp_die();

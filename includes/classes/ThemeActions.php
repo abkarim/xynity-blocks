@@ -62,6 +62,14 @@ class ThemeActions
 
         // Update colors data
         if (self::$colors_current_data !== null) {
+            $colors = [
+                "color" => json_decode(self::$colors_current_data, true),
+            ];
+
+            $modifiedData["settings"] = array_merge_recursive(
+                $modifiedData["settings"],
+                $colors
+            );
         }
 
         return $theme_json->update_with($modifiedData);
