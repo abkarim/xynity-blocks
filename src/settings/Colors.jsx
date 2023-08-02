@@ -25,6 +25,16 @@ const reducer = (state, action) => {
             state.palette[action.payload.index].slug = action.payload.value;
             return { ...state };
 
+        case "new":
+            const newColor = {
+                color: "#000",
+                name: "New color",
+                slug: "new-color",
+                category: action.category,
+            };
+            state.palette.unshift(newColor);
+            return { ...state };
+
         default:
             return state;
     }
@@ -114,10 +124,20 @@ const Colors = () => {
             {/* Palette */}
             {(visibleOption === "global" || visibleOption === "*") && (
                 <div>
-                    <div>
-                        <h3 className="py-1 pl-5 text-sm font-bold text-gray-600 uppercase border-y bg-gray-50">
+                    <div className="flex items-center justify-between px-5 py-1 border-y bg-gray-50">
+                        <h3 className="text-sm font-bold text-gray-600 uppercase ">
                             Global
                         </h3>
+                        <button
+                            className="p-1 text-white bg-blue-600 rounded-sm"
+                            onClick={() =>
+                                dispatch({
+                                    type: "new",
+                                    category: "global",
+                                })
+                            }>
+                            Add New
+                        </button>
                     </div>
                     {data.palette.map((color, i) => (
                         <div
