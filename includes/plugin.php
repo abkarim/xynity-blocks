@@ -70,6 +70,32 @@ final class Plugin
      */
     public function is_compatible()
     {
+        /**
+         * This plugin is made for block theme
+         * check if current theme is block based or not
+         */
+        if (!wp_is_block_theme()) {
+            add_action("admin_notices", function () {
+                $this->show_admin_error_message(
+                    "Please use 'Twenty Twenty-Three' theme"
+                );
+            });
+            return false;
+        }
+
+        /**
+         * This plugin is made to work with twenty twenty three
+         */
+        $current_theme = wp_get_theme();
+        if ($current_theme->get("TextDomain") !== "twentytwentythree") {
+            add_action("admin_notices", function () {
+                $this->show_admin_error_message(
+                    "Please use 'Twenty Twenty-Three' theme"
+                );
+            });
+            return false;
+        }
+
         //* All Ok
         return true;
     }
@@ -85,10 +111,62 @@ final class Plugin
      */
     public function show_admin_error_message($massage)
     {
-        printf(
-            '<div class="notice notice-warning is-dismissible"><p>%1$s</p></div>',
-            $massage
-        );
+        ?>
+            <div class="notice notice-error is-dismissible">
+                <p>
+                    <?php _e($massage); ?>
+                <b>
+                    <?php _e(XYNITY_BLOCKS_NAME); ?>
+                </b>
+                </p>
+            </div>
+        <?php
+    }
+
+    /**
+     * Admin warning notice
+     *
+     * Show warning on admin dashboard
+     *
+     * @since 0.1.1
+     * @param string
+     * @access public
+     */
+    public function show_admin_warning_message($massage)
+    {
+        ?>
+            <div class="notice notice-warning is-dismissible">
+                <p>
+                    <?php _e($massage); ?>
+                <b>
+                    <?php _e(XYNITY_BLOCKS_NAME); ?>
+                </b>
+                </p>
+            </div>
+        <?php
+    }
+
+    /**
+     * Admin success notice
+     *
+     * Show success on admin dashboard
+     *
+     * @since 0.1.1
+     * @param string
+     * @access public
+     */
+    public function show_admin_success_message($massage)
+    {
+        ?>
+            <div class="notice notice-success is-dismissible">
+                <p>
+                    <?php _e($massage); ?>
+                <b>
+                    <?php _e(XYNITY_BLOCKS_NAME); ?>
+                </b>
+                </p>
+            </div>
+        <?php
     }
 
     /**
