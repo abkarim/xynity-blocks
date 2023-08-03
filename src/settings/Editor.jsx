@@ -6,12 +6,14 @@ import { useNotificationUpdate } from "../context/notification.jsx";
 import unit from "../util/unit.js";
 import Select from "../components/Select.jsx";
 import isArrayEqual from "../util/isArrayEqual.js";
+import RadioSwitchInput from "../components/RadioSwitchInput.jsx";
 
 /**
  * editor_options_from_backend is localized by WordPress
  * from: Dashboard->load_javascript()
  */
 const initialState = {
+    ...editor_options_from_backend.current,
     layout: {
         contentSize: getUnitAndValue(
             editor_options_from_backend.current.layout.contentSize
@@ -19,10 +21,6 @@ const initialState = {
         wideSize: getUnitAndValue(
             editor_options_from_backend.current.layout.wideSize
         ),
-    },
-    spacing: {
-        spacingScale: editor_options_from_backend.current.spacing.spacingScale,
-        units: editor_options_from_backend.current.spacing.units,
     },
 };
 
@@ -152,15 +150,10 @@ const Editor = () => {
         }
 
         const requestData = {
+            ...data,
             layout: {
                 contentSize: `${data.layout.contentSize.value}${data.layout.contentSize.unit}`,
                 wideSize: `${data.layout.wideSize.value}${data.layout.wideSize.unit}`,
-            },
-            spacing: {
-                spacingScale: {
-                    steps: data.spacing.spacingScale.steps,
-                },
-                units: data.spacing.units,
             },
         };
 
@@ -415,6 +408,40 @@ const Editor = () => {
                                 defaultValue={editor_options_from_backend.default.spacing.units.join(
                                     ", "
                                 )}
+                            />
+                        )}
+                    </div>
+                    <div className="relative flex items-start justify-between w-full p-5 border-b">
+                        <div>
+                            <h3 className="text-xl">Custom size</h3>
+                            <p>Enable or disable custom size input</p>
+                        </div>
+                        <fieldset>
+                            <RadioSwitchInput
+                                selected={data.spacing.customSpacingSize}
+                                onClick={() => {
+                                    dispatch({
+                                        type: "raw",
+                                        category: "spacing",
+                                        payload: {
+                                            name: "customSpacingSize",
+                                            data: !data.spacing
+                                                .customSpacingSize,
+                                        },
+                                    });
+                                }}
+                            />
+                        </fieldset>
+                        {data.spacing.customSpacingSize !==
+                            editor_options_from_backend.default.spacing
+                                .customSpacingSize && (
+                            <ChangeIndicator
+                                defaultValue={`${
+                                    editor_options_from_backend.default.spacing
+                                        .customSpacingSize
+                                        ? "On"
+                                        : "Off"
+                                }`}
                             />
                         )}
                     </div>
