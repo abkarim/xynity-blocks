@@ -117,7 +117,15 @@ class ThemeActions
         $data = self::get_theme_json_file_data();
         $dataArray = [
             "layout" => $data->settings->layout,
-            "spacing" => $data->settings->spacing,
+            "spacing" => [
+                "spacingScale" => $data->settings->spacing->spacingScale,
+                "units" => $data->settings->spacing->units,
+                "customSpacingSize" => isset(
+                    $data->settings->spacing->customSpacingSize
+                )
+                    ? $data->settings->spacing->customSpacingSize
+                    : true, // Default value is true
+            ],
         ];
 
         return $dataArray;
