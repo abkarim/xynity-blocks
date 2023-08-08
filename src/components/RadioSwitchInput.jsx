@@ -8,7 +8,7 @@ const RadioSwitchInput = ({
 }) => {
     return (
         <div
-            className={`relative z-0 w-10 p-2 rounded-full bg-opacity-60 ${
+            className={`relative z-0 w-10 p-2 rounded-full bg-opacity-60 cursor-pointer ${
                 selected ? "bg-green-500" : "bg-gray-400"
             }`}
             onClick={onClick}>
