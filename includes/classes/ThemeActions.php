@@ -120,6 +120,7 @@ class ThemeActions
             "spacing" => [
                 "spacingScale" => $data->settings->spacing->spacingScale,
                 "units" => $data->settings->spacing->units,
+                "spacingSizes" => $data->settings->spacing->spacingSizes,
                 "customSpacingSize" => isset(
                     $data->settings->spacing->customSpacingSize
                 )
