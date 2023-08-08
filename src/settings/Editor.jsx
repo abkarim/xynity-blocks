@@ -7,6 +7,7 @@ import unit from "../util/unit.js";
 import Select from "../components/Select.jsx";
 import isArrayEqual from "../util/isArrayEqual.js";
 import RadioSwitchInput from "../components/RadioSwitchInput.jsx";
+import destructFromClamp from "../util/destructFromClamp.js";
 
 /**
  * editor_options_from_backend is localized by WordPress
@@ -21,6 +22,10 @@ const initialState = {
         wideSize: getUnitAndValue(
             editor_options_from_backend.current.layout.wideSize
         ),
+    },
+    spacing: {
+        ...editor_options_from_backend.default.spacing,
+        ...editor_options_from_backend.current.spacing,
     },
 };
 
@@ -59,6 +64,15 @@ const reducer = (state, action) => {
                 },
             };
 
+        case "spacingSizes":
+            const currentData =
+                state.spacing.spacingSizes[action.payload.index];
+            currentData[action.payload.name] = action.payload.value;
+            return {
+                ...state,
+                spacingSizes: [...state.spacing.spacingSizes, currentData],
+            };
+
         default:
             return state;
     }
@@ -95,9 +109,9 @@ const Option = ({
                 <h3 className="text-xl">{title}</h3>
                 <p>{description}</p>
             </div>
-            <fieldset className="flex items-center w-48">
+            <fieldset className="flex items-stretch w-48">
                 <Input
-                    className="rounded-tl-none rounded-bl-none"
+                    className="!rounded-tr-none !rounded-br-none !border-r-0"
                     value={data[category][inputName].value}
                     name={inputName}
                     onInput={(e) =>
@@ -112,6 +126,7 @@ const Option = ({
                     }
                 />
                 <UnitSelect
+                    className="!py-[2.5px] !rounded-tl-none !rounded-bl-none"
                     value={data[category][inputName].unit}
                     name={inputName}
                     onChange={(e) =>
@@ -135,6 +150,8 @@ const Option = ({
 
 const Editor = () => {
     const initialLoad = useRef(null);
+    const errorFound = useRef(null);
+
     const [data, dispatch] = useReducer(reducer, initialState);
 
     const [visibleOption, setVisibleOption] = useState("*");
@@ -148,6 +165,11 @@ const Editor = () => {
             initialLoad.current = false;
             return;
         }
+
+        /**
+         * Don't update data if any error found
+         */
+        if (errorFound.current === true) return;
 
         const requestData = {
             ...data,
@@ -248,6 +270,40 @@ const Editor = () => {
                     <h3 className="py-1 pl-5 text-sm font-bold text-gray-600 uppercase border-b bg-gray-50">
                         Spacing
                     </h3>
+                    <div className="relative flex items-start justify-between w-full p-5 border-b">
+                        <div>
+                            <h3 className="text-xl">Custom size</h3>
+                            <p>Enable or disable custom size input</p>
+                        </div>
+                        <fieldset>
+                            <RadioSwitchInput
+                                selected={data.spacing.customSpacingSize}
+                                onClick={() => {
+                                    dispatch({
+                                        type: "raw",
+                                        category: "spacing",
+                                        payload: {
+                                            name: "customSpacingSize",
+                                            data: !data.spacing
+                                                .customSpacingSize,
+                                        },
+                                    });
+                                }}
+                            />
+                        </fieldset>
+                        {data.spacing.customSpacingSize !==
+                            editor_options_from_backend.default.spacing
+                                .customSpacingSize && (
+                            <ChangeIndicator
+                                defaultValue={`${
+                                    editor_options_from_backend.default.spacing
+                                        .customSpacingSize
+                                        ? "On"
+                                        : "Off"
+                                }`}
+                            />
+                        )}
+                    </div>
                     <div className="relative flex items-start justify-between w-full p-5 border-b">
                         <div>
                             <h3 className="text-xl">Spacing Scale</h3>
@@ -411,39 +467,248 @@ const Editor = () => {
                             />
                         )}
                     </div>
-                    <div className="relative flex items-start justify-between w-full p-5 border-b">
-                        <div>
-                            <h3 className="text-xl">Custom size</h3>
-                            <p>Enable or disable custom size input</p>
+                    <div className="relative w-full p-5 border-b">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <h3 className="text-xl">Sizes</h3>
+                                <p>Sizes in spacing</p>
+                            </div>
+                            <div>
+                                <button
+                                    className="p-2 px-3 text-white bg-blue-600 rounded-sm"
+                                    onClick={() => {
+                                        dispatch({
+                                            type: "raw",
+                                            category: "spacing",
+                                            payload: {
+                                                name: "spacingSizes",
+                                                data: [
+                                                    {
+                                                        name: "new size",
+                                                        slug: "new-size",
+                                                        size: "clamp(1rem, 1, 1rem)",
+                                                        custom: true,
+                                                    },
+                                                    ...data.spacing
+                                                        .spacingSizes,
+                                                ],
+                                            },
+                                        });
+                                    }}>
+                                    Add New
+                                </button>
+                            </div>
                         </div>
-                        <fieldset>
-                            <RadioSwitchInput
-                                selected={data.spacing.customSpacingSize}
-                                onClick={() => {
-                                    dispatch({
-                                        type: "raw",
-                                        category: "spacing",
-                                        payload: {
-                                            name: "customSpacingSize",
-                                            data: !data.spacing
-                                                .customSpacingSize,
-                                        },
-                                    });
-                                }}
-                            />
-                        </fieldset>
-                        {data.spacing.customSpacingSize !==
-                            editor_options_from_backend.default.spacing
-                                .customSpacingSize && (
-                            <ChangeIndicator
-                                defaultValue={`${
-                                    editor_options_from_backend.default.spacing
-                                        .customSpacingSize
-                                        ? "On"
-                                        : "Off"
-                                }`}
-                            />
-                        )}
+                        <div className="mt-3 space-y-4">
+                            {data.spacing.spacingSizes.map((item, index) => {
+                                const { minimum, maximum, value } =
+                                    destructFromClamp(item.size);
+                                return (
+                                    <div
+                                        key={index}
+                                        className="relative flex items-start justify-between p-2 overflow-hidden border rounded bg-slate-50">
+                                        <div className="space-y-2">
+                                            <div>
+                                                <span className="inline-block w-12 font-bold">
+                                                    Name: &nbsp;
+                                                </span>
+                                                <input
+                                                    type="text"
+                                                    className="!outline-none !bg-transparent"
+                                                    onInput={(e) => {
+                                                        const value =
+                                                            e.target.value;
+                                                        dispatch({
+                                                            type: "spacingSizes",
+                                                            payload: {
+                                                                index: index,
+                                                                name: "name",
+                                                                value,
+                                                            },
+                                                        });
+                                                        if (
+                                                            value.trim() === ""
+                                                        ) {
+                                                            errorFound.current = true;
+                                                            return setNotification(
+                                                                {
+                                                                    type: "error",
+                                                                    text: "name cannot be empty, please enter a name",
+                                                                }
+                                                            );
+                                                        } else {
+                                                            errorFound.current = false;
+                                                        }
+                                                    }}
+                                                    title="name"
+                                                    value={item.name}
+                                                />
+                                            </div>
+                                            <div>
+                                                <span className="inline-block w-12 font-bold">
+                                                    Slug: &nbsp;
+                                                </span>
+                                                <input
+                                                    type="text"
+                                                    readOnly={!item.custom}
+                                                    title={
+                                                        item.custom
+                                                            ? "slug"
+                                                            : "default items slug cannot be changed"
+                                                    }
+                                                    value={item.slug}
+                                                    className="inline-block !outline-none !bg-transparent"
+                                                    onInput={(e) => {
+                                                        const value =
+                                                            e.target.value.trim();
+                                                        dispatch({
+                                                            type: "spacingSizes",
+                                                            payload: {
+                                                                index: index,
+                                                                name: "slug",
+                                                                value,
+                                                            },
+                                                        });
+
+                                                        if (
+                                                            value.trim() === ""
+                                                        ) {
+                                                            errorFound.current = true;
+                                                            return setNotification(
+                                                                {
+                                                                    type: "error",
+                                                                    text: "slug cannot be empty, please enter a slug",
+                                                                }
+                                                            );
+                                                        } else {
+                                                            errorFound.current = false;
+                                                        }
+                                                    }}
+                                                />
+                                            </div>
+                                            <div>
+                                                <span className="inline-block w-12 font-bold">
+                                                    Size: &nbsp;
+                                                </span>
+                                                <span>{item.size}</span>
+                                            </div>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <div className="flex items-center justify-between">
+                                                <span className="font-bold">
+                                                    Minimum: &nbsp;
+                                                </span>
+                                                <input
+                                                    type="text"
+                                                    className="border-none !outline-none !bg-transparent"
+                                                    onInput={(e) => {
+                                                        const currentValue =
+                                                            e.target.value;
+                                                        dispatch({
+                                                            type: "spacingSizes",
+                                                            payload: {
+                                                                index: index,
+                                                                name: "size",
+                                                                value: `clamp(${currentValue.trim()}, ${value.trim()}, ${maximum.trim()})`,
+                                                            },
+                                                        });
+                                                        if (
+                                                            value.trim() === ""
+                                                        ) {
+                                                            errorFound.current = true;
+                                                            return setNotification(
+                                                                {
+                                                                    type: "error",
+                                                                    text: "minimum cannot be empty, please enter minimum value",
+                                                                }
+                                                            );
+                                                        } else {
+                                                            errorFound.current = false;
+                                                        }
+                                                    }}
+                                                    title="minimum"
+                                                    value={minimum}
+                                                />
+                                            </div>
+                                            <div className="flex items-center justify-between">
+                                                <span className="font-bold">
+                                                    Maximum: &nbsp;
+                                                </span>
+                                                <input
+                                                    type="text"
+                                                    title="maximum"
+                                                    value={maximum}
+                                                    className="inline-block !outline-none !bg-transparent"
+                                                    onInput={(e) => {
+                                                        const currentValue =
+                                                            e.target.value;
+                                                        dispatch({
+                                                            type: "spacingSizes",
+                                                            payload: {
+                                                                index: index,
+                                                                name: "size",
+                                                                value: `clamp(${minimum.trim()}, ${value.trim()}, ${currentValue.trim()})`,
+                                                            },
+                                                        });
+
+                                                        if (
+                                                            value.trim() === ""
+                                                        ) {
+                                                            errorFound.current = true;
+                                                            return setNotification(
+                                                                {
+                                                                    type: "error",
+                                                                    text: "slug cannot be empty, please enter a slug",
+                                                                }
+                                                            );
+                                                        } else {
+                                                            errorFound.current = false;
+                                                        }
+                                                    }}
+                                                />
+                                            </div>
+                                            <div className="flex items-center justify-between">
+                                                <span className="font-bold">
+                                                    Value: &nbsp;
+                                                </span>
+                                                <input
+                                                    type="text"
+                                                    title="slug"
+                                                    value={value}
+                                                    className="inline-block !outline-none !bg-transparent"
+                                                    onInput={(e) => {
+                                                        const value =
+                                                            e.target.value;
+                                                        dispatch({
+                                                            type: "spacingSizes",
+                                                            payload: {
+                                                                index: index,
+                                                                name: "size",
+                                                                value: `clamp(${minimum.trim()}, ${value.trim()}, ${maximum.trim()})`,
+                                                            },
+                                                        });
+
+                                                        if (
+                                                            value.trim() === ""
+                                                        ) {
+                                                            errorFound.current = true;
+                                                            return setNotification(
+                                                                {
+                                                                    type: "error",
+                                                                    text: "slug cannot be empty, please enter a slug",
+                                                                }
+                                                            );
+                                                        } else {
+                                                            errorFound.current = false;
+                                                        }
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </div>
                 </div>
             )}
