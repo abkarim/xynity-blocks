@@ -157,13 +157,6 @@ class ThemeActions
      */
     public static function get_current_editor_options()
     {
-        /**
-         * TODO
-         *
-         * Current data should not be fetched and returned directly
-         * it should contain all data that included in default data
-         */
-
         self::fetch_data_from_database();
 
         if (
@@ -188,6 +181,21 @@ class ThemeActions
     {
         $data = self::get_theme_json_file_data();
         $dataArray = [
+            "background" => Util::get_value_if_present_in_stdClass(
+                $data->settings->color,
+                "background",
+                true
+            ),
+            "link" => Util::get_value_if_present_in_stdClass(
+                $data->settings->color,
+                "link",
+                true
+            ),
+            "text" => Util::get_value_if_present_in_stdClass(
+                $data->settings->color,
+                "text",
+                true
+            ),
             "palette" => $data->settings->color->palette,
             "custom" => Util::get_value_if_present_in_stdClass(
                 $data->settings->color,
@@ -229,13 +237,6 @@ class ThemeActions
      */
     public static function get_current_color_options()
     {
-        /**
-         * TODO
-         *
-         * Current data should not be fetched and returned directly
-         * it should contain all data that included in default data
-         */
-
         self::fetch_data_from_database();
 
         if (

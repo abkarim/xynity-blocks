@@ -85,6 +85,9 @@ const Colors = () => {
         const requestData = {
             palette: data.palette,
             custom: data.custom,
+            text: data.text,
+            background: data.background,
+            link: data.link,
             defaultPalette: data.defaultPalette,
             defaultGradients: data.defaultGradients,
             customGradient: data.customGradient,
@@ -146,8 +149,8 @@ const Colors = () => {
                         setVisibleOption(e.target.value);
                     }}>
                     <option value="*">All</option>
-                    <option value="global">Global</option>
                     <option value="settings">Settings</option>
+                    <option value="palette">Palette</option>
                 </Select>
             </div>
             {/* Settings */}
@@ -157,6 +160,94 @@ const Colors = () => {
                         <h3 className="text-sm font-bold text-gray-600 uppercase ">
                             Settings
                         </h3>
+                    </div>
+                    <div className="relative flex items-start justify-between w-full p-5 border-b">
+                        <div>
+                            <h3 className="text-xl">Background Color</h3>
+                            <p>Enable background color</p>
+                        </div>
+                        <fieldset>
+                            <RadioSwitchInput
+                                selected={data.background}
+                                onClick={() => {
+                                    dispatch({
+                                        type: "toggleBool",
+                                        payload: {
+                                            name: "background",
+                                        },
+                                    });
+                                }}
+                            />
+                        </fieldset>
+                        {data.background !==
+                            colors_options_from_backend.default.background && (
+                            <ChangeIndicator
+                                defaultValue={
+                                    colors_options_from_backend.default
+                                        .background
+                                        ? "On"
+                                        : "Off"
+                                }
+                            />
+                        )}
+                    </div>
+                    <div className="relative flex items-start justify-between w-full p-5 border-b">
+                        <div>
+                            <h3 className="text-xl">Text Color</h3>
+                            <p>Enable text color</p>
+                        </div>
+                        <fieldset>
+                            <RadioSwitchInput
+                                selected={data.text}
+                                onClick={() => {
+                                    dispatch({
+                                        type: "toggleBool",
+                                        payload: {
+                                            name: "text",
+                                        },
+                                    });
+                                }}
+                            />
+                        </fieldset>
+                        {data.text !==
+                            colors_options_from_backend.default.text && (
+                            <ChangeIndicator
+                                defaultValue={
+                                    colors_options_from_backend.default.text
+                                        ? "On"
+                                        : "Off"
+                                }
+                            />
+                        )}
+                    </div>
+                    <div className="relative flex items-start justify-between w-full p-5 border-b">
+                        <div>
+                            <h3 className="text-xl">Link Color</h3>
+                            <p>Enable link color</p>
+                        </div>
+                        <fieldset>
+                            <RadioSwitchInput
+                                selected={data.link}
+                                onClick={() => {
+                                    dispatch({
+                                        type: "toggleBool",
+                                        payload: {
+                                            name: "link",
+                                        },
+                                    });
+                                }}
+                            />
+                        </fieldset>
+                        {data.link !==
+                            colors_options_from_backend.default.link && (
+                            <ChangeIndicator
+                                defaultValue={
+                                    colors_options_from_backend.default.link
+                                        ? "On"
+                                        : "Off"
+                                }
+                            />
+                        )}
                     </div>
                     <div className="relative flex items-start justify-between w-full p-5 border-b">
                         <div>
@@ -314,11 +405,11 @@ const Colors = () => {
                 </div>
             )}
             {/* Palette */}
-            {(visibleOption === "global" || visibleOption === "*") && (
+            {(visibleOption === "palette" || visibleOption === "*") && (
                 <div>
                     <div className="flex items-center justify-between px-5 py-1 border-b bg-gray-50">
                         <h3 className="text-sm font-bold text-gray-600 uppercase ">
-                            Global
+                            Palette
                         </h3>
                         <button
                             className="p-1 px-3 text-white bg-blue-600 rounded-sm"
