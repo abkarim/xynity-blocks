@@ -15,6 +15,7 @@ import ChangeIndicator from "./ChangeIndicator.jsx";
  * from: Dashboard->load_javascript()
  */
 const initialState = {
+    ...editor_options_from_backend.default,
     ...editor_options_from_backend.current,
     layout: {
         contentSize: getUnitAndValue(
@@ -73,6 +74,9 @@ const reducer = (state, action) => {
                 ...state,
                 spacingSizes: [...state.spacing.spacingSizes, currentData],
             };
+
+        case "appearanceTools":
+            return { ...state, appearanceTools: !state.appearanceTools };
 
         default:
             return state;
@@ -226,8 +230,45 @@ const Editor = () => {
                     <option value="*">All</option>
                     <option value="layout">Layout</option>
                     <option value="spacing">Spacing</option>
+                    <option value="settings">Settings</option>
                 </Select>
             </div>
+            {/* Settings */}
+            {(visibleOption === "settings" || visibleOption === "*") && (
+                <div>
+                    <h3 className="py-1 pl-5 text-sm font-bold text-gray-600 uppercase border-b bg-gray-50">
+                        Settings
+                    </h3>
+                    <div className="relative flex items-start justify-between w-full p-5 border-b">
+                        <div>
+                            <h3 className="text-xl">Appearance Tools</h3>
+                            <p>Enable appearance tools</p>
+                        </div>
+                        <fieldset>
+                            <RadioSwitchInput
+                                selected={data.appearanceTools}
+                                onClick={() => {
+                                    dispatch({
+                                        type: "appearanceTools",
+                                    });
+                                }}
+                            />
+                        </fieldset>
+                        {data.appearanceTools !==
+                            editor_options_from_backend.default
+                                .appearanceTools && (
+                            <ChangeIndicator
+                                defaultValue={`${
+                                    editor_options_from_backend.default
+                                        .appearanceTools
+                                        ? "On"
+                                        : "Off"
+                                }`}
+                            />
+                        )}
+                    </div>
+                </div>
+            )}
             {/* Layout */}
             {(visibleOption === "layout" || visibleOption === "*") && (
                 <div>
@@ -260,8 +301,8 @@ const Editor = () => {
                     </h3>
                     <div className="relative flex items-start justify-between w-full p-5 border-b">
                         <div>
-                            <h3 className="text-xl">Custom size</h3>
-                            <p>Enable or disable custom size input</p>
+                            <h3 className="text-xl">Custom spacing size</h3>
+                            <p>Enable custom size input</p>
                         </div>
                         <fieldset>
                             <RadioSwitchInput
@@ -286,6 +327,72 @@ const Editor = () => {
                                 defaultValue={`${
                                     editor_options_from_backend.default.spacing
                                         .customSpacingSize
+                                        ? "On"
+                                        : "Off"
+                                }`}
+                            />
+                        )}
+                    </div>
+                    <div className="relative flex items-start justify-between w-full p-5 border-b">
+                        <div>
+                            <h3 className="text-xl">Margin</h3>
+                            <p>Enable margin</p>
+                        </div>
+                        <fieldset>
+                            <RadioSwitchInput
+                                selected={data.spacing.margin}
+                                onClick={() => {
+                                    dispatch({
+                                        type: "raw",
+                                        category: "spacing",
+                                        payload: {
+                                            name: "margin",
+                                            data: !data.spacing.margin,
+                                        },
+                                    });
+                                }}
+                            />
+                        </fieldset>
+                        {data.spacing.margin !==
+                            editor_options_from_backend.default.spacing
+                                .margin && (
+                            <ChangeIndicator
+                                defaultValue={`${
+                                    editor_options_from_backend.default.spacing
+                                        .margin
+                                        ? "On"
+                                        : "Off"
+                                }`}
+                            />
+                        )}
+                    </div>
+                    <div className="relative flex items-start justify-between w-full p-5 border-b">
+                        <div>
+                            <h3 className="text-xl">Padding</h3>
+                            <p>Enable padding</p>
+                        </div>
+                        <fieldset>
+                            <RadioSwitchInput
+                                selected={data.spacing.padding}
+                                onClick={() => {
+                                    dispatch({
+                                        type: "raw",
+                                        category: "spacing",
+                                        payload: {
+                                            name: "padding",
+                                            data: !data.spacing.padding,
+                                        },
+                                    });
+                                }}
+                            />
+                        </fieldset>
+                        {data.spacing.padding !==
+                            editor_options_from_backend.default.spacing
+                                .padding && (
+                            <ChangeIndicator
+                                defaultValue={`${
+                                    editor_options_from_backend.default.spacing
+                                        .padding
                                         ? "On"
                                         : "Off"
                                 }`}

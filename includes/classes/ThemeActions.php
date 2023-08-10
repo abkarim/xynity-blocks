@@ -116,16 +116,31 @@ class ThemeActions
     {
         $data = self::get_theme_json_file_data();
         $dataArray = [
+            "appearanceTools" => Util::get_value_if_present_in_stdClass(
+                $data->settings,
+                "appearanceTools",
+                true
+            ),
             "layout" => $data->settings->layout,
             "spacing" => [
                 "spacingScale" => $data->settings->spacing->spacingScale,
                 "units" => $data->settings->spacing->units,
                 "spacingSizes" => $data->settings->spacing->spacingSizes,
-                "customSpacingSize" => isset(
-                    $data->settings->spacing->customSpacingSize
-                )
-                    ? $data->settings->spacing->customSpacingSize
-                    : true, // Default value is true
+                "customSpacingSize" => Util::get_value_if_present_in_stdClass(
+                    $data->settings->spacing,
+                    "customSpacingSize",
+                    true
+                ),
+                "margin" => Util::get_value_if_present_in_stdClass(
+                    $data->settings->spacing,
+                    "margin",
+                    true
+                ),
+                "padding" => Util::get_value_if_present_in_stdClass(
+                    $data->settings->spacing,
+                    "padding",
+                    true
+                ),
             ],
         ];
 
