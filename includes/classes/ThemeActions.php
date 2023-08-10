@@ -174,6 +174,26 @@ class ThemeActions
         $data = self::get_theme_json_file_data();
         $dataArray = [
             "palette" => $data->settings->color->palette,
+            "custom" => Util::get_value_if_present_in_stdClass(
+                $data->settings->color,
+                "custom",
+                true
+            ),
+            "customGradient" => Util::get_value_if_present_in_stdClass(
+                $data->settings->color,
+                "customGradient",
+                true
+            ),
+            "defaultGradients" => Util::get_value_if_present_in_stdClass(
+                $data->settings->color,
+                "defaultGradients",
+                true
+            ),
+            "defaultPalette" => Util::get_value_if_present_in_stdClass(
+                $data->settings->color,
+                "defaultPalette",
+                true
+            ),
         ];
 
         return $dataArray;
