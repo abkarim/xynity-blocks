@@ -13,6 +13,7 @@ class ThemeActions
     static $theme_json_data = null;
     private static $editors_current_data = null;
     private static $colors_current_data = null;
+    private static $shadows_current_data = null;
 
     /**
      * Constructor
@@ -69,6 +70,18 @@ class ThemeActions
             $modifiedData["settings"] = array_merge_recursive(
                 $modifiedData["settings"],
                 $colors
+            );
+        }
+
+        // Update shadows data
+        if (self::$shadows_current_data !== null) {
+            $shadows = [
+                "shadow" => json_decode(self::$shadows_current_data, true),
+            ];
+
+            $modifiedData["settings"] = array_merge_recursive(
+                $modifiedData["settings"],
+                $shadows
             );
         }
 
@@ -250,6 +263,63 @@ class ThemeActions
     }
 
     /**
+     * Get shadow options from Theme.json data
+     * Returns array with shadow options theme.json data
+     *
+     * @return array
+     * @since 0.1.2
+     * @access public
+     */
+    public static function get_default_shadow_options()
+    {
+        $data = self::get_theme_json_file_data();
+        $dataArray = [
+            "defaultPresets" => true,
+            "presets" => [],
+        ];
+
+        if (isset($data->settings->shadow)) {
+            $dataArray[
+                "defaultPresets"
+            ] = Util::get_value_if_present_in_stdClass(
+                $data->settings->shadow,
+                "defaultPresets",
+                true
+            );
+
+            $dataArray["presets"] = Util::get_value_if_present_in_stdClass(
+                $data->settings->shadow,
+                "presets",
+                []
+            );
+        }
+
+        return $dataArray;
+    }
+
+    /**
+     * Get current shadow options from Theme.json data
+     * Returns array with shadow options from database
+     *
+     * @return array
+     * @since 0.1.2
+     * @access public
+     */
+    public static function get_current_shadow_options()
+    {
+        self::fetch_data_from_database();
+
+        if (
+            self::$shadows_current_data !== null &&
+            !empty(self::$shadows_current_data)
+        ) {
+            return json_decode(self::$shadows_current_data);
+        }
+
+        return self::get_default_shadow_options();
+    }
+
+    /**
      * Fetch data from database
      *
      * @since 0.1.0
@@ -263,6 +333,10 @@ class ThemeActions
         );
         self::$colors_current_data = get_option(
             XYNITY_BLOCKS_TEXT_DOMAIN . "_colors_option",
+            null
+        );
+        self::$shadows_current_data = get_option(
+            XYNITY_BLOCKS_TEXT_DOMAIN . "_shadows_option",
             null
         );
     }
@@ -281,6 +355,7 @@ class ThemeActions
     {
         if (
             self::$colors_current_data !== null ||
+            self::$shadows_current_data !== null ||
             self::$editors_current_data !== null
         ) {
             return true;
