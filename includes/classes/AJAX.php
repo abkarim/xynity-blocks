@@ -1,8 +1,6 @@
 <?php
 namespace Xynity_Blocks;
 
-use JsonSerializable;
-
 /**
  * Prevent direct access
  */
