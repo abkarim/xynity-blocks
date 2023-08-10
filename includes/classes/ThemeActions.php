@@ -184,6 +184,11 @@ class ThemeActions
                 "customGradient",
                 true
             ),
+            "customDuotone" => Util::get_value_if_present_in_stdClass(
+                $data->settings->color,
+                "customDuotone",
+                true
+            ),
             "defaultGradients" => Util::get_value_if_present_in_stdClass(
                 $data->settings->color,
                 "defaultGradients",
