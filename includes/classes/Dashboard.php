@@ -146,6 +146,14 @@ class Dashboard
                     "current" => ThemeActions::get_current_color_options(),
                 ]
             );
+            wp_localize_script(
+                "xynity-blocks-admin-main",
+                "shadows_options_from_backend",
+                [
+                    "default" => ThemeActions::get_default_shadow_options(),
+                    "current" => ThemeActions::get_current_shadow_options(),
+                ]
+            );
         }
     }
 }
