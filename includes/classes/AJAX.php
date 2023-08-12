@@ -63,6 +63,11 @@ class AJAX
             $this,
             "update_colors",
         ]);
+
+        add_action("wp_ajax_xynity_blocks_shadows_update", [
+            $this,
+            "update_shadows",
+        ]);
     }
 
     /**
@@ -110,6 +115,31 @@ class AJAX
 
         // Update data
         update_option(XYNITY_BLOCKS_TEXT_DOMAIN . "_colors_option", $data);
+
+        wp_send_json_success("updated successfully", 200);
+        wp_die();
+    }
+
+    /**
+     * Update shadows
+     *
+     * @since 0.1.2
+     * @access public
+     */
+    public function update_shadows()
+    {
+        // Get form data
+        $data = file_get_contents("php://input");
+
+        $this->block_incoming_request_if_invalid();
+
+        if (!($request_data = json_decode($data))) {
+            wp_send_json_error("data is not valid json", 400);
+            return wp_die();
+        }
+
+        // Update data
+        update_option(XYNITY_BLOCKS_TEXT_DOMAIN . "_shadows_option", $data);
 
         wp_send_json_success("updated successfully", 200);
         wp_die();
