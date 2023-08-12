@@ -4,6 +4,7 @@ import appendSearchParam from "../util/appendSearchParam";
 const Editor = lazy(() => import("./Editor.jsx"));
 const Colors = lazy(() => import("./Colors.jsx"));
 const Shadows = lazy(() => import("./Shadows.jsx"));
+const Typography = lazy(() => import("./Typography.jsx"));
 const Reset = lazy(() => import("./Reset.jsx"));
 
 console.log({
@@ -11,6 +12,7 @@ console.log({
     plugin_info_from_backend,
     colors_options_from_backend,
     shadows_options_from_backend,
+    typography_options_from_backend,
 });
 
 const SideBar = ({ currentOption, setOption }) => {
@@ -57,6 +59,19 @@ const SideBar = ({ currentOption, setOption }) => {
                     </svg>
                 </span>
                 Colors
+            </Option>
+            <Option targetOption="typography">
+                <span className="inline-block w-5 h-full mt-2">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        id="Layer_1"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        data-name="Layer 1">
+                        <path d="m19 0h-14a5.006 5.006 0 0 0 -5 5v14a5.006 5.006 0 0 0 5 5h14a5.006 5.006 0 0 0 5-5v-14a5.006 5.006 0 0 0 -5-5zm3 19a3 3 0 0 1 -3 3h-14a3 3 0 0 1 -3-3v-14a3 3 0 0 1 3-3h14a3 3 0 0 1 3 3zm-4-10a1 1 0 0 1 -2 0 1 1 0 0 0 -1-1h-2v8h1a1 1 0 0 1 0 2h-4a1 1 0 0 1 0-2h1v-8h-2a1 1 0 0 0 -1 1 1 1 0 0 1 -2 0 3 3 0 0 1 3-3h6a3 3 0 0 1 3 3z" />
+                    </svg>
+                </span>
+                Typography
             </Option>
             <Option targetOption="shadows">
                 <span className="inline-block w-5 h-full mt-1">
@@ -113,6 +128,7 @@ const Settings = () => {
                         {option === "colors" && <Colors />}
                         {option === "shadows" && <Shadows />}
                         {option === "reset" && <Reset />}
+                        {option === "typography" && <Typography />}
                     </Suspense>
                 </figure>
             </div>
