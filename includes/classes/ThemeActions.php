@@ -14,6 +14,7 @@ class ThemeActions
     private static $editors_current_data = null;
     private static $colors_current_data = null;
     private static $shadows_current_data = null;
+    private static $typography_current_data = null;
 
     /**
      * Constructor
@@ -249,8 +250,8 @@ class ThemeActions
     }
 
     /**
-     * Get current editor options from Theme.json data
-     * Returns array with editor options from database
+     * Get current color options from Theme.json data
+     * Returns array with color options from database
      *
      * @return array
      * @since 0.1.0
@@ -268,6 +269,110 @@ class ThemeActions
         }
 
         return self::get_default_color_options();
+    }
+
+    /**
+     * Get typography options from Theme.json data
+     * Returns array with typography options theme.json data
+     *
+     * @return array
+     * @since 0.1.3
+     * @access public
+     */
+    public static function get_default_typography_options()
+    {
+        $data = self::get_theme_json_file_data();
+        $dataArray = [
+            "customFontSize" => Util::get_value_if_present_in_stdClass(
+                $data->settings->typography,
+                "customFontSize",
+                true
+            ),
+            "fontStyle" => Util::get_value_if_present_in_stdClass(
+                $data->settings->typography,
+                "fontStyle",
+                true
+            ),
+            "fontWeight" => Util::get_value_if_present_in_stdClass(
+                $data->settings->typography,
+                "fontWeight",
+                true
+            ),
+            "fluid" => Util::get_value_if_present_in_stdClass(
+                $data->settings->typography,
+                "fluid",
+                false
+            ),
+            "letterSpacing" => Util::get_value_if_present_in_stdClass(
+                $data->settings->typography,
+                "letterSpacing",
+                true
+            ),
+            "lineHeight" => Util::get_value_if_present_in_stdClass(
+                $data->settings->typography,
+                "lineHeight",
+                false
+            ),
+            "textColumns" => Util::get_value_if_present_in_stdClass(
+                $data->settings->typography,
+                "textColumns",
+                false
+            ),
+            "textDecoration" => Util::get_value_if_present_in_stdClass(
+                $data->settings->typography,
+                "textDecoration",
+                true
+            ),
+            "writingMode" => Util::get_value_if_present_in_stdClass(
+                $data->settings->typography,
+                "writingMode",
+                false
+            ),
+            "textTransform" => Util::get_value_if_present_in_stdClass(
+                $data->settings->typography,
+                "textTransform",
+                true
+            ),
+            "dropCap" => Util::get_value_if_present_in_stdClass(
+                $data->settings->typography,
+                "dropCap",
+                true
+            ),
+            "fontSizes" => Util::get_value_if_present_in_stdClass(
+                $data->settings->typography,
+                "fontSizes",
+                []
+            ),
+            "fontFamilies" => Util::get_value_if_present_in_stdClass(
+                $data->settings->typography,
+                "fontFamilies",
+                []
+            ),
+        ];
+
+        return $dataArray;
+    }
+
+    /**
+     * Get current typography options from Theme.json data
+     * Returns array with typography options from database
+     *
+     * @return array
+     * @since 0.1.0
+     * @access public
+     */
+    public static function get_current_typography_options()
+    {
+        self::fetch_data_from_database();
+
+        if (
+            self::$typography_current_data !== null &&
+            !empty(self::$typography_current_data)
+        ) {
+            return json_decode(self::$typography_current_data);
+        }
+
+        return self::get_default_typography_options();
     }
 
     /**
@@ -347,6 +452,10 @@ class ThemeActions
             XYNITY_BLOCKS_TEXT_DOMAIN . "_shadows_option",
             null
         );
+        self::$typography_current_data = get_option(
+            XYNITY_BLOCKS_TEXT_DOMAIN . "_typography_option",
+            null
+        );
     }
 
     /**
@@ -364,6 +473,7 @@ class ThemeActions
         if (
             self::$colors_current_data !== null ||
             self::$shadows_current_data !== null ||
+            self::$typography_current_data !== null ||
             self::$editors_current_data !== null
         ) {
             return true;
