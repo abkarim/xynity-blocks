@@ -18,6 +18,8 @@ const initialState = {
     ...editor_options_from_backend.default,
     ...editor_options_from_backend.current,
     layout: {
+        ...editor_options_from_backend.default.layout,
+        ...editor_options_from_backend.current.layout,
         contentSize: getUnitAndValue(
             editor_options_from_backend.current.layout.contentSize
         ),
@@ -166,6 +168,7 @@ const Editor = () => {
         const requestData = {
             ...data,
             layout: {
+                ...data.layout,
                 contentSize: `${data.layout.contentSize.value}${data.layout.contentSize.unit}`,
                 wideSize: `${data.layout.wideSize.value}${data.layout.wideSize.unit}`,
             },
@@ -275,6 +278,39 @@ const Editor = () => {
                     <h3 className="py-1 pl-5 text-sm font-bold text-gray-600 uppercase border-y bg-gray-50">
                         Layout
                     </h3>
+                    <div className="relative flex items-start justify-between w-full p-5 border-b">
+                        <div>
+                            <h3 className="text-xl">Allow Editing</h3>
+                            <p>Enable editing</p>
+                        </div>
+                        <fieldset>
+                            <RadioSwitchInput
+                                selected={data.layout.allowEditing}
+                                onClick={() => {
+                                    dispatch({
+                                        type: "raw",
+                                        category: "layout",
+                                        payload: {
+                                            name: "allowEditing",
+                                            data: !data.layout.allowEditing,
+                                        },
+                                    });
+                                }}
+                            />
+                        </fieldset>
+                        {data.layout.allowEditing !==
+                            editor_options_from_backend.default.layout
+                                .allowEditing && (
+                            <ChangeIndicator
+                                defaultValue={`${
+                                    editor_options_from_backend.default.layout
+                                        .allowEditing
+                                        ? "On"
+                                        : "Off"
+                                }`}
+                            />
+                        )}
+                    </div>
                     <Option
                         title="Default Content Width"
                         description="Container Block's default Content Width"
