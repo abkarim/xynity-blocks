@@ -86,6 +86,21 @@ class ThemeActions
             );
         }
 
+        // Update typography data
+        if (self::$typography_current_data !== null) {
+            $typography = [
+                "typography" => json_decode(
+                    self::$typography_current_data,
+                    true
+                ),
+            ];
+
+            $modifiedData["settings"] = array_merge_recursive(
+                $modifiedData["settings"],
+                $typography
+            );
+        }
+
         return $theme_json->update_with($modifiedData);
     }
 
