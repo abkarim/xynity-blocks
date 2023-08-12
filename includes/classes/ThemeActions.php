@@ -134,7 +134,15 @@ class ThemeActions
                 "appearanceTools",
                 true
             ),
-            "layout" => $data->settings->layout,
+            "layout" => [
+                "wideSize" => $data->settings->layout->wideSize,
+                "contentSize" => $data->settings->layout->contentSize,
+                "allowEditing" => Util::get_value_if_present_in_stdClass(
+                    $data->settings->layout,
+                    "allowEditing",
+                    true
+                ),
+            ],
             "spacing" => [
                 "spacingScale" => $data->settings->spacing->spacingScale,
                 "units" => $data->settings->spacing->units,
