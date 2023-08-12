@@ -10,6 +10,7 @@ console.log({
     editor_options_from_backend,
     plugin_info_from_backend,
     colors_options_from_backend,
+    shadows_options_from_backend,
 });
 
 const SideBar = ({ currentOption, setOption }) => {
