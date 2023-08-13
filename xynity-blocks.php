@@ -3,7 +3,7 @@
  * Plugin Name:       Xynity Blocks
  * Plugin URI:        https://github.com/abkarim/xynity-blocks
  * Description:       Extends wordpress blocks functionality to make better experience with Full Site Editing
- * Version:           0.1.2
+ * Version:           0.1.3
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            Karim
