@@ -73,6 +73,38 @@ class AJAX
             $this,
             "update_typography",
         ]);
+
+        add_action("wp_ajax_xynity_blocks_reset_option", [
+            $this,
+            "reset_option",
+        ]);
+    }
+
+    /**
+     * Rest option
+     *
+     * @since 0.1.3
+     * @access public
+     */
+    public function reset_option()
+    {
+        // Get form data
+        $data = file_get_contents("php://input");
+
+        $this->block_incoming_request_if_invalid();
+
+        if (!($request_data = json_decode($data))) {
+            wp_send_json_error("data is not valid json", 400);
+            return wp_die();
+        }
+
+        // Delete option
+        delete_option(
+            XYNITY_BLOCKS_TEXT_DOMAIN . "_" . $request_data->name . "_option"
+        );
+
+        wp_send_json_success("reset successful", 200);
+        wp_die();
     }
 
     /**
