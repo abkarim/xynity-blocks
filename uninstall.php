@@ -11,6 +11,6 @@ if (!defined("WP_UNINSTALL_PLUGIN")) {
  *
  * If user want to uninstall plugin with it's all data
  */
-require_once __DIR__ . "/includes/classes/DB.php";
+require_once plugin_dir_path(__FILE__) . "includes/classes/DB.php";
 
 Xynity_Blocks\DB::remove_all_options();
