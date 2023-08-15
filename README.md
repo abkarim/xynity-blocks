@@ -1,6 +1,15 @@
 # xynity-blocks
 
-Extends Block Themes functionality and Adds Wordpress blocks.
+Extends Block Themes functionality and Adds blocks. You will get every options to edit. That's mean you have the full control of your site. 
+
+## Settings
+
+![Screenshot from 2023-08-15 18-21-51](https://github.com/abkarim/xynity-blocks/assets/84965867/30170f7d-8894-444e-a635-fccd95c7dcb9)
+![Screenshot from 2023-08-15 18-25-33](https://github.com/abkarim/xynity-blocks/assets/84965867/be7b4393-d3c2-47eb-80d9-c379d3b8002f)
+
+## Blocks (work in progress)
+![Screenshot from 2023-08-15 18-27-43](https://github.com/abkarim/xynity-blocks/assets/84965867/74f3efea-381f-4f98-aeb2-44a17dcbc86a)
+
 
 ## Recommendations
 
@@ -9,7 +18,7 @@ Extends Block Themes functionality and Adds Wordpress blocks.
 ## Commands
 
 -   **Build** `npm run build`
--   **Extract plugin (without dev dependencies)** `npm run extract`
+-   **Extract plugin (xynity-blocks.zip)** `npm run extract`
 
 ## Frontend Library/Framework
 
