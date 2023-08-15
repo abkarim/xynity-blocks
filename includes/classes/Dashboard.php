@@ -162,6 +162,13 @@ class Dashboard
                     "current" => ThemeActions::get_current_typography_options(),
                 ]
             );
+            wp_localize_script(
+                "xynity-blocks-admin-main",
+                "blocks_options_from_backend",
+                [
+                    "list" => Blocks::get_all_blocks(),
+                ]
+            );
         }
     }
 }
