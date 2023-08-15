@@ -70,40 +70,24 @@ const App = () => {
     };
 
     /**
-     * Handle links on WordPress dashboard menu
-     * manage active and deactivate state
-     *
-     * add "current" class to activate
-     * remove "current" class to deactivate
+     * Handle links active and deactivate state
      */
-    useLayoutEffect(() => {
-        console.log({ path });
-        // Get links wrapper
-        const container = document.querySelector(
-            ".toplevel_page_xynity-blocks"
-        );
-
-        // Deactivate prev link
-        const prevLink = container.querySelector(".current");
-        if (prevLink) {
-            prevLink.classList.remove("current");
-        }
-
-        // Activate current link
-        const currentLink = container.querySelector(
-            `li > a[href$="&path=${path}"]`
-        );
-        if (currentLink) {
-            // We got a
-            // But we need a's parent li
-            currentLink.parentElement.classList.add("current");
-        } else {
-            // TODO: not working
-            container
-                .querySelector(".wp-submenu .wp-first-item")
-                .classList.add("current");
-        }
-    }, [path]);
+    const links = document.querySelectorAll(
+        ".toplevel_page_xynity-blocks > ul > li"
+    );
+    const prevLink = document.querySelector(
+        ".toplevel_page_xynity-blocks > ul > .current"
+    );
+    if (prevLink) {
+        prevLink.classList.remove("current");
+    }
+    if (path === null) {
+        links[1].classList.add("current");
+    } else if (path === "blocks") {
+        links[2].classList.add("current");
+    } else {
+        links[3].classList.add("current");
+    }
 
     return (
         <div className="-ml-5">
