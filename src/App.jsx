@@ -1,4 +1,4 @@
-import { Suspense, lazy, useLayoutEffect, useState } from "react";
+import { Suspense, lazy, useState } from "react";
 import getSearchParam from "./util/getSearchParam.js";
 import appendSearchParam from "./util/appendSearchParam.js";
 const Intro = lazy(() => import("./intro/App.jsx"));
