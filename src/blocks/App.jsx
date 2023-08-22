@@ -5,8 +5,6 @@ import appendSearchParam from "../util/appendSearchParam.js";
 import getSearchParam from "../util/getSearchParam.js";
 import Editor from "./Editor.jsx";
 
-console.log({ blocks_options_from_backend });
-
 const Blocks = () => {
     const [category, setCategory] = useState(
         getSearchParam("category") || "All"
