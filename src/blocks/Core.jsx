@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
+import getCoreBlocks from "../util/getCoreBlocks";
 
-const coreBlocks = Object.keys(blocks_options_from_backend.list)
-    .filter((item) => item.startsWith("core/"))
-    .map((item) => blocks_options_from_backend.list[item]);
+const coreBlocks = getCoreBlocks();
 
-const Core = ({ search, showTitle = true }) => {
+const Core = ({ search, showTitle = true, setEditElement }) => {
     const [data, setData] = useState(coreBlocks);
-
-    console.log({ data });
 
     useEffect(() => {
         if (search === "") {
@@ -39,25 +36,35 @@ const Core = ({ search, showTitle = true }) => {
             {showTitle && <h3 className="mb-3 text-xl font-bold">Core</h3>}
             <section className="grid grid-cols-3 gap-5">
                 {data.map((item, index) => {
-                    const { title, name, description } = item;
-                    const titleText = title ? title : name.replace("core/", "");
+                    const { title, iconElement } = item;
                     return (
                         <div
                             key={index}
-                            className="flex items-start justify-between w-full gap-2 p-5 bg-white rounded">
-                            <div>
-                                <h5 className="text-lg capitalize">
-                                    {titleText}
-                                </h5>
-                                <p className="text-justify text-slate-500">
-                                    {description}
-                                </p>
+                            className="flex items-start justify-between w-full gap-2 px-4 py-2 bg-white rounded">
+                            <div className="flex items-start gap-2">
+                                <div>
+                                    <span className="inline-block w-12 h-full">
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 24 24"
+                                            fill="currentColor"
+                                            dangerouslySetInnerHTML={{
+                                                __html: iconElement,
+                                            }}></svg>
+                                    </span>
+                                </div>
+                                <div>
+                                    <h5 className="text-lg capitalize">
+                                        {title}
+                                    </h5>
+                                </div>
                             </div>
                             <div className="flex flex-col">
                                 <button
-                                    className="p-1 cursor-pointer"
+                                    onClick={() => setEditElement(item)}
+                                    className="p-1 rounded cursor-pointer hover:bg-yellow-500 hover:text-black"
                                     title="Edit defaults">
-                                    <span className="inline-block w-5 h-full text-yellow-700">
+                                    <span className="inline-block w-5 h-full">
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
                                             id="Outline"

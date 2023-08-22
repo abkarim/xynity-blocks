@@ -1,12 +1,27 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Core from "./Core.jsx";
 import TextInput from "../components/InputText.jsx";
+import appendSearchParam from "../util/appendSearchParam.js";
+import getSearchParam from "../util/getSearchParam.js";
+import Editor from "./Editor.jsx";
 
 console.log({ blocks_options_from_backend });
 
 const Blocks = () => {
-    const [category, setCategory] = useState("All");
-    const [search, setSearch] = useState("");
+    const [category, setCategory] = useState(
+        getSearchParam("category") || "All"
+    );
+    const [search, setSearch] = useState(getSearchParam("search") || "");
+    const [editElement, setEditElement] = useState(null);
+
+    useEffect(() => {
+        appendSearchParam("category", category);
+    }, [category]);
+
+    useEffect(() => {
+        appendSearchParam("search", search);
+    }, [search]);
+
     return (
         <section>
             <h1 className="text-2xl font-bold">Blocks</h1>
@@ -36,10 +51,17 @@ const Blocks = () => {
                 {(category === "Core" || category === "All") && (
                     <Core
                         search={search.trim()}
+                        setEditElement={setEditElement}
                         showTitle={category !== "Core"}
                     />
                 )}
             </main>
+            {editElement !== null && (
+                <Editor
+                    element={editElement}
+                    onClose={() => setEditElement(null)}
+                />
+            )}
         </section>
     );
 };
