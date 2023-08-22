@@ -92,7 +92,7 @@ const App = () => {
     return (
         <div className="-ml-5">
             <Header changePath={handlePath} currentPath={path} />
-            <div className="mx-auto mt-6 max-w-7xl">
+            <div className="relative mx-auto mt-6 max-w-7xl">
                 <Suspense fallback={<h1>Loading...</h1>}>
                     {path === null && <Intro />}
                     {path === "blocks" && <Blocks />}
