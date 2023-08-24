@@ -15,6 +15,7 @@ class ThemeActions
     private static $colors_current_data = null;
     private static $shadows_current_data = null;
     private static $typography_current_data = null;
+    private static $blocks_edited_data = null;
 
     /**
      * Constructor
@@ -46,6 +47,9 @@ class ThemeActions
         $modifiedData = [
             "version" => 2,
             "settings" => [],
+            "styles" => [
+                "blocks" => [],
+            ],
         ];
 
         // Update editor settings data
@@ -99,6 +103,14 @@ class ThemeActions
                 $modifiedData["settings"],
                 $typography
             );
+        }
+
+        /**
+         * Update blocks style data
+         *
+         * @since 0.1.4
+         */
+        if (self::$blocks_edited_data !== null) {
         }
 
         return $theme_json->update_with($modifiedData);
@@ -448,6 +460,109 @@ class ThemeActions
     }
 
     /**
+     * Get block settings from theme.json
+     *
+     * @param string block_name
+     * @return mixed
+     * @access public
+     * @static
+     * @since 0.1.4
+     */
+    public static function get_block_style_settings($block_name)
+    {
+        $theme_json_data = self::get_theme_json_file_data();
+
+        /**
+         * Blocks configuration live in
+         * theme.json->styles->blocks->$block_name
+         *
+         * we had to go step by step with checking
+         * cause not every theme include this
+         */
+
+        // Get styles data
+        $styles_data = Util::get_value_if_present_in_stdClass(
+            $theme_json_data,
+            "styles",
+            null
+        );
+
+        // Return null styles data not found
+        if ($styles_data === null) {
+            return null;
+        }
+
+        // Get blocks data from settings
+        $blocks_data = Util::get_value_if_present_in_stdClass(
+            $styles_data,
+            "blocks",
+            null
+        );
+
+        /**
+         * check blocks data
+         * return null if doesn't exits
+         */
+        if ($blocks_data === null) {
+            return null;
+        }
+
+        // Get targeted block data
+        $targeted_block_data = Util::get_value_if_present_in_stdClass(
+            $blocks_data,
+            $block_name,
+            null
+        );
+
+        /**
+         * Null will be returned if no data found
+         */
+        return $targeted_block_data;
+    }
+
+    /**
+     * Generate block style settings
+     *
+     * @return array block_styles
+     * @access public
+     * @static
+     * @since 0.1.4
+     */
+    public static function generate_block_style_settings()
+    {
+        $data = [
+            "color" => [],
+            "typography" => [
+                "fontSize" => "",
+                "fontWeight" => "",
+                "lineHeight" => "",
+                "textDecoration" => "",
+            ],
+            "spacing" => [
+                "padding" => [
+                    "top" => "",
+                    "bottom" => "",
+                    "left" => "",
+                    "right" => "",
+                ],
+                "margin" => [
+                    "top" => "",
+                    "bottom" => "",
+                    "left" => "",
+                    "right" => "",
+                ],
+            ],
+            "layout" => [],
+            "border" => [],
+            "shadow" => [],
+            "position" => [],
+            "css" => "",
+        ];
+
+        return $data;
+    }
+
+    /**
      * Fetch data from database
      *
      * @since 0.1.0
@@ -455,6 +570,9 @@ class ThemeActions
      */
     private static function fetch_data_from_database()
     {
+        /**
+         * Settings
+         */
         self::$editors_current_data = get_option(
             XYNITY_BLOCKS_TEXT_DOMAIN . "_settings_option",
             null
@@ -471,6 +589,11 @@ class ThemeActions
             XYNITY_BLOCKS_TEXT_DOMAIN . "_typography_option",
             null
         );
+
+        /**
+         * Block settings
+         */
+        self::$blocks_edited_data = Blocks::get_edited_blocks_data();
     }
 
     /**
@@ -489,7 +612,8 @@ class ThemeActions
             self::$colors_current_data !== null ||
             self::$shadows_current_data !== null ||
             self::$typography_current_data !== null ||
-            self::$editors_current_data !== null
+            self::$editors_current_data !== null ||
+            self::$blocks_edited_data !== null
         ) {
             return true;
         }
