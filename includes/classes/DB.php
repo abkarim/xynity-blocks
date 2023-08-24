@@ -84,7 +84,7 @@ class DB
      * @access private
      * @since 0.1.4
      */
-    public static function get_charset_collate()
+    private static function get_charset_collate()
     {
         global $wpdb;
         return $wpdb->get_charset_collate();
@@ -119,10 +119,10 @@ class DB
      * Returns blocks settings table name with prefix
      *
      * @return string
-     * @access public
+     * @access private
      * @since 0.1.4
      */
-    public static function get_blocks_settings_table_name()
+    private static function get_blocks_settings_table_name()
     {
         global $wpdb;
         $table_name = "xynity_blocks__blocks_settings";
@@ -192,5 +192,30 @@ class DB
          * Delete databases
          */
         self::delete_database_tables();
+    }
+
+    /**
+     * Get block settings
+     *
+     * @param string block_name eg: core/paragraph
+     * @return mixed available data or null
+     * @access public
+     * @since 0.1.4
+     */
+    public static function get_block_settings($name)
+    {
+        global $wpdb;
+        $table_name = self::get_blocks_settings_table_name();
+
+        $sql = "SELECT block_settings FROM $table_name WHERE block_name=%s";
+
+        // Execute query
+        $data = $wpdb->get_row($wpdb->prepare($sql, $name));
+
+        if ($data) {
+            return $data->block_settings;
+        }
+
+        return null;
     }
 }
