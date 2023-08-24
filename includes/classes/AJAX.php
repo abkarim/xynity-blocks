@@ -81,6 +81,29 @@ class AJAX
     }
 
     /**
+     * Get request data
+     * validate and returns data
+     *
+     * @return array [$data, $decodedData]
+     * @since 0.1.4
+     * @access private
+     */
+    private function get_request_data()
+    {
+        // Get form data
+        $data = file_get_contents("php://input");
+
+        $this->block_incoming_request_if_invalid();
+
+        if (!($decoded_data = json_decode($data))) {
+            wp_send_json_error("data is not valid json", 400);
+            return wp_die();
+        }
+
+        return [$data, $decoded_data];
+    }
+
+    /**
      * Rest option
      *
      * @since 0.1.3
@@ -88,19 +111,11 @@ class AJAX
      */
     public function reset_option()
     {
-        // Get form data
-        $data = file_get_contents("php://input");
-
-        $this->block_incoming_request_if_invalid();
-
-        if (!($request_data = json_decode($data))) {
-            wp_send_json_error("data is not valid json", 400);
-            return wp_die();
-        }
+        [$data, $decoded_data] = $this->get_request_data();
 
         // Delete option
         delete_option(
-            XYNITY_BLOCKS_TEXT_DOMAIN . "_" . $request_data->name . "_option"
+            XYNITY_BLOCKS_TEXT_DOMAIN . "_" . $decoded_data->name . "_option"
         );
 
         wp_send_json_success("reset successful", 200);
@@ -115,15 +130,7 @@ class AJAX
      */
     public function update_settings()
     {
-        // Get form data
-        $data = file_get_contents("php://input");
-
-        $this->block_incoming_request_if_invalid();
-
-        if (!($request_data = json_decode($data))) {
-            wp_send_json_error("data is not valid json", 400);
-            return wp_die();
-        }
+        [$data] = $this->get_request_data();
 
         // Update data
         update_option(XYNITY_BLOCKS_TEXT_DOMAIN . "_settings_option", $data);
@@ -140,15 +147,7 @@ class AJAX
      */
     public function update_colors()
     {
-        // Get form data
-        $data = file_get_contents("php://input");
-
-        $this->block_incoming_request_if_invalid();
-
-        if (!($request_data = json_decode($data))) {
-            wp_send_json_error("data is not valid json", 400);
-            return wp_die();
-        }
+        [$data] = $this->get_request_data();
 
         // Update data
         update_option(XYNITY_BLOCKS_TEXT_DOMAIN . "_colors_option", $data);
@@ -165,15 +164,7 @@ class AJAX
      */
     public function update_shadows()
     {
-        // Get form data
-        $data = file_get_contents("php://input");
-
-        $this->block_incoming_request_if_invalid();
-
-        if (!($request_data = json_decode($data))) {
-            wp_send_json_error("data is not valid json", 400);
-            return wp_die();
-        }
+        [$data] = $this->get_request_data();
 
         // Update data
         update_option(XYNITY_BLOCKS_TEXT_DOMAIN . "_shadows_option", $data);
@@ -190,15 +181,7 @@ class AJAX
      */
     public function update_typography()
     {
-        // Get form data
-        $data = file_get_contents("php://input");
-
-        $this->block_incoming_request_if_invalid();
-
-        if (!($request_data = json_decode($data))) {
-            wp_send_json_error("data is not valid json", 400);
-            return wp_die();
-        }
+        [$data] = $this->get_request_data();
 
         // Update data
         update_option(XYNITY_BLOCKS_TEXT_DOMAIN . "_typography_option", $data);
