@@ -71,8 +71,8 @@ if (!class_exists("Xynity_Blocks")) {
             define("XYNITY_BLOCKS_VERSION", $plugin_data["Version"]);
             define("XYNITY_BLOCKS_TEXT_DOMAIN", $plugin_data["TextDomain"]);
             define("XYNITY_BLOCKS_NAME", $plugin_data["Name"]);
-            define("XYNITY_BLOCKS_PATH", plugin_dir_path(__FILE__));
-            define("XYNITY_BLOCKS_URL", plugin_dir_url(__FILE__));
+            define("XYNITY_BLOCKS_PATH", rtrim(plugin_dir_path(__FILE__), "/"));
+            define("XYNITY_BLOCKS_URL", rtrim(plugin_dir_url(__FILE__), "/"));
             define("XYNITY_BLOCKS_BASENAME", plugin_basename(__FILE__));
             define("XYNITY_BLOCKS_FILE", __FILE__);
             define("XYNITY_BLOCKS_DIR", __DIR__);
