@@ -104,6 +104,21 @@ class AJAX
     }
 
     /**
+     * Send response and close request
+     *
+     * @param mixed data
+     * @param int status-code default 200
+     * @return void
+     * @access private
+     * @since 0.1.4
+     */
+    private function send_response_and_close_request($data, $status_code = 200)
+    {
+        wp_send_json_success($data, $status_code);
+        wp_die();
+    }
+
+    /**
      * Rest option
      *
      * @since 0.1.3
@@ -118,8 +133,7 @@ class AJAX
             XYNITY_BLOCKS_TEXT_DOMAIN . "_" . $decoded_data->name . "_option"
         );
 
-        wp_send_json_success("reset successful", 200);
-        wp_die();
+        $this->send_response_and_close_request("reset successful");
     }
 
     /**
@@ -135,8 +149,7 @@ class AJAX
         // Update data
         update_option(XYNITY_BLOCKS_TEXT_DOMAIN . "_settings_option", $data);
 
-        wp_send_json_success("updated successfully", 200);
-        wp_die();
+        $this->send_response_and_close_request("updated successfully");
     }
 
     /**
@@ -152,8 +165,7 @@ class AJAX
         // Update data
         update_option(XYNITY_BLOCKS_TEXT_DOMAIN . "_colors_option", $data);
 
-        wp_send_json_success("updated successfully", 200);
-        wp_die();
+        $this->send_response_and_close_request("updated successfully");
     }
 
     /**
@@ -169,8 +181,7 @@ class AJAX
         // Update data
         update_option(XYNITY_BLOCKS_TEXT_DOMAIN . "_shadows_option", $data);
 
-        wp_send_json_success("updated successfully", 200);
-        wp_die();
+        $this->send_response_and_close_request("updated successfully");
     }
 
     /**
@@ -186,7 +197,6 @@ class AJAX
         // Update data
         update_option(XYNITY_BLOCKS_TEXT_DOMAIN . "_typography_option", $data);
 
-        wp_send_json_success("updated successfully", 200);
-        wp_die();
+        $this->send_response_and_close_request("updated successfully");
     }
 }
