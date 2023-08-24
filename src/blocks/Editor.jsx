@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SideBar from "./Sidebar.jsx";
 import ColorInput from "../components/ColorInput.jsx";
 import Textarea from "../components/input/Textarea.jsx";
@@ -8,9 +8,40 @@ const Editor = ({ element, onClose }) => {
     /**
      * Destruct data from props
      */
-    const { title } = element;
+    const { title, from } = element;
 
     const [option, setOption] = useState("colors");
+    const [blockData, setBlockData] = useState({});
+
+    /**
+     * Get blocks data
+     */
+    useEffect(() => {
+        const get_data = async (name) => {
+            const response = await fetch(
+                `${
+                    plugin_info_from_backend.ajax_url
+                }?action=${encodeURIComponent(
+                    "xynity_blocks__get_block_data"
+                )}&name=${from + "/" + title.toLowerCase()}`,
+                {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-WP-Nonce": plugin_info_from_backend.ajax_nonce,
+                    },
+                    credentials: "same-origin",
+                }
+            );
+
+            const response_data = (await response.json()).data;
+            setBlockData(response_data);
+        };
+
+        get_data();
+    }, [title, from]);
+
+    console.log({ blockData });
 
     const handleOption = (option) => {
         setOption(option);
