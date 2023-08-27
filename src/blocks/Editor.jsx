@@ -1,38 +1,36 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import SideBar from "./Sidebar.jsx";
+import SideBarSkeletonLoading from "./SidebarSkeletonLoading.jsx";
 import ColorInput from "../components/ColorInput.jsx";
 import Textarea from "../components/input/Textarea.jsx";
 import Select from "../components/Select.jsx";
+import OptionsSkeletonLoading from "./OptionsSkeletonLoading.jsx";
+import getData from "../util/fetch/getData.js";
+import postData from "../util/fetch/postData.js";
+import { useNotificationUpdate } from "../context/notification.jsx";
+import getColorSlugFromCSSVar from "../util/regex/getColorSlugFromCSSVar.js";
 
 const Editor = ({ element, onClose }) => {
     /**
      * Destruct data from props
      */
     const { title, from } = element;
+    const blockName = `${from}/${title.toLowerCase()}`;
 
     const [option, setOption] = useState("colors");
-    const [blockData, setBlockData] = useState({});
+    const [blockData, setBlockData] = useState(null);
+
+    const setNotification = useNotificationUpdate();
 
     /**
      * Get blocks data
      */
     useEffect(() => {
-        const get_data = async (name) => {
-            const response = await fetch(
-                `${
-                    plugin_info_from_backend.ajax_url
-                }?action=${encodeURIComponent(
-                    "xynity_blocks__get_block_data"
-                )}&name=${from + "/" + title.toLowerCase()}`,
-                {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-WP-Nonce": plugin_info_from_backend.ajax_nonce,
-                    },
-                    credentials: "same-origin",
-                }
-            );
+        const get_data = async () => {
+            const response = await getData({
+                queryString: `&name=${blockName}`,
+                action: "__get_block_data",
+            });
 
             const response_data = (await response.json()).data;
             setBlockData(response_data);
@@ -48,7 +46,10 @@ const Editor = ({ element, onClose }) => {
     };
 
     return (
-        <section className="absolute inset-0 bg-white border rounded bg-opacity-10 backdrop-blur-md">
+        <section
+            className={`absolute inset-0 bg-white border rounded ${
+                blockData !== null && "bg-opacity-10 backdrop-blur-md"
+            } `}>
             <div className="flex items-center justify-between px-4 py-2 border-b bg-slate-200">
                 <h2 className="text-lg">
                     Edit <span className="font-medium">{title}</span>
@@ -65,25 +66,140 @@ const Editor = ({ element, onClose }) => {
                 </button>
             </div>
             <section className="flex justify-start h-full">
-                <SideBar currentOption={option} setOption={handleOption} />
-                <figure className="w-full">
-                    {option === "colors" && <Colors />}
-                    {option === "typography" && <Typography />}
-                    {option === "spacing" && <Spacing />}
-                    {option === "shadows" && <Shadows />}
-                    {option === "custom_css" && <CustomCSS />}
-                    {option === "reset" && <Reset title={title} />}
-                </figure>
+                {blockData === null && (
+                    <>
+                        <SideBarSkeletonLoading />
+                        <div className="w-full">
+                            <OptionsSkeletonLoading />
+                        </div>
+                    </>
+                )}
+                {blockData !== null && (
+                    <>
+                        <SideBar
+                            currentOption={option}
+                            setOption={handleOption}
+                        />
+                        <figure className="w-full">
+                            {option === "colors" && (
+                                <Colors
+                                    data={blockData.color || {}}
+                                    blockName={blockName}
+                                    setNotification={setNotification}
+                                />
+                            )}
+                            {option === "typography" && (
+                                <Typography
+                                    data={blockData.typography || {}}
+                                    blockName={blockName}
+                                    setNotification={setNotification}
+                                />
+                            )}
+                            {option === "spacing" && (
+                                <Spacing
+                                    data={blockData.spacing || {}}
+                                    blockName={blockName}
+                                    setNotification={setNotification}
+                                />
+                            )}
+                            {option === "shadows" && (
+                                <Shadows
+                                    data={blockData.shadow || {}}
+                                    blockName={blockName}
+                                    setNotification={setNotification}
+                                />
+                            )}
+                            {option === "custom_css" && (
+                                <CustomCSS
+                                    data={blockData.css || ""}
+                                    blockName={blockName}
+                                    setNotification={setNotification}
+                                />
+                            )}
+                            {option === "reset" && (
+                                <Reset
+                                    title={title}
+                                    blockName={blockName}
+                                    setNotification={setNotification}
+                                />
+                            )}
+                        </figure>
+                    </>
+                )}
             </section>
         </section>
     );
 };
 
-const Colors = () => {
+const Colors = ({ data, blockName, setNotification }) => {
+    const initialLoad = useRef(null);
+
     const colors = colors_options_from_backend.current.palette;
-    const [textColor, setTextColor] = useState();
-    const [backgroundColor, setBackgroundColor] = useState();
-    const [linkColor, setLinkColor] = useState();
+    const [textColor, setTextColor] = useState(
+        getColorSlugFromCSSVar(data.text)
+    );
+    const [backgroundColor, setBackgroundColor] = useState(
+        getColorSlugFromCSSVar(data.background)
+    );
+    const [linkColor, setLinkColor] = useState(
+        getColorSlugFromCSSVar(data.link)
+    );
+
+    useEffect(() => {
+        if (initialLoad.current === null) {
+            initialLoad.current = true;
+            return;
+        }
+
+        /**
+         * Update colors
+         */
+        const updateColors = async () => {
+            const data = {};
+
+            if (textColor) {
+                data["text"] = `var(--wp--preset--color--${textColor})`;
+            }
+
+            if (backgroundColor) {
+                data[
+                    "background"
+                ] = `var(--wp--preset--color--${backgroundColor})`;
+            }
+
+            if (linkColor) {
+                data["link"] = `var(--wp--preset--color--${linkColor})`;
+            }
+
+            try {
+                const response = await postData({
+                    action: "__update_block_data",
+                    queryString: `&update_type=color&block_name=${blockName}`,
+                    data,
+                });
+
+                const response_data = (await response.json()).data;
+                if (response.ok) {
+                    setNotification({
+                        type: "success",
+                        text: response_data,
+                    });
+                } else {
+                    setNotification({
+                        type: "error",
+                        text: response_data,
+                    });
+                }
+            } catch (e) {
+                setNotification({
+                    type: "error",
+                    text: "something went wrong, please try again later!",
+                });
+            }
+        };
+
+        updateColors();
+    }, [linkColor, `${backgroundColor}`, textColor]);
 
     return (
         <>
@@ -172,7 +288,7 @@ const Colors = () => {
     );
 };
 
-const Typography = () => {
+const Typography = ({ data }) => {
     const sizes = typography_options_from_backend.current.fontSizes;
     const families = typography_options_from_backend.current.fontFamilies;
     const letterCases = [
@@ -299,7 +415,7 @@ const Typography = () => {
     );
 };
 
-const Spacing = () => {
+const Spacing = ({ data }) => {
     return (
         <>
             <Wrapper title="Letter spacing"></Wrapper>
@@ -317,10 +433,10 @@ const Shadows = () => {
     );
 };
 
-const CustomCSS = () => {
+const CustomCSS = ({ data }) => {
     return (
         <div className="p-4">
-            <Textarea value="" placeholder="color:red;" />
+            <Textarea value={data} placeholder="color:red;" />
         </div>
     );
 };
