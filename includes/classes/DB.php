@@ -218,4 +218,78 @@ class DB
 
         return null;
     }
+
+    /**
+     * Get all block settings
+     *
+     * @param string block_name eg: core/paragraph
+     * @return mixed available data or null
+     * @access public
+     * @since 0.1.4
+     */
+    public static function get_all_block_settings()
+    {
+        global $wpdb;
+        $table_name = self::get_blocks_settings_table_name();
+
+        $sql = "SELECT block_settings, block_name FROM $table_name";
+
+        // Execute query
+        $data = $wpdb->get_results($sql, ARRAY_A);
+
+        if (count($data) !== 0) {
+            return $data;
+        }
+
+        return null;
+    }
+
+    /**
+     * Update block settings
+     *
+     * @param string block_name eg: core/paragraph
+     * @param array block_settings
+     * @return bool is_updated
+     * @access public
+     * @since 0.1.4
+     */
+    public static function update_block_settings($name, $data)
+    {
+        global $wpdb;
+        $table_name = self::get_blocks_settings_table_name();
+
+        $updated = $wpdb->update(
+            $table_name,
+            [
+                "block_settings" => json_encode($data),
+            ],
+            [
+                "block_name" => $name,
+            ]
+        );
+
+        return $updated;
+    }
+
+    /**
+     * Insert block settings
+     *
+     * @param string block_name eg: core/paragraph
+     * @param array block_settings
+     * @return int insert_id
+     * @access public
+     * @since 0.1.4
+     */
+    public static function insert_block_settings($name, $data)
+    {
+        global $wpdb;
+        $table_name = self::get_blocks_settings_table_name();
+
+        $id = $wpdb->insert($table_name, [
+            "block_name" => $name,
+            "block_settings" => json_encode($data),
+        ]);
+
+        return $id;
+    }
 }
