@@ -35,4 +35,30 @@ class Util
 
         return $default;
     }
+
+    /**
+     * Get value if present
+     *
+     * use's isset to check if the value is present or not
+     * if present returns value
+     *
+     * defaults to default value
+     *
+     * @param array
+     * @param string
+     * @param mixed null - default to return
+     * @since 0.1.4
+     * @access public
+     */
+    public static function get_value_if_present_in_array(
+        $array,
+        $value,
+        $default = null
+    ) {
+        if (isset($array[$value])) {
+            return $array[$value];
+        }
+
+        return $default;
+    }
 }
