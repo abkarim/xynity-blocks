@@ -111,6 +111,7 @@ class ThemeActions
          * @since 0.1.4
          */
         if (self::$blocks_edited_data !== null) {
+            $modifiedData["styles"]["blocks"] = self::$blocks_edited_data;
         }
 
         return $theme_json->update_with($modifiedData);
@@ -518,48 +519,6 @@ class ThemeActions
          * Null will be returned if no data found
          */
         return $targeted_block_data;
-    }
-
-    /**
-     * Generate block style settings
-     *
-     * @return array block_styles
-     * @access public
-     * @static
-     * @since 0.1.4
-     */
-    public static function generate_block_style_settings()
-    {
-        $data = [
-            "color" => [],
-            "typography" => [
-                "fontSize" => "",
-                "fontWeight" => "",
-                "lineHeight" => "",
-                "textDecoration" => "",
-            ],
-            "spacing" => [
-                "padding" => [
-                    "top" => "",
-                    "bottom" => "",
-                    "left" => "",
-                    "right" => "",
-                ],
-                "margin" => [
-                    "top" => "",
-                    "bottom" => "",
-                    "left" => "",
-                    "right" => "",
-                ],
-            ],
-            "layout" => [],
-            "border" => [],
-            "shadow" => [],
-            "position" => [],
-            "css" => "",
-        ];
-
-        return $data;
     }
 
     /**
