@@ -54,6 +54,10 @@ class AJAX
             $this,
             "get_block_data",
         ]);
+        add_action("wp_ajax_xynity_blocks__update_block_data", [
+            $this,
+            "update_block_data",
+        ]);
     }
 
     /**
@@ -108,6 +112,24 @@ class AJAX
     }
 
     /**
+     * Get URL parameter
+     *
+     * @return array - action excluded
+     * @since 0.1.4
+     * @access private
+     */
+    private function get_url_parameter()
+    {
+        // Get all parameter
+        $data = $_GET;
+
+        // Remove action parameter
+        unset($data["action"]);
+
+        return $data;
+    }
+
+    /**
      * Get request data
      * validate and returns data
      *
@@ -124,11 +146,7 @@ class AJAX
         $decoded_data = null;
 
         if ($request_type === "GET") {
-            // Get all parameter
-            $data = $_GET;
-
-            // Remove action parameter
-            unset($data["action"]);
+            $data = $this->get_url_parameter();
         } elseif ($request_type === "POST") {
             // Get form data
             $data = file_get_contents("php://input");
@@ -249,8 +267,54 @@ class AJAX
     {
         [$data] = $this->get_request_data();
 
-        $block_data = Blocks::get_block_data($data);
+        $block_data = Blocks::get_block_data_for_editor($data);
 
         $this->send_response_and_close_request($block_data);
+    }
+
+    /**
+     * Get block data
+     *
+     * @access public
+     * @since 0.1.4
+     */
+    public function update_block_data()
+    {
+        [$data, $decodedData] = $this->get_request_data("POST");
+
+        $url_parameters = $this->get_url_parameter();
+
+        $update_type = Util::get_value_if_present_in_array(
+            $url_parameters,
+            "update_type",
+            null
+        );
+
+        $block_name = Util::get_value_if_present_in_array(
+            $url_parameters,
+            "block_name",
+            null
+        );
+
+        /**
+         * Check required data
+         */
+        if (is_null($update_type) || is_null($block_name)) {
+            $this->send_response_and_close_request(
+                "type & block_name is required",
+                400
+            );
+        }
+
+        $is_updated = Blocks::update_block_colors($block_name, $decodedData);
+
+        if (!$is_updated) {
+            $this->send_response_and_close_request(
+                "something went wrong, please try again later!",
+                500
+            );
+        }
+
+        $this->send_response_and_close_request("updated successfully");
     }
 }
