@@ -2,7 +2,6 @@ import { useEffect, useReducer, useRef, useState } from "react";
 import Select from "../components/Select.jsx";
 import { useNotificationUpdate } from "../context/notification.jsx";
 import RadioSwitchInput from "../components/RadioSwitchInput.jsx";
-import ChangeIndicator from "./ChangeIndicator.jsx";
 import getUnitAndValue from "../util/getUnitAndValue.js";
 import Input from "../components/Input.jsx";
 import UnitSelect from "../components/UnitSelect.jsx";
@@ -181,15 +180,6 @@ const ToggleBoolComponent = ({ data, name, title, description, dispatch }) => {
                     }}
                 />
             </fieldset>
-            {data[name] !== typography_options_from_backend.default[name] && (
-                <ChangeIndicator
-                    defaultValue={
-                        typography_options_from_backend.default[name]
-                            ? "On"
-                            : "Off"
-                    }
-                />
-            )}
         </div>
     );
 };

@@ -8,7 +8,6 @@ import Select from "../components/Select.jsx";
 import isArrayEqual from "../util/isArrayEqual.js";
 import RadioSwitchInput from "../components/RadioSwitchInput.jsx";
 import destructFromClamp from "../util/destructFromClamp.js";
-import ChangeIndicator from "./ChangeIndicator.jsx";
 
 /**
  * editor_options_from_backend is localized by WordPress
@@ -135,9 +134,6 @@ const Option = ({
                     }
                 />
             </fieldset>
-            {currentData !== defaultData && (
-                <ChangeIndicator defaultValue={defaultData} />
-            )}
         </div>
     );
 };
@@ -257,18 +253,6 @@ const Editor = () => {
                                 }}
                             />
                         </fieldset>
-                        {data.appearanceTools !==
-                            editor_options_from_backend.default
-                                .appearanceTools && (
-                            <ChangeIndicator
-                                defaultValue={`${
-                                    editor_options_from_backend.default
-                                        .appearanceTools
-                                        ? "On"
-                                        : "Off"
-                                }`}
-                            />
-                        )}
                     </div>
                 </div>
             )}
@@ -298,18 +282,6 @@ const Editor = () => {
                                 }}
                             />
                         </fieldset>
-                        {data.layout.allowEditing !==
-                            editor_options_from_backend.default.layout
-                                .allowEditing && (
-                            <ChangeIndicator
-                                defaultValue={`${
-                                    editor_options_from_backend.default.layout
-                                        .allowEditing
-                                        ? "On"
-                                        : "Off"
-                                }`}
-                            />
-                        )}
                     </div>
                     <Option
                         title="Default Content Width"
@@ -356,18 +328,6 @@ const Editor = () => {
                                 }}
                             />
                         </fieldset>
-                        {data.spacing.customSpacingSize !==
-                            editor_options_from_backend.default.spacing
-                                .customSpacingSize && (
-                            <ChangeIndicator
-                                defaultValue={`${
-                                    editor_options_from_backend.default.spacing
-                                        .customSpacingSize
-                                        ? "On"
-                                        : "Off"
-                                }`}
-                            />
-                        )}
                     </div>
                     <div className="relative flex items-start justify-between w-full p-5 border-b">
                         <div>
@@ -389,18 +349,6 @@ const Editor = () => {
                                 }}
                             />
                         </fieldset>
-                        {data.spacing.margin !==
-                            editor_options_from_backend.default.spacing
-                                .margin && (
-                            <ChangeIndicator
-                                defaultValue={`${
-                                    editor_options_from_backend.default.spacing
-                                        .margin
-                                        ? "On"
-                                        : "Off"
-                                }`}
-                            />
-                        )}
                     </div>
                     <div className="relative flex items-start justify-between w-full p-5 border-b">
                         <div>
@@ -422,18 +370,6 @@ const Editor = () => {
                                 }}
                             />
                         </fieldset>
-                        {data.spacing.padding !==
-                            editor_options_from_backend.default.spacing
-                                .padding && (
-                            <ChangeIndicator
-                                defaultValue={`${
-                                    editor_options_from_backend.default.spacing
-                                        .padding
-                                        ? "On"
-                                        : "Off"
-                                }`}
-                            />
-                        )}
                     </div>
                     <div className="relative flex items-start justify-between w-full p-5 border-b">
                         <div>
@@ -462,16 +398,6 @@ const Editor = () => {
                                 }
                             />
                         </fieldset>
-                        {data.spacing.spacingScale.steps !==
-                            editor_options_from_backend.default.spacing
-                                .spacingScale.steps && (
-                            <ChangeIndicator
-                                defaultValue={
-                                    editor_options_from_backend.default.spacing
-                                        .spacingScale.steps
-                                }
-                            />
-                        )}
                     </div>
                     <div className="relative w-full p-5 border-b">
                         <div className="flex items-start justify-between">
@@ -587,16 +513,6 @@ const Editor = () => {
                                 );
                             })}
                         </div>
-                        {!isArrayEqual(
-                            data.spacing.units,
-                            editor_options_from_backend.default.spacing.units
-                        ) && (
-                            <ChangeIndicator
-                                defaultValue={editor_options_from_backend.default.spacing.units.join(
-                                    ", "
-                                )}
-                            />
-                        )}
                     </div>
                     <div className="relative w-full p-5 border-b">
                         <div className="flex items-center justify-between">

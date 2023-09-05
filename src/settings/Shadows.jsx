@@ -2,7 +2,6 @@ import { useEffect, useReducer, useRef, useState } from "react";
 import Select from "../components/Select.jsx";
 import { useNotificationUpdate } from "../context/notification.jsx";
 import RadioSwitchInput from "../components/RadioSwitchInput.jsx";
-import ChangeIndicator from "./ChangeIndicator.jsx";
 import ShadowInput from "../components/ShadowInput.jsx";
 
 /**
@@ -169,18 +168,6 @@ const Shadows = () => {
                                 }}
                             />
                         </fieldset>
-                        {data.defaultPresets !==
-                            shadows_options_from_backend.default
-                                .defaultPresets && (
-                            <ChangeIndicator
-                                defaultValue={
-                                    shadows_options_from_backend.default
-                                        .defaultPresets
-                                        ? "On"
-                                        : "Off"
-                                }
-                            />
-                        )}
                     </div>
                 </div>
             )}

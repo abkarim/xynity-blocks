@@ -3,7 +3,6 @@ import Select from "../components/Select.jsx";
 import { useNotificationUpdate } from "../context/notification.jsx";
 import ColorInput from "../components/ColorInput.jsx";
 import RadioSwitchInput from "../components/RadioSwitchInput.jsx";
-import ChangeIndicator from "./ChangeIndicator.jsx";
 
 /**
  * colors_options_from_backend is localized by WordPress
@@ -179,17 +178,6 @@ const Colors = () => {
                                 }}
                             />
                         </fieldset>
-                        {data.background !==
-                            colors_options_from_backend.default.background && (
-                            <ChangeIndicator
-                                defaultValue={
-                                    colors_options_from_backend.default
-                                        .background
-                                        ? "On"
-                                        : "Off"
-                                }
-                            />
-                        )}
                     </div>
                     <div className="relative flex items-start justify-between w-full p-5 border-b">
                         <div>
@@ -209,16 +197,6 @@ const Colors = () => {
                                 }}
                             />
                         </fieldset>
-                        {data.text !==
-                            colors_options_from_backend.default.text && (
-                            <ChangeIndicator
-                                defaultValue={
-                                    colors_options_from_backend.default.text
-                                        ? "On"
-                                        : "Off"
-                                }
-                            />
-                        )}
                     </div>
                     <div className="relative flex items-start justify-between w-full p-5 border-b">
                         <div>
@@ -238,16 +216,6 @@ const Colors = () => {
                                 }}
                             />
                         </fieldset>
-                        {data.link !==
-                            colors_options_from_backend.default.link && (
-                            <ChangeIndicator
-                                defaultValue={
-                                    colors_options_from_backend.default.link
-                                        ? "On"
-                                        : "Off"
-                                }
-                            />
-                        )}
                     </div>
                     <div className="relative flex items-start justify-between w-full p-5 border-b">
                         <div>
@@ -267,18 +235,6 @@ const Colors = () => {
                                 }}
                             />
                         </fieldset>
-                        {data.defaultPalette !==
-                            colors_options_from_backend.default
-                                .defaultPalette && (
-                            <ChangeIndicator
-                                defaultValue={
-                                    colors_options_from_backend.default
-                                        .defaultPalette
-                                        ? "On"
-                                        : "Off"
-                                }
-                            />
-                        )}
                     </div>
                     <div className="relative flex items-start justify-between w-full p-5 border-b">
                         <div>
@@ -298,18 +254,6 @@ const Colors = () => {
                                 }}
                             />
                         </fieldset>
-                        {data.defaultGradients !==
-                            colors_options_from_backend.default
-                                .defaultGradients && (
-                            <ChangeIndicator
-                                defaultValue={
-                                    colors_options_from_backend.default
-                                        .defaultGradients
-                                        ? "On"
-                                        : "Off"
-                                }
-                            />
-                        )}
                     </div>
                     <div className="relative flex items-start justify-between w-full p-5 border-b">
                         <div>
@@ -329,16 +273,6 @@ const Colors = () => {
                                 }}
                             />
                         </fieldset>
-                        {data.custom !==
-                            colors_options_from_backend.default.custom && (
-                            <ChangeIndicator
-                                defaultValue={
-                                    colors_options_from_backend.default.custom
-                                        ? "On"
-                                        : "Off"
-                                }
-                            />
-                        )}
                     </div>
                     <div className="relative flex items-start justify-between w-full p-5 border-b">
                         <div>
@@ -358,18 +292,6 @@ const Colors = () => {
                                 }}
                             />
                         </fieldset>
-                        {data.customGradient !==
-                            colors_options_from_backend.default
-                                .customGradient && (
-                            <ChangeIndicator
-                                defaultValue={
-                                    colors_options_from_backend.default
-                                        .customGradient
-                                        ? "On"
-                                        : "Off"
-                                }
-                            />
-                        )}
                     </div>
                     <div className="relative flex items-start justify-between w-full p-5 border-b">
                         <div>
@@ -389,18 +311,6 @@ const Colors = () => {
                                 }}
                             />
                         </fieldset>
-                        {data.customDuotone !==
-                            colors_options_from_backend.default
-                                .customDuotone && (
-                            <ChangeIndicator
-                                defaultValue={
-                                    colors_options_from_backend.default
-                                        .customDuotone
-                                        ? "On"
-                                        : "Off"
-                                }
-                            />
-                        )}
                     </div>
                 </div>
             )}
