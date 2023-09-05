@@ -1,8 +1,8 @@
 import { useEffect, useReducer, useRef, useState } from "react";
-import Select from "../components/Select.jsx";
+import Select from "../components/input/Select.jsx";
 import { useNotificationUpdate } from "../context/notification.jsx";
-import ColorInput from "../components/ColorInput.jsx";
-import RadioSwitchInput from "../components/RadioSwitchInput.jsx";
+import ColorInput from "../components/input/ColorInput.jsx";
+import RadioSwitchInput from "../components/input/RadioSwitchInput.jsx";
 
 /**
  * colors_options_from_backend is localized by WordPress

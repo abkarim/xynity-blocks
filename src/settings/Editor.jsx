@@ -1,12 +1,11 @@
 import { useEffect, useReducer, useRef, useState } from "react";
-import Input from "../components/Input.jsx";
+import Input from "../components/input/Input.jsx";
 import UnitSelect from "../components/UnitSelect.jsx";
 import getUnitAndValue from "../util/getUnitAndValue.js";
 import { useNotificationUpdate } from "../context/notification.jsx";
 import unit from "../util/unit.js";
-import Select from "../components/Select.jsx";
-import isArrayEqual from "../util/isArrayEqual.js";
-import RadioSwitchInput from "../components/RadioSwitchInput.jsx";
+import Select from "../components/input/Select.jsx";
+import RadioSwitchInput from "../components/input/RadioSwitchInput.jsx";
 import destructFromClamp from "../util/destructFromClamp.js";
 
 /**

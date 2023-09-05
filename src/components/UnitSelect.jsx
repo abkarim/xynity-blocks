@@ -1,4 +1,4 @@
-import Select from "./Select.jsx";
+import Select from "./input/Select.jsx";
 import unit from "../util/unit.js";
 
 const UnitSelect = ({ ...props }) => {

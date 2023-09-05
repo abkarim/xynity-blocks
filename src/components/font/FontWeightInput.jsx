@@ -1,4 +1,4 @@
-import Select from "../Select.jsx";
+import Select from "../input/Select.jsx";
 
 export default function FontWeightInput({ ...props }) {
     return (

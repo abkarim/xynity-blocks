@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import SideBar from "./Sidebar.jsx";
 import SideBarSkeletonLoading from "./SidebarSkeletonLoading.jsx";
-import ColorInput from "../components/ColorInput.jsx";
+import ColorInput from "../components/input/ColorInput.jsx";
 import Textarea from "../components/input/Textarea.jsx";
-import Select from "../components/Select.jsx";
+import Select from "../components/input/Select.jsx";
 import OptionsSkeletonLoading from "./OptionsSkeletonLoading.jsx";
 import getData from "../util/fetch/getData.js";
 import postData from "../util/fetch/postData.js";

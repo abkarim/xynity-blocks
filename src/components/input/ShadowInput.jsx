@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import UnitSelect from "./UnitSelect.jsx";
+import UnitSelect from "../UnitSelect.jsx";
 import Input from "./Input.jsx";
 import ColorInput from "./ColorInput.jsx";
-import getUnitAndValue from "../util/getUnitAndValue.js";
+import getUnitAndValue from "../../util/getUnitAndValue.js";
 
 const ShadowInput = ({ value, onChange }) => {
     const initialLoad = useRef(null);

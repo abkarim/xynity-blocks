@@ -1,11 +1,11 @@
 import { useEffect, useReducer, useRef, useState } from "react";
-import Select from "../components/Select.jsx";
+import Select from "../components/input/Select.jsx";
 import { useNotificationUpdate } from "../context/notification.jsx";
-import RadioSwitchInput from "../components/RadioSwitchInput.jsx";
+import RadioSwitchInput from "../components/input/RadioSwitchInput.jsx";
 import getUnitAndValue from "../util/getUnitAndValue.js";
-import Input from "../components/Input.jsx";
+import Input from "../components/input/Input.jsx";
 import UnitSelect from "../components/UnitSelect.jsx";
-import TextInput from "../components/InputText.jsx";
+import TextInput from "../components/input/InputText.jsx";
 import FontStretchInput from "../components/font/FontStretchInput.jsx";
 import FontStyleInput from "../components/font/FontStyleInput.jsx";
 import FontWeightInput from "../components/font/FontWeightInput.jsx";

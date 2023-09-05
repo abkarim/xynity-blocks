@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Core from "./Core.jsx";
-import TextInput from "../components/InputText.jsx";
+import TextInput from "../components/input/InputText.jsx";
 import appendSearchParam from "../util/appendSearchParam.js";
 import getSearchParam from "../util/getSearchParam.js";
 import Editor from "./Editor.jsx";
