@@ -44,6 +44,15 @@ if (!class_exists("Xynity_Blocks")) {
             ]);
 
             /**
+             * Check compatibility and
+             * manage options
+             * when changing theme
+             *
+             * @since 0.2.0
+             */
+            add_action("switch_theme", [$this, "handle_theme_change"]);
+
+            /**
              * Load plugin
              */
             add_action("plugins_loaded", [$this, "init"]);
@@ -194,6 +203,36 @@ if (!class_exists("Xynity_Blocks")) {
 
                 // Display an error message
                 wp_die($e->getMessage());
+            }
+        }
+
+        /**
+         * Handle theme switch
+         *
+         * Called by switch_theme hook
+         *
+         * @param string new_theme
+         * @return void
+         * @access public
+         * @since 0.2.0
+         */
+        public function handle_theme_change(string $new_theme): void
+        {
+            try {
+                $this->is_compatible();
+
+                /**
+                 * Manage theme.json content
+                 *
+                 * @since 0.2.0
+                 */
+                require_once XYNITY_BLOCKS_DIR .
+                    "includes/classes/ThemeJSON.php";
+                \Xynity_Blocks\ThemeJSON::replace_theme_json_file_in_theme();
+            } catch (Exception $e) {
+                \Xynity_Blocks\Plugin::show_admin_error_message(
+                    $e->getMessage()
+                );
             }
         }
     }
