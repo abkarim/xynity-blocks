@@ -5,7 +5,7 @@
  * Description:       Extends wordpress blocks functionality to make better experience with Full Site Editing
  * Version:           0.2.0
  * Requires at least: 6.0
- * Requires PHP:      7.4
+ * Requires PHP:      8.0
  * Author:            Karim
  * Author URI:        https://github.com/abkarim
  * License:           GPL-3.0 license
@@ -32,6 +32,9 @@ if (!class_exists("Xynity_Blocks")) {
         {
             $this->define_constants();
 
+            // Load plugin file
+            require_once __DIR__ . "/includes/plugin.php";
+
             /**
              * Register plugin activation hook
              */
@@ -52,8 +55,9 @@ if (!class_exists("Xynity_Blocks")) {
          *
          * @access private
          * @since 0.1.4
+         * @return void
          */
-        private function define_constants()
+        private function define_constants(): void
         {
             /**
              * Get plugin data defined in header
@@ -89,14 +93,59 @@ if (!class_exists("Xynity_Blocks")) {
          *
          * @access public
          * @since 0.1.4
+         * @return void
          */
-        public function init()
+        public function init(): void
         {
-            // Load plugin file
-            require_once XYNITY_BLOCKS_DIR . "/includes/plugin.php";
-
             // Run the plugin
             \Xynity_Blocks\Plugin::instance();
+        }
+
+        /**
+         * Is compatible
+         *
+         * @since 0.2.0
+         * @access private
+         * @return void
+         */
+        private function is_compatible(): void
+        {
+            /**
+             * Check php version
+             */
+            if (
+                !version_compare(phpversion(), XYNITY_BLOCKS_REQUIRED_PHP, ">=")
+            ) {
+                throw new Exception(
+                    "Minium php version required " .
+                        XYNITY_BLOCKS_REQUIRED_PHP .
+                        ", you have " .
+                        phpversion()
+                );
+            }
+
+            global $wp_version;
+
+            /**
+             * Check wp version
+             */
+            if (
+                !version_compare($wp_version, XYNITY_BLOCKS_REQUIRED_WP, ">=")
+            ) {
+                throw new Exception(
+                    "Minium WordPress version required " .
+                        XYNITY_BLOCKS_REQUIRED_WP .
+                        ", you have $wp_version"
+                );
+            }
+
+            /**
+             * This plugin is made for block theme
+             * check if current theme is block based or not
+             */
+            if (!wp_is_block_theme()) {
+                throw new Exception("Please use a block theme");
+            }
         }
 
         /**
@@ -110,15 +159,36 @@ if (!class_exists("Xynity_Blocks")) {
          */
         public function handle_activation()
         {
-            // Include database class file
-            require_once XYNITY_BLOCKS_DIR . "/includes/classes/DB.php";
+            try {
+                $this->is_compatible();
 
-            /**
-             * Manage database configuration
-             *
-             * @since 0.1.4
-             */
-            \Xynity_Blocks\DB::update_tables_if_necessary();
+                /**
+                 * Manage theme.json content
+                 *
+                 * @since 0.2.0
+                 */
+                require_once XYNITY_BLOCKS_DIR .
+                    "/includes/classes/ThemeJSON.php";
+                \Xynity_Blocks\ThemeJSON::replace_theme_json_file_in_theme();
+
+                /**
+                 * Manage database configuration
+                 *
+                 * @since 0.1.4
+                 */
+                require_once XYNITY_BLOCKS_DIR . "/includes/classes/DB.php";
+                \Xynity_Blocks\DB::update_tables_if_necessary();
+            } catch (Exception $e) {
+                if (isset($_GET["activate"])) {
+                    unset($_GET["activate"]);
+                }
+
+                // Deactivate the plugin
+                deactivate_plugins(plugin_basename(__FILE__));
+
+                // Display an error message
+                wp_die($e->getMessage());
+            }
         }
     }
 

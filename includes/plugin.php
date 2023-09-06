@@ -49,58 +49,7 @@ final class Plugin
      */
     public function __construct()
     {
-        if (!$this->is_compatible()) {
-            /**
-             * Don't activate the plugin
-             */
-            if (isset($_GET["activate"])) {
-                unset($_GET["activate"]);
-            }
-
-            return;
-        }
-
         $this->init();
-    }
-
-    /**
-     * Compatibility Checks
-     *
-     * Checks whether the site meets the plugin requirement.
-     *
-     * @since 0.1.0
-     * @access public
-     */
-    public function is_compatible()
-    {
-        /**
-         * This plugin is made for block theme
-         * check if current theme is block based or not
-         */
-        if (!wp_is_block_theme()) {
-            add_action("admin_notices", function () {
-                $this->show_admin_error_message(
-                    "Please use 'Twenty Twenty-Three' theme"
-                );
-            });
-            return false;
-        }
-
-        /**
-         * This plugin is made to work with twenty twenty three
-         */
-        $current_theme = wp_get_theme();
-        if ($current_theme->get("TextDomain") !== "twentytwentythree") {
-            add_action("admin_notices", function () {
-                $this->show_admin_error_message(
-                    "Please use 'Twenty Twenty-Three' theme"
-                );
-            });
-            return false;
-        }
-
-        //* All Ok
-        return true;
     }
 
     /**
@@ -108,11 +57,13 @@ final class Plugin
      *
      * Show error on admin dashboard
      *
+     * @param string message
+     * @return void
      * @since 0.1.0
-     * @param string
      * @access public
+     * @static
      */
-    public function show_admin_error_message($massage)
+    public static function show_admin_error_message($massage): void
     {
         ?>
             <div class="notice notice-error is-dismissible">
@@ -131,11 +82,13 @@ final class Plugin
      *
      * Show warning on admin dashboard
      *
+     * @param string message
+     * @return void
      * @since 0.1.1
-     * @param string
      * @access public
+     * @static
      */
-    public function show_admin_warning_message($massage)
+    public static function show_admin_warning_message($massage): void
     {
         ?>
             <div class="notice notice-warning is-dismissible">
@@ -154,11 +107,13 @@ final class Plugin
      *
      * Show success on admin dashboard
      *
-     * @since 0.1.1
-     * @param string
+     * @param string message
+     * @return void
      * @access public
+     * @since 0.1.1
+     * @static
      */
-    public function show_admin_success_message($massage)
+    public static function show_admin_success_message($massage)
     {
         ?>
             <div class="notice notice-success is-dismissible">
