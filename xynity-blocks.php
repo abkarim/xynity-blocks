@@ -33,7 +33,7 @@ if (!class_exists("Xynity_Blocks")) {
             $this->define_constants();
 
             // Load plugin file
-            require_once __DIR__ . "/includes/plugin.php";
+            require_once XYNITY_BLOCKS_DIR . "includes/plugin.php";
 
             /**
              * Register plugin activation hook
@@ -75,11 +75,17 @@ if (!class_exists("Xynity_Blocks")) {
             define("XYNITY_BLOCKS_VERSION", $plugin_data["Version"]);
             define("XYNITY_BLOCKS_TEXT_DOMAIN", $plugin_data["TextDomain"]);
             define("XYNITY_BLOCKS_NAME", $plugin_data["Name"]);
-            define("XYNITY_BLOCKS_PATH", rtrim(plugin_dir_path(__FILE__), "/"));
-            define("XYNITY_BLOCKS_URL", rtrim(plugin_dir_url(__FILE__), "/"));
+            define(
+                "XYNITY_BLOCKS_PATH",
+                trailingslashit(plugin_dir_path(__FILE__))
+            );
+            define(
+                "XYNITY_BLOCKS_URL",
+                trailingslashit(plugin_dir_url(__FILE__))
+            );
             define("XYNITY_BLOCKS_BASENAME", plugin_basename(__FILE__));
             define("XYNITY_BLOCKS_FILE", __FILE__);
-            define("XYNITY_BLOCKS_DIR", __DIR__);
+            define("XYNITY_BLOCKS_DIR", trailingslashit(__DIR__));
             define(
                 "XYNITY_BLOCKS_NONCE",
                 "2abd9731S07S1b7e9f1DSD2f4E5912e523bc4c80255e3e"
@@ -168,7 +174,7 @@ if (!class_exists("Xynity_Blocks")) {
                  * @since 0.2.0
                  */
                 require_once XYNITY_BLOCKS_DIR .
-                    "/includes/classes/ThemeJSON.php";
+                    "includes/classes/ThemeJSON.php";
                 \Xynity_Blocks\ThemeJSON::replace_theme_json_file_in_theme();
 
                 /**
@@ -176,7 +182,7 @@ if (!class_exists("Xynity_Blocks")) {
                  *
                  * @since 0.1.4
                  */
-                require_once XYNITY_BLOCKS_DIR . "/includes/classes/DB.php";
+                require_once XYNITY_BLOCKS_DIR . "includes/classes/DB.php";
                 \Xynity_Blocks\DB::update_tables_if_necessary();
             } catch (Exception $e) {
                 if (isset($_GET["activate"])) {

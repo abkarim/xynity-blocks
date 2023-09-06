@@ -9,12 +9,12 @@ if (!defined("ABSPATH")) {
     exit();
 }
 
-require_once XYNITY_BLOCKS_PATH . "/includes/classes/Dashboard.php";
-require_once XYNITY_BLOCKS_PATH . "/includes/classes/ThemeActions.php";
-require_once XYNITY_BLOCKS_PATH . "/includes/classes/AJAX.php";
-require_once XYNITY_BLOCKS_PATH . "/includes/classes/Util.php";
-require_once XYNITY_BLOCKS_PATH . "/includes/classes/Blocks.php";
-require_once XYNITY_BLOCKS_PATH . "/includes/classes/DB.php";
+require_once XYNITY_BLOCKS_PATH . "includes/classes/Dashboard.php";
+require_once XYNITY_BLOCKS_PATH . "includes/classes/ThemeActions.php";
+require_once XYNITY_BLOCKS_PATH . "includes/classes/AJAX.php";
+require_once XYNITY_BLOCKS_PATH . "includes/classes/Util.php";
+require_once XYNITY_BLOCKS_PATH . "includes/classes/Blocks.php";
+require_once XYNITY_BLOCKS_PATH . "includes/classes/DB.php";
 
 final class Plugin
 {
