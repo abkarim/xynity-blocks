@@ -11,6 +11,13 @@ if (!defined("ABSPATH")) {
 class ThemeJSON
 {
     /**
+     * Defines current version of xynity's content in theme.json
+     * assigned when access
+     * @var string
+     */
+    private static $_current_xynity_content_version = "1.0.0";
+
+    /**
      * Rename theme.json to default.theme.json
      *
      * @static
@@ -147,7 +154,8 @@ class ThemeJSON
         /**
          * Add a version
          */
-        $content["xynityContentVersion"] = "1.0.0";
+        $content["xynityContentVersion"] =
+            self::$_current_xynity_content_version;
 
         /**
          * Enable appearance tools
@@ -171,6 +179,8 @@ class ThemeJSON
             "custom" => true, // Enables custom color add options
             "customGradient" => true, // Enables custom gradient add
             "customDuotone" => true, // Enables custom duotone add
+            "background" => true, // Enable background color
+            "text" => true, // Enable text color
         ];
 
         /**
@@ -362,7 +372,17 @@ class ThemeJSON
             "usingThemeJsonFromXynity",
             false
         );
-        if ($is_using_theme_json_from_xynity === true) {
+
+        $xynity_content_version = Util::get_value_if_present_in_array(
+            $current_theme_json_file_data,
+            "xynityContentVersion",
+            null
+        );
+
+        if (
+            $is_using_theme_json_from_xynity === true &&
+            $xynity_content_version === self::$_current_xynity_content_version
+        ) {
             return;
         }
 
