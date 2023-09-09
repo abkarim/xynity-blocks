@@ -10,13 +10,6 @@ if (!defined("ABSPATH")) {
 
 class ThemeJSON
 {
-    private static $theme_json_data = null;
-    private static $editors_current_data = null;
-    private static $colors_current_data = null;
-    private static $shadows_current_data = null;
-    private static $typography_current_data = null;
-    private static $blocks_edited_data = null;
-
     /**
      * Rename theme.json to default.theme.json
      *
@@ -107,6 +100,231 @@ class ThemeJSON
     }
 
     /**
+     * Get theme.json content
+     *
+     * @return string
+     * @static
+     * @since 0.2.0
+     * @access protected
+     */
+    protected static function get_theme_json_content(): string
+    {
+        // Get the path to the active theme's directory
+        $current_theme_directory = get_stylesheet_directory();
+        $theme_json_file_content = file_get_contents(
+            "$current_theme_directory/theme.json"
+        );
+        return $theme_json_file_content;
+    }
+
+    /**
+     * Get initialization theme.json data
+     * returns some default necessary data
+     *
+     * @return array
+     * @access private
+     * @static
+     * @since 0.2.0
+     */
+    private static function get_initialization_theme_json_content(): array
+    {
+        $content = [
+            "settings" => [],
+            "styles" => [
+                "blocks" => [],
+            ],
+        ];
+
+        /**
+         * Add usingThemeJsonFromXynity to
+         * track xynity's content
+         */
+        $content["usingThemeJsonFromXynity"] = true;
+
+        /**
+         * Add a version
+         */
+        $content["xynityContentVersion"] = "1.0.0";
+
+        /**
+         * Enable appearance tools
+         */
+        $content["settings"]["appearanceTools"] = true;
+
+        /**
+         * Add layout configuration
+         */
+        $content["settings"]["layout"] = [
+            "allowEditing" => true,
+        ];
+
+        /**
+         * Add colors configuration
+         */
+        $content["settings"]["color"] = [
+            "link" => true, // Enables link color
+            "defaultGradients" => true, // Enables default gradients
+            "defaultPalette" => true, // Enables default color palette
+            "custom" => true, // Enables custom color add options
+            "customGradient" => true, // Enables custom gradient add
+            "customDuotone" => true, // Enables custom duotone add
+        ];
+
+        /**
+         * Add borders configuration
+         */
+        $content["settings"]["border"] = [
+            "color" => true, // Enable border color edit
+        ];
+
+        /**
+         * Add spacing configuration
+         */
+        $content["settings"]["spacing"] = [
+            "padding" => true, // Enable padding
+            "margin" => true, // Enable margin
+            "customSpacingSize" => true, // Enable custom spacing size
+            "units" => ["px", "em", "rem", "vh", "vw", "%"], // Default units
+            "spacingScale" => [
+                "operator" => "*",
+                "increment" => 1.5,
+                "steps" => 7,
+                "mediumStep" => 1.5,
+                "unit" => "rem",
+            ],
+        ];
+
+        /**
+         * Add typography configuration
+         */
+        $content["settings"]["typography"] = [
+            "dropCap" => true, // Enable dropCap
+            "lineHeight" => true, // Enable line height
+            "letterSpacing" => true, // Enable letter spacing
+            "customFontSize" => true, // Enable custom font size
+            "fontStyle" => true, // Enable font style
+            "fontWeight" => true, // Enable font weight
+            "textColumns" => true, // Enable text columns
+            "textDecoration" => true, // Enable text decoration
+            "textTransform" => true, // Enable text transform
+            "writingMode" => true, // Enable writing mode
+        ];
+
+        /**
+         * Add shadows configuration
+         */
+        $content["settings"]["shadow"] = [
+            "defaultPresets" => true, // Enable default presets
+        ];
+
+        /**
+         * Add positions configuration
+         */
+        $content["settings"]["position"] = [
+            "sticky" => true, // Enable sticky position
+        ];
+
+        /**
+         * Add dimensions configuration
+         * @since WP-6.2
+         */
+        $content["settings"]["dimensions"] = [
+            "minHeight" => true, // Enable minimum height
+        ];
+
+        return $content;
+    }
+
+    /**
+     * Merge array1 with array2
+     *
+     * @param array array1
+     * @param array array2
+     * @return array merged array
+     * @access protected
+     * @since 0.2.0
+     * @static
+     */
+    protected static function merge_array1_with_array2(
+        array $array1,
+        array $array2
+    ): array {
+        /**
+         * Merge data
+         */
+        foreach ($array1 as $key => $value) {
+            /**
+             * Is current key exists in array2
+             *
+             * if doesn't exists
+             * just add it
+             */
+            $current_value = Util::get_value_if_present_in_array(
+                $array2,
+                $key,
+                null
+            );
+            if (is_null($current_value)) {
+                $array2[$key] = $value;
+                continue;
+            }
+
+            /**
+             * if current value is not valid or is not an array
+             * replace with replacement value
+             */
+            if (!boolval($current_value) || !is_array($current_value)) {
+                $array2[$key] = $value;
+                continue;
+            }
+
+            /**
+             * Current value is array
+             * so replacement value should be also an array
+             * if not continue to next value
+             */
+            if (!is_array($value)) {
+                continue;
+            }
+
+            /**
+             * Repeat same steps for arrays
+             */
+            $array2[$key] = self::merge_array1_with_array2(
+                $value,
+                $current_value
+            );
+        }
+
+        return $array2;
+    }
+
+    /**
+     * Merge configuration with theme.json data
+     *
+     * @param array data_to_merge
+     * @return array merged content
+     * @access protected
+     * @since 0.2.0
+     * @static
+     */
+    protected static function merge_configuration_with_theme_json_data(
+        array $data_to_merge
+    ): array {
+        $theme_json_file_content = json_decode(
+            self::get_theme_json_content(),
+            true
+        );
+
+        $theme_json_file_content = self::merge_array1_with_array2(
+            $data_to_merge,
+            $theme_json_file_content
+        );
+
+        return $theme_json_file_content;
+    }
+
+    /**
      * Replace theme.json file in theme
      * with our theme.json
      *
@@ -123,18 +341,14 @@ class ThemeJSON
      */
     public static function replace_theme_json_file_in_theme(): void
     {
-        // Get the path to the active theme's directory
-        $current_theme_directory = get_stylesheet_directory();
-        $theme_json_file_content = file_get_contents(
-            "$current_theme_directory/theme.json"
-        );
+        $theme_json_file_content = self::get_theme_json_content();
 
         /**
          *! Read file and see if we already did it
          * ex scenario: when will call this function twice
          * it shouldn't do this again
          *
-         * We should have "using_theme_json_from_xynity: true" in newly created theme.json
+         * We should have "usingThemeJsonFromXynity": true in newly created theme.json
          */
         $current_theme_json_file_data = json_decode(
             $theme_json_file_content,
@@ -142,33 +356,34 @@ class ThemeJSON
         );
         $is_using_theme_json_from_xynity = Util::get_value_if_present_in_array(
             $current_theme_json_file_data,
-            "using_theme_json_from_xynity",
+            "usingThemeJsonFromXynity",
             false
         );
         if ($is_using_theme_json_from_xynity === true) {
             return;
         }
 
+        /**
+         * Configure data
+         */
+        $configured_data = self::merge_configuration_with_theme_json_data(
+            self::get_initialization_theme_json_content()
+        );
+
+        /**
+         * Rename current theme theme.json
+         */
         $is_rename_success = self::rename_themejson_file_to_defaultthemejson_in_theme();
         if (!$is_rename_success) {
             return;
         }
 
         /**
-         * Add using_theme_json_from_xynity in content
-         * to detect file
-         */
-        $current_theme_json_file_data["using_theme_json_from_xynity"] = true;
-
-        /**
-         ** Append configuration data
-         */
-
-        /**
          * Encode array data to json
          */
         $content_to_write_in_theme_json_file = json_encode(
-            $current_theme_json_file_data
+            $configured_data,
+            JSON_PRETTY_PRINT
         );
 
         /**
