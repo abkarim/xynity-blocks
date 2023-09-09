@@ -18,11 +18,26 @@ class Dashboard
      */
     public function __construct()
     {
+        // Load files
+        self::load_files();
+
         // Add menu
         add_action("admin_menu", [$this, "add_menu"]);
 
         // Load JavaScripts
         add_action("admin_enqueue_scripts", [$this, "load_javascript"]);
+    }
+
+    /**
+     * Load classes file
+     *
+     * @return void
+     * @access protected
+     * @since 0.2.0
+     */
+    protected function load_files(): void
+    {
+        require_once XYNITY_BLOCKS_PATH . "includes/classes/ThemeJSON.php";
     }
 
     /**
