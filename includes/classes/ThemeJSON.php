@@ -63,13 +63,13 @@ class ThemeJSON
     /**
      * Write into theme.json
      *
-     * @param string content
+     * @param array content
      * @return bool is_write_success
      * @static
      * @access protected
      * @since 0.2.0
      */
-    protected static function write_into_theme_json(string $content): bool
+    protected static function write_into_theme_json(array $content): bool
     {
         $current_theme_directory = get_stylesheet_directory();
 
@@ -87,7 +87,10 @@ class ThemeJSON
         /**
          * Write to file
          */
-        $is_write_success = @fwrite($new_theme_json_file, $content);
+        $is_write_success = @fwrite(
+            $new_theme_json_file,
+            json_encode($content, JSON_PRETTY_PRINT)
+        );
         if ($is_write_success === false) {
             // Undo changes
             fclose($new_theme_json_file);
@@ -379,133 +382,14 @@ class ThemeJSON
         }
 
         /**
-         * Encode array data to json
-         */
-        $content_to_write_in_theme_json_file = json_encode(
-            $configured_data,
-            JSON_PRETTY_PRINT
-        );
-
-        /**
          * Write to file
          */
-        $is_write_success = self::write_into_theme_json(
-            $content_to_write_in_theme_json_file
-        );
+        $is_write_success = self::write_into_theme_json($configured_data);
 
         if ($is_write_success === false) {
             // Undo changes
             self::rename_defaultthemejson_file_to_themejson_in_theme();
             return;
         }
-    }
-
-    /**
-     * Get current editor options from Theme.json data
-     *
-     * @return array
-     * @since 0.2.0
-     * @access public
-     * @static
-     */
-    public static function get_current_editor_options()
-    {
-    }
-
-    /**
-     * Get current color options from Theme.json data
-     * Returns array with color options from database
-     *
-     * @return array
-     * @since 0.2.0
-     * @access public
-     */
-    public static function get_current_color_options()
-    {
-    }
-
-    /**
-     * Get current typography options from Theme.json data
-     * Returns array with typography options from database
-     *
-     * @return array
-     * @since 0.2.0
-     * @access public
-     */
-    public static function get_current_typography_options()
-    {
-    }
-
-    /**
-     * Get current shadow options from Theme.json data
-     * Returns array with shadow options from database
-     *
-     * @return array
-     * @since 0.1.2
-     * @access public
-     */
-    public static function get_current_shadow_options()
-    {
-    }
-
-    /**
-     * Get block settings from theme.json
-     *
-     * @param string block_name
-     * @return mixed
-     * @access public
-     * @static
-     * @since 0.1.4
-     */
-    public static function get_block_style_settings($block_name)
-    {
-        $theme_json_data = self::get_theme_json_file_data();
-
-        /**
-         * Blocks configuration live in
-         * theme.json->styles->blocks->$block_name
-         *
-         * we had to go step by step with checking
-         * cause not every theme include this
-         */
-
-        // Get styles data
-        $styles_data = Util::get_value_if_present_in_stdClass(
-            $theme_json_data,
-            "styles",
-            null
-        );
-
-        // Return null styles data not found
-        if ($styles_data === null) {
-            return null;
-        }
-
-        // Get blocks data from settings
-        $blocks_data = Util::get_value_if_present_in_stdClass(
-            $styles_data,
-            "blocks",
-            null
-        );
-
-        /**
-         * check blocks data
-         * return null if doesn't exits
-         */
-        if ($blocks_data === null) {
-            return null;
-        }
-
-        // Get targeted block data
-        $targeted_block_data = Util::get_value_if_present_in_stdClass(
-            $blocks_data,
-            $block_name,
-            null
-        );
-
-        /**
-         * Null will be returned if no data found
-         */
-        return $targeted_block_data;
     }
 }
