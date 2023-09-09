@@ -23,9 +23,8 @@ class Editor extends ThemeJSON
         $theme_json_content = json_decode(self::get_theme_json_content(), true);
 
         $dataArray = [
-            "appearanceTools" => boolval(
-                $theme_json_content["settings"]["appearanceTools"]
-            ),
+            "appearanceTools" =>
+                $theme_json_content["settings"]["appearanceTools"],
             "layout" => $theme_json_content["settings"]["layout"],
             "spacing" => $theme_json_content["settings"]["spacing"],
         ];

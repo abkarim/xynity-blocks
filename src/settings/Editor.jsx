@@ -14,7 +14,6 @@ import destructFromClamp from "../util/destructFromClamp.js";
  */
 const initialState = {
     ...editor_options_from_backend,
-    appearanceTools: Boolean(editor_options_from_backend.appearanceTools),
     layout: {
         ...editor_options_from_backend.layout,
         contentSize: getUnitAndValue(
