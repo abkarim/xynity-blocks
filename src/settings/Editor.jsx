@@ -13,21 +13,14 @@ import destructFromClamp from "../util/destructFromClamp.js";
  * from: Dashboard->load_javascript()
  */
 const initialState = {
-    ...editor_options_from_backend.default,
-    ...editor_options_from_backend.current,
+    ...editor_options_from_backend,
+    appearanceTools: Boolean(editor_options_from_backend.appearanceTools),
     layout: {
-        ...editor_options_from_backend.default.layout,
-        ...editor_options_from_backend.current.layout,
+        ...editor_options_from_backend.layout,
         contentSize: getUnitAndValue(
-            editor_options_from_backend.current.layout.contentSize
+            editor_options_from_backend.layout.contentSize
         ),
-        wideSize: getUnitAndValue(
-            editor_options_from_backend.current.layout.wideSize
-        ),
-    },
-    spacing: {
-        ...editor_options_from_backend.default.spacing,
-        ...editor_options_from_backend.current.spacing,
+        wideSize: getUnitAndValue(editor_options_from_backend.layout.wideSize),
     },
 };
 
@@ -91,10 +84,6 @@ const Option = ({
     dispatch,
     inputName,
 }) => {
-    const defaultData =
-        editor_options_from_backend.default[category][inputName];
-    const currentData = `${data[category][inputName].value}${data[category][inputName].unit}`;
-
     return (
         <div className="relative flex items-start justify-between w-full p-5 border-b">
             <div>
@@ -175,7 +164,7 @@ const Editor = () => {
                 `${
                     plugin_info_from_backend.ajax_url
                 }?action=${encodeURIComponent(
-                    "xynity_blocks_settings_update"
+                    "xynity_blocks__editor_options_update"
                 )}`,
                 {
                     method: "POST",
@@ -533,7 +522,6 @@ const Editor = () => {
                                                         name: "new size",
                                                         slug: "new-size",
                                                         size: "clamp(1rem, 1, 1rem)",
-                                                        custom: true,
                                                     },
                                                     ...data.spacing
                                                         .spacingSizes,
@@ -596,12 +584,7 @@ const Editor = () => {
                                                 </span>
                                                 <input
                                                     type="text"
-                                                    readOnly={!item.custom}
-                                                    title={
-                                                        item.custom
-                                                            ? "slug"
-                                                            : "default items slug cannot be changed"
-                                                    }
+                                                    title="slug"
                                                     value={item.slug}
                                                     className="inline-block !outline-none !bg-transparent"
                                                     onInput={(e) => {

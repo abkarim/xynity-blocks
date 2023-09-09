@@ -15,14 +15,9 @@ class AJAX
      */
     public function __construct()
     {
-        /**
-         * Plugin settings
-         *
-         * @since 0.1.0
-         */
-        add_action("wp_ajax_xynity_blocks_settings_update", [
+        add_action("wp_ajax_xynity_blocks__editor_options_update", [
             $this,
-            "update_settings",
+            "update_editor_options",
         ]);
 
         add_action("wp_ajax_xynity_blocks_colors_update", [
@@ -148,10 +143,16 @@ class AJAX
         if ($request_type === "GET") {
             $data = $this->get_url_parameter();
         } elseif ($request_type === "POST") {
-            // Get form data
+            /**
+             * Get data
+             * @var string
+             */
             $data = file_get_contents("php://input");
 
-            if (!($decoded_data = json_decode($data))) {
+            /**
+             * @var array
+             */
+            if (!($decoded_data = json_decode($data, true))) {
                 wp_send_json_error("data is not valid json", 400);
                 return wp_die();
             }
@@ -196,15 +197,19 @@ class AJAX
     /**
      * Update settings
      *
-     * @since 0.1.0
+     * @return void
+     * @since 0.2.0
      * @access public
      */
-    public function update_settings()
+    public function update_editor_options(): void
     {
-        [$data] = $this->get_request_data("POST");
+        [$data, $decoded_data] = $this->get_request_data("POST");
 
-        // Update data
-        update_option(XYNITY_BLOCKS_TEXT_DOMAIN . "_settings_option", $data);
+        /**
+         * Is updated successfully
+         * @var bool
+         */
+        $is_updated = Editor::update_editor_options($decoded_data);
 
         $this->send_response_and_close_request("updated successfully");
     }
