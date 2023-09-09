@@ -38,6 +38,8 @@ class Dashboard
     protected function load_files(): void
     {
         require_once XYNITY_BLOCKS_PATH . "includes/classes/ThemeJSON.php";
+        require_once XYNITY_BLOCKS_PATH .
+            "includes/classes/settings/Editor.php";
     }
 
     /**
@@ -148,10 +150,7 @@ class Dashboard
             wp_localize_script(
                 "xynity-blocks-admin-main",
                 "editor_options_from_backend",
-                [
-                    "default" => ThemeActions::get_default_editor_options(),
-                    "current" => ThemeActions::get_current_editor_options(),
-                ]
+                Editor::get_current_editor_options()
             );
             wp_localize_script(
                 "xynity-blocks-admin-main",
