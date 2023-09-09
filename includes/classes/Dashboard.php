@@ -40,6 +40,7 @@ class Dashboard
         require_once XYNITY_BLOCKS_PATH . "includes/classes/ThemeJSON.php";
         require_once XYNITY_BLOCKS_PATH .
             "includes/classes/settings/Editor.php";
+        require_once XYNITY_BLOCKS_PATH . "includes/classes/settings/Color.php";
     }
 
     /**
@@ -147,18 +148,18 @@ class Dashboard
                     "ajax_url" => admin_url("admin-ajax.php"),
                 ]
             );
-            wp_localize_script(
+            wp_add_inline_script(
                 "xynity-blocks-admin-main",
-                "editor_options_from_backend",
-                Editor::get_current_editor_options()
+                "const editor_options_from_backend = " .
+                    json_encode(Editor::get_current_editor_options()),
+                "before"
             );
-            wp_localize_script(
+            wp_add_inline_script(
                 "xynity-blocks-admin-main",
-                "colors_options_from_backend",
-                [
-                    "default" => ThemeActions::get_default_color_options(),
-                    "current" => ThemeActions::get_current_color_options(),
-                ]
+                "const colors_options_from_backend = " .
+                    wp_json_encode(Color::get_current_color_options()) .
+                    ";",
+                "before"
             );
             wp_localize_script(
                 "xynity-blocks-admin-main",

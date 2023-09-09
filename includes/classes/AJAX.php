@@ -20,9 +20,9 @@ class AJAX
             "update_editor_options",
         ]);
 
-        add_action("wp_ajax_xynity_blocks_colors_update", [
+        add_action("wp_ajax_xynity_blocks__color_options_update", [
             $this,
-            "update_colors",
+            "update_color_options",
         ]);
 
         add_action("wp_ajax_xynity_blocks_shadows_update", [
@@ -215,17 +215,21 @@ class AJAX
     }
 
     /**
-     * Update colors
+     * Update color options
      *
-     * @since 0.1.0
+     * @return void
+     * @since 0.2.0
      * @access public
      */
-    public function update_colors()
+    public function update_color_options(): void
     {
-        [$data] = $this->get_request_data("POST");
+        [$data, $decoded_data] = $this->get_request_data("POST");
 
-        // Update data
-        update_option(XYNITY_BLOCKS_TEXT_DOMAIN . "_colors_option", $data);
+        /**
+         * Is updated successfully
+         * @var bool
+         */
+        $is_updated = Color::update_color_options($decoded_data);
 
         $this->send_response_and_close_request("updated successfully");
     }
