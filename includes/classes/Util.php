@@ -61,4 +61,23 @@ class Util
 
         return $default;
     }
+
+    /**
+     * Is valid value in a array
+     *
+     * @param array
+     * @param string key
+     * @return bool
+     * @access public
+     * @static
+     * @since 0.2.0
+     */
+    public static function is_valid_value_in_array(
+        array $array,
+        string $key
+    ): bool {
+        $value = self::get_value_if_present_in_array($array, $key);
+
+        return (bool) $value;
+    }
 }
