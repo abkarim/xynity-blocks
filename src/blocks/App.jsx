@@ -46,13 +46,13 @@ const Blocks = () => {
                 />
             </div>
             <main className="mt-5">
-                {(category === "Core" || category === "All") && (
+                {/* {(category === "Core" || category === "All") && (
                     <Core
                         search={search.trim()}
                         setEditElement={setEditElement}
                         showTitle={category !== "Core"}
                     />
-                )}
+                )} */}
             </main>
             {editElement !== null && (
                 <Editor

@@ -23,25 +23,6 @@ class Blocks
     {
         $data = DB::get_block_settings($block_name);
 
-        /**
-         * Data not found in database
-         */
-        if ($data === null) {
-            /**
-             * Get data from theme.json
-             */
-            $theme_json_data = ThemeActions::get_block_style_settings(
-                $block_name
-            );
-            $data = $theme_json_data;
-
-            if ($theme_json_data === null) {
-                $data = [];
-            }
-        } else {
-            $data = json_decode($data, true);
-        }
-
         return $data;
     }
 

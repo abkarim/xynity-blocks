@@ -69,32 +69,78 @@ if (!class_exists("Xynity_Blocks")) {
         private function define_constants(): void
         {
             /**
-             * Get plugin data defined in header
+             * require "get_plugin_data" function if not exists already
              */
             if (!function_exists("get_plugin_data")) {
                 require_once ABSPATH . "wp-admin/includes/plugin.php";
             }
+
+            /**
+             * Get plugin data from header
+             * @var array
+             */
             $plugin_data = get_plugin_data(__FILE__);
 
             /**
-             * Define essentials constant
+             * Required php version for this plugin
+             * @var string
              */
             define("XYNITY_BLOCKS_REQUIRED_PHP", $plugin_data["RequiresPHP"]);
+            /**
+             * Required wp version for this plugin
+             * @var string
+             */
             define("XYNITY_BLOCKS_REQUIRED_WP", $plugin_data["RequiresWP"]);
+            /**
+             * Current version
+             * @var string
+             */
             define("XYNITY_BLOCKS_VERSION", $plugin_data["Version"]);
+            /**
+             * Plugin textdomain
+             * @var string
+             */
             define("XYNITY_BLOCKS_TEXT_DOMAIN", $plugin_data["TextDomain"]);
+            /**
+             * Plugin name
+             * @var string
+             */
             define("XYNITY_BLOCKS_NAME", $plugin_data["Name"]);
+            /**
+             * Plugin's path from root
+             * @var string
+             */
             define(
                 "XYNITY_BLOCKS_PATH",
                 trailingslashit(plugin_dir_path(__FILE__))
             );
+            /**
+             * Plugin's url from root
+             * @var string
+             */
             define(
                 "XYNITY_BLOCKS_URL",
                 trailingslashit(plugin_dir_url(__FILE__))
             );
+            /**
+             * Plugin basename from root
+             * @var string
+             */
             define("XYNITY_BLOCKS_BASENAME", plugin_basename(__FILE__));
+            /**
+             * Plugin file from root
+             * @var string
+             */
             define("XYNITY_BLOCKS_FILE", __FILE__);
+            /**
+             * Plugin directory from root
+             * @var string
+             */
             define("XYNITY_BLOCKS_DIR", trailingslashit(__DIR__));
+            /**
+             * Plugin nonce
+             * @var string
+             */
             define(
                 "XYNITY_BLOCKS_NONCE",
                 "2abd9731S07S1b7e9f1DSD2f4E5912e523bc4c80255e3e"

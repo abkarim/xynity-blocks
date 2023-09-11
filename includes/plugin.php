@@ -10,7 +10,6 @@ if (!defined("ABSPATH")) {
 }
 
 require_once XYNITY_BLOCKS_PATH . "includes/classes/Dashboard.php";
-require_once XYNITY_BLOCKS_PATH . "includes/classes/ThemeActions.php";
 require_once XYNITY_BLOCKS_PATH . "includes/classes/AJAX.php";
 require_once XYNITY_BLOCKS_PATH . "includes/classes/Util.php";
 require_once XYNITY_BLOCKS_PATH . "includes/classes/Blocks.php";
@@ -166,8 +165,6 @@ final class Plugin
 
         // Handle menu options
         new Dashboard();
-        // Handles Theme actions
-        new ThemeActions();
         // Handle AJAX
         new AJAX();
     }
