@@ -1,9 +1,12 @@
 name: Release
 
-on:
-  push:
-    tags:
-      - 'v*'
+on: [push]
+  # push:
+  #   tags:
+  #     - 'v*'
+
+permissions:
+    contents: write
 
 jobs:
   build:
@@ -15,7 +18,12 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 'lts/*'
-          
+
+      - name: list files
+        run: |
+          pwd
+          ls -la
+      
       - name: Install dependencies
         run: npm ci
   
