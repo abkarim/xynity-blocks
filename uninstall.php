@@ -16,6 +16,15 @@ if (!defined("WP_UNINSTALL_PLUGIN")) {
 define("XYNITY_BLOCKS_TEXT_DOMAIN", "xynity-blocks");
 
 /**
+ * Delete content folder
+ */
+require_once trailingslashit(plugin_dir_path(__FILE__)) .
+    "includes/classes/FileSystem.php";
+\Xynity_Blocks\FileSystem::delete_folder_inside_wp_content_recursive(
+    "xynity-blocks-content"
+);
+
+/**
  * Clear all database properties
  * and caching configuration
  *
@@ -24,4 +33,4 @@ define("XYNITY_BLOCKS_TEXT_DOMAIN", "xynity-blocks");
 require_once trailingslashit(plugin_dir_path(__FILE__)) .
     "includes/classes/DB.php";
 
-Xynity_Blocks\DB::clear_all_data();
+\Xynity_Blocks\DB::clear_all_data();

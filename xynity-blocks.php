@@ -53,6 +53,13 @@ if (!class_exists("Xynity_Blocks")) {
             add_action("switch_theme", [$this, "handle_theme_change"]);
 
             /**
+             * It should be fire on theme update
+             *
+             * @since 0.2.0
+             */
+            add_action("after_switch_theme", [$this, "handle_theme_change"]);
+
+            /**
              * Load plugin
              */
             add_action("plugins_loaded", [$this, "init"]);

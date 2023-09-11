@@ -11,9 +11,24 @@ if (!defined("ABSPATH")) {
 class ThemeJSON
 {
     /**
-     * Defines current version of xynity's content in theme.json
-     * assigned when access
+     * Plugin's content directory name
+     * this directory will store
+     * backup data, config data
+     *
      * @var string
+     * @access protected
+     * @static
+     * @since 0.2.0
+     */
+    protected static $_xynity_blocks_content_folder_name = "xynity-blocks-content";
+
+    /**
+     * Current version of xynity's content in theme.json
+     *
+     * @var string
+     * @static
+     * @access private
+     * @since 0.2.0
      */
     private static $_current_xynity_content_version = "1.0.0";
 
@@ -68,6 +83,48 @@ class ThemeJSON
     }
 
     /**
+     * Update theme.json into backup directory
+     *
+     * It will store a copy of current theme.json
+     * when theme updated
+     * we have to merge this files content with
+     * the replaced theme.json in theme after update
+     *
+     * @param array content
+     * @return bool is_updated
+     * @access private
+     * @static
+     * @since 0.2.0
+     */
+    private static function update_theme_json_in_backup_directory(
+        array $content
+    ): bool {
+        require_once XYNITY_BLOCKS_DIR . "includes/classes/FileSystem.php";
+
+        $folder_name =
+            self::$_xynity_blocks_content_folder_name .
+            "/" .
+            self::get_current_theme_name();
+
+        /**
+         * Create directory if not exists
+         */
+        $exists = FileSystem::create_folder_inside_wp_content_is_not_exists(
+            $folder_name
+        );
+        if ($exists === false) {
+            return false;
+        }
+
+        $is_write_success = FileSystem::write_into_file_inside_wp_content(
+            $folder_name . "/theme.json",
+            json_encode($content, JSON_PRETTY_PRINT)
+        );
+
+        return $is_write_success;
+    }
+
+    /**
      * Write into theme.json
      *
      * @param array content
@@ -106,6 +163,12 @@ class ThemeJSON
 
         // Close file
         fclose($new_theme_json_file);
+
+        /**
+         * Update in backup directory
+         */
+        self::update_theme_json_in_backup_directory($content);
+
         return true;
     }
 
@@ -125,6 +188,21 @@ class ThemeJSON
             "$current_theme_directory/theme.json"
         );
         return $theme_json_file_content;
+    }
+
+    /**
+     * Get current theme name
+     *
+     * @return string
+     * @access public
+     * @static
+     * @since 0.2.0
+     */
+    public static function get_current_theme_name(): string
+    {
+        $current_theme = wp_get_theme();
+        $current_theme_name = $current_theme->get("Name");
+        return $current_theme_name;
     }
 
     /**
@@ -405,11 +483,32 @@ class ThemeJSON
             return;
         }
 
+        $initial_content = self::get_initialization_theme_json_content();
+
+        /**
+         * Check for a backup file if backup file exists
+         * merge current content with backup file content
+         */
+        require_once XYNITY_BLOCKS_DIR . "includes/classes/FileSystem.php";
+        $backup_file_name =
+            self::$_xynity_blocks_content_folder_name .
+            "/" .
+            self::get_current_theme_name() .
+            "/theme.json";
+        if (FileSystem::is_file_exists_inside_wp_content($backup_file_name)) {
+            $initial_content = json_decode(
+                FileSystem::get_file_content_inside_wp_content(
+                    $backup_file_name
+                ),
+                true
+            );
+        }
+
         /**
          * Configure data
          */
         $configured_data = self::merge_configuration_with_theme_json_data(
-            self::get_initialization_theme_json_content()
+            $initial_content
         );
 
         /**
