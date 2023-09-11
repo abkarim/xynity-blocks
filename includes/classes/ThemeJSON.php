@@ -128,6 +128,24 @@ class ThemeJSON
     }
 
     /**
+     * Get default theme.json content
+     *
+     * @return string
+     * @static
+     * @since 0.2.0
+     * @access protected
+     */
+    protected static function get_default_theme_json_content(): string
+    {
+        // Get the path to the active theme's directory
+        $current_theme_directory = get_stylesheet_directory();
+        $theme_json_file_content = file_get_contents(
+            "$current_theme_directory/default.theme.json"
+        );
+        return $theme_json_file_content;
+    }
+
+    /**
      * Get initialization theme.json data
      * returns some default necessary data
      *

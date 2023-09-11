@@ -35,24 +35,19 @@ class AJAX
             "update_shadow_options",
         ]);
 
-        add_action("wp_ajax_xynity_blocks_reset_option", [
-            $this,
-            "reset_option",
-        ]);
-
         /**
          * Blocks settings
          *
          * @since 0.1.4
          */
-        add_action("wp_ajax_xynity_blocks__get_block_data", [
-            $this,
-            "get_block_data",
-        ]);
-        add_action("wp_ajax_xynity_blocks__update_block_data", [
-            $this,
-            "update_block_data",
-        ]);
+        // add_action("wp_ajax_xynity_blocks__get_block_data", [
+        //     $this,
+        //     "get_block_data",
+        // ]);
+        // add_action("wp_ajax_xynity_blocks__update_block_data", [
+        //     $this,
+        //     "update_block_data",
+        // ]);
     }
 
     /**
@@ -174,24 +169,6 @@ class AJAX
     {
         wp_send_json_success($data, $status_code);
         wp_die();
-    }
-
-    /**
-     * Rest option
-     *
-     * @since 0.1.3
-     * @access public
-     */
-    public function reset_option()
-    {
-        [$data, $decoded_data] = $this->get_request_data("POST");
-
-        // Delete option
-        delete_option(
-            XYNITY_BLOCKS_TEXT_DOMAIN . "_" . $decoded_data->name . "_option"
-        );
-
-        $this->send_response_and_close_request("reset successful");
     }
 
     /**
