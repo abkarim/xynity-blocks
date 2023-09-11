@@ -43,6 +43,17 @@ class Color extends ThemeJSON
                 "color" => $data,
             ],
         ]);
+
+        /**
+         * Replace current palette with old palette
+         *
+         * @since 0.2.0
+         */
+        $palette = Util::get_value_if_present_in_array($data, "palette", null);
+        if (!is_null($palette)) {
+            $updated_data["settings"]["color"]["palette"] = $palette;
+        }
+
         return self::write_into_theme_json($updated_data);
     }
 }
