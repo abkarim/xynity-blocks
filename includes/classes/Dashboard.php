@@ -41,6 +41,8 @@ class Dashboard
         require_once XYNITY_BLOCKS_PATH .
             "includes/classes/settings/Editor.php";
         require_once XYNITY_BLOCKS_PATH . "includes/classes/settings/Color.php";
+        require_once XYNITY_BLOCKS_PATH .
+            "includes/classes/settings/Typography.php";
     }
 
     /**
@@ -161,20 +163,21 @@ class Dashboard
                     ";",
                 "before"
             );
+            wp_add_inline_script(
+                "xynity-blocks-admin-main",
+                "const typography_options_from_backend = " .
+                    wp_json_encode(
+                        Typography::get_current_typography_options()
+                    ) .
+                    ";",
+                "before"
+            );
             wp_localize_script(
                 "xynity-blocks-admin-main",
                 "shadows_options_from_backend",
                 [
                     "default" => ThemeActions::get_default_shadow_options(),
                     "current" => ThemeActions::get_current_shadow_options(),
-                ]
-            );
-            wp_localize_script(
-                "xynity-blocks-admin-main",
-                "typography_options_from_backend",
-                [
-                    "default" => ThemeActions::get_default_typography_options(),
-                    "current" => ThemeActions::get_current_typography_options(),
                 ]
             );
         }

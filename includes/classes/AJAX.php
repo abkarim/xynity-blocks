@@ -25,14 +25,14 @@ class AJAX
             "update_color_options",
         ]);
 
+        add_action("wp_ajax_xynity_blocks__typography_options_update", [
+            $this,
+            "update_typography_options",
+        ]);
+
         add_action("wp_ajax_xynity_blocks_shadows_update", [
             $this,
             "update_shadows",
-        ]);
-
-        add_action("wp_ajax_xynity_blocks_typography_update", [
-            $this,
-            "update_typography",
         ]);
 
         add_action("wp_ajax_xynity_blocks_reset_option", [
@@ -235,6 +235,26 @@ class AJAX
     }
 
     /**
+     * Update typography options
+     *
+     * @return void
+     * @since 0.2.0
+     * @access public
+     */
+    public function update_typography_options(): void
+    {
+        [$data, $decoded_data] = $this->get_request_data("POST");
+
+        /**
+         * Is updated successfully
+         * @var bool
+         */
+        $is_updated = Typography::update_typography_options($decoded_data);
+
+        $this->send_response_and_close_request("updated successfully");
+    }
+
+    /**
      * Update shadows
      *
      * @since 0.1.2
@@ -246,22 +266,6 @@ class AJAX
 
         // Update data
         update_option(XYNITY_BLOCKS_TEXT_DOMAIN . "_shadows_option", $data);
-
-        $this->send_response_and_close_request("updated successfully");
-    }
-
-    /**
-     * Update typography
-     *
-     * @since 0.1.3
-     * @access public
-     */
-    public function update_typography()
-    {
-        [$data] = $this->get_request_data("POST");
-
-        // Update data
-        update_option(XYNITY_BLOCKS_TEXT_DOMAIN . "_typography_option", $data);
 
         $this->send_response_and_close_request("updated successfully");
     }
