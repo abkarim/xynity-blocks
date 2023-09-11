@@ -22,7 +22,6 @@ class DB
      * to store and manage data
      */
     private static $_options_list = [
-        XYNITY_BLOCKS_TEXT_DOMAIN . "_shadows_option",
         XYNITY_BLOCKS_TEXT_DOMAIN . "_database_version",
     ];
 

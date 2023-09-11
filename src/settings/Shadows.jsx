@@ -9,8 +9,7 @@ import ShadowInput from "../components/input/ShadowInput.jsx";
  * from: Dashboard->load_javascript()
  */
 const initialState = {
-    ...shadows_options_from_backend.default,
-    ...shadows_options_from_backend.current,
+    ...shadows_options_from_backend,
 };
 
 const reducer = (state, action) => {
@@ -36,7 +35,6 @@ const reducer = (state, action) => {
             const copiedItem = structuredClone(
                 state.presets[action.payload.index]
             );
-            copiedItem.custom = true;
             copiedItem.name = copiedItem.name + " - duplicate";
             copiedItem.slug = copiedItem.slug + "2";
             state.presets.splice(action.payload.index + 1, 0, copiedItem);
@@ -47,7 +45,6 @@ const reducer = (state, action) => {
                 shadow: "25px 25px 50px 0px rgba(94,94,94,1)",
                 name: "New shadow",
                 slug: "new-shadow",
-                custom: true,
             };
             state.presets.unshift(newShadow);
             return { ...state };
@@ -88,7 +85,9 @@ const Shadows = () => {
             const response = await fetch(
                 `${
                     plugin_info_from_backend.ajax_url
-                }?action=${encodeURIComponent("xynity_blocks_shadows_update")}`,
+                }?action=${encodeURIComponent(
+                    "xynity_blocks__shadow_options_update"
+                )}`,
                 {
                     method: "POST",
                     headers: {
@@ -221,12 +220,7 @@ const Shadows = () => {
                                         value={shadow.name}
                                     />
                                     <input
-                                        title={
-                                            !shadow.custom
-                                                ? "defaults palette slug changing is not allowed to prevent style breaking"
-                                                : "slug"
-                                        }
-                                        readOnly={!shadow.custom}
+                                        title="slug"
                                         value={shadow.slug}
                                         className="inline-block !bg-transparent"
                                         onInput={(e) => {
@@ -291,41 +285,39 @@ const Shadows = () => {
                                             </svg>
                                         </span>
                                     </button>
-                                    {shadow.custom && (
-                                        <button
-                                            title="Delete"
-                                            onClick={() => {
-                                                /**
-                                                 * Get delete confirmation
-                                                 */
-                                                if (
-                                                    !confirm(
-                                                        "are you sure want to delete this shadow ?"
-                                                    )
+                                    <button
+                                        title="Delete"
+                                        onClick={() => {
+                                            /**
+                                             * Get delete confirmation
+                                             */
+                                            if (
+                                                !confirm(
+                                                    "are you sure want to delete this shadow ?"
                                                 )
-                                                    return;
+                                            )
+                                                return;
 
-                                                dispatch({
-                                                    type: "delete",
-                                                    payload: {
-                                                        index: i,
-                                                    },
-                                                });
-                                            }}>
-                                            {/* Remove icon */}
-                                            <span className="inline-block w-5 h-5 text-red-600">
-                                                <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    id="Outline"
-                                                    fill="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path d="M21,4H17.9A5.009,5.009,0,0,0,13,0H11A5.009,5.009,0,0,0,6.1,4H3A1,1,0,0,0,3,6H4V19a5.006,5.006,0,0,0,5,5h6a5.006,5.006,0,0,0,5-5V6h1a1,1,0,0,0,0-2ZM11,2h2a3.006,3.006,0,0,1,2.829,2H8.171A3.006,3.006,0,0,1,11,2Zm7,17a3,3,0,0,1-3,3H9a3,3,0,0,1-3-3V6H18Z" />
-                                                    <path d="M10,18a1,1,0,0,0,1-1V11a1,1,0,0,0-2,0v6A1,1,0,0,0,10,18Z" />
-                                                    <path d="M14,18a1,1,0,0,0,1-1V11a1,1,0,0,0-2,0v6A1,1,0,0,0,14,18Z" />
-                                                </svg>
-                                            </span>
-                                        </button>
-                                    )}
+                                            dispatch({
+                                                type: "delete",
+                                                payload: {
+                                                    index: i,
+                                                },
+                                            });
+                                        }}>
+                                        {/* Remove icon */}
+                                        <span className="inline-block w-5 h-5 text-red-600">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                id="Outline"
+                                                fill="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path d="M21,4H17.9A5.009,5.009,0,0,0,13,0H11A5.009,5.009,0,0,0,6.1,4H3A1,1,0,0,0,3,6H4V19a5.006,5.006,0,0,0,5,5h6a5.006,5.006,0,0,0,5-5V6h1a1,1,0,0,0,0-2ZM11,2h2a3.006,3.006,0,0,1,2.829,2H8.171A3.006,3.006,0,0,1,11,2Zm7,17a3,3,0,0,1-3,3H9a3,3,0,0,1-3-3V6H18Z" />
+                                                <path d="M10,18a1,1,0,0,0,1-1V11a1,1,0,0,0-2,0v6A1,1,0,0,0,10,18Z" />
+                                                <path d="M14,18a1,1,0,0,0,1-1V11a1,1,0,0,0-2,0v6A1,1,0,0,0,14,18Z" />
+                                            </svg>
+                                        </span>
+                                    </button>
                                 </div>
                             </div>
                         </div>

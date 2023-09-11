@@ -30,9 +30,9 @@ class AJAX
             "update_typography_options",
         ]);
 
-        add_action("wp_ajax_xynity_blocks_shadows_update", [
+        add_action("wp_ajax_xynity_blocks__shadow_options_update", [
             $this,
-            "update_shadows",
+            "update_shadow_options",
         ]);
 
         add_action("wp_ajax_xynity_blocks_reset_option", [
@@ -255,17 +255,21 @@ class AJAX
     }
 
     /**
-     * Update shadows
+     * Update shadow options
      *
-     * @since 0.1.2
+     * @return void
+     * @since 0.2.0
      * @access public
      */
-    public function update_shadows()
+    public function update_shadow_options(): void
     {
-        [$data] = $this->get_request_data("POST");
+        [$data, $decoded_data] = $this->get_request_data("POST");
 
-        // Update data
-        update_option(XYNITY_BLOCKS_TEXT_DOMAIN . "_shadows_option", $data);
+        /**
+         * Is updated successfully
+         * @var bool
+         */
+        $is_updated = Shadow::update_shadow_options($decoded_data);
 
         $this->send_response_and_close_request("updated successfully");
     }

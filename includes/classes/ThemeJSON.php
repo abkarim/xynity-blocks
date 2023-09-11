@@ -228,6 +228,7 @@ class ThemeJSON
          */
         $content["settings"]["shadow"] = [
             "defaultPresets" => true, // Enable default presets
+            "presets" => [], // Presets array init
         ];
 
         /**
