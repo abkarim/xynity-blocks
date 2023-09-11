@@ -35,8 +35,8 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.TOKEN }}
-          file: ./xynity-blocks-${{ github.ref }}.zip
-          asset_name: xynity-blocks.zip
+          file: ./xynity-blocks.zip
+          asset_name: xynity-blocks-${{ github.ref_name }}.zip
           tag: ${{ github.ref }}
           overwrite: true
           
