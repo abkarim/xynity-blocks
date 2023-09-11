@@ -21,12 +21,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 'lts/*'
-
-      - name: list files
-        run: |
-          pwd
-          ls -la
-      
+          
       - name: Install dependencies
         run: npm ci
   
@@ -40,9 +35,8 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.TOKEN }}
-          file: ./xynity-blocks.zip
-          asset_name: plugin
+          file: ./xynity-blocks-${{ github.ref }}.zip
+          asset_name: xynity-blocks.zip
           tag: ${{ github.ref }}
           overwrite: true
-          body: ${{ github.ref_name }}
           
