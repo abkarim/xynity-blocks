@@ -12,6 +12,8 @@ jobs:
   build:
     name: Release plugin
     runs-on: ubuntu-latest
+    env:
+      working-directory: ./
     
     steps:
       - name: Setup node.js
