@@ -83,6 +83,25 @@ class ThemeJSON
     }
 
     /**
+     * Migrate to default theme.json
+     *
+     * @return bool is_success
+     * @static
+     * @access public
+     * @since 0.2.1
+     */
+    public static function migrate_to_default_theme_json(): bool
+    {
+        // Get the path to the active theme's directory
+        $current_theme_directory = get_stylesheet_directory();
+
+        // Remove theme.json
+        wp_delete_file($current_theme_directory . "/theme.json");
+
+        return self::rename_defaultthemejson_file_to_themejson_in_theme();
+    }
+
+    /**
      * Update theme.json into backup directory
      *
      * It will store a copy of current theme.json

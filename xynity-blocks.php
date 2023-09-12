@@ -3,7 +3,7 @@
  * Plugin Name:       Xynity Blocks
  * Plugin URI:        https://github.com/abkarim/xynity-blocks
  * Description:       Extends wordpress blocks functionality to make better experience with Full Site Editing
- * Version:           0.2.0
+ * Version:           0.2.1
  * Requires at least: 6.0
  * Requires PHP:      8.0
  * Author:            Karim
@@ -41,6 +41,16 @@ if (!class_exists("Xynity_Blocks")) {
             register_activation_hook(XYNITY_BLOCKS_FILE, [
                 $this,
                 "handle_activation",
+            ]);
+
+            /**
+             * Register plugin deactivation hook
+             *
+             * @since 0.2.1
+             */
+            register_deactivation_hook(XYNITY_BLOCKS_FILE, [
+                $this,
+                "handle_deactivation",
             ]);
 
             /**
@@ -257,6 +267,25 @@ if (!class_exists("Xynity_Blocks")) {
                 // Display an error message
                 wp_die($e->getMessage());
             }
+        }
+
+        /**
+         * Handle deactivation
+         * Performs necessary operation on plugin deactivation
+         *
+         * @return void
+         * @access public
+         * @since 0.2.1
+         */
+        public function handle_deactivation(): void
+        {
+            /**
+             * Manage theme.json content
+             * remove xynity's theme.json
+             * and rename default.theme.json to theme.json
+             */
+            require_once XYNITY_BLOCKS_DIR . "includes/classes/ThemeJSON.php";
+            \Xynity_Blocks\ThemeJSON::migrate_to_default_theme_json();
         }
 
         /**
