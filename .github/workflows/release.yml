@@ -36,7 +36,7 @@ jobs:
         with:
           repo_token: ${{ secrets.TOKEN }}
           file: ./xynity-blocks.zip
-          asset_name: xynity-blocks-${{ github.ref_name }}.zip
+          asset_name: xynity-blocks.zip
           tag: ${{ github.ref }}
           overwrite: true
           
