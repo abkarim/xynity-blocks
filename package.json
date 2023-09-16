@@ -1,6 +1,6 @@
 {
   "name": "xynity-blocks",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Wordpress blocks for building site with FSE",
   "main": "index.js",
   "scripts": {
