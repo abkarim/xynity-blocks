@@ -487,7 +487,7 @@ const Typography = () => {
                                         </h6>
                                         <RadioSwitchInput
                                             smaller={true}
-                                            selected={font.fluid !== false}
+                                            selected={font.fluid}
                                             onClick={() => {
                                                 dispatch({
                                                     type: "fluidToggle",
@@ -498,7 +498,7 @@ const Typography = () => {
                                             }}
                                         />
                                     </div>
-                                    {font.fluid !== false && (
+                                    {font.fluid && (
                                         <div className="mt-2 space-y-2">
                                             <div>
                                                 <h6>Minimum</h6>
