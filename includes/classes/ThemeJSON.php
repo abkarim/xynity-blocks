@@ -30,7 +30,7 @@ class ThemeJSON
      * @access private
      * @since 0.2.0
      */
-    private static $_current_xynity_content_version = "1.0.0";
+    private static $_current_xynity_content_version = "1.0.1";
 
     /**
      * Rename theme.json to default.theme.json
@@ -282,6 +282,8 @@ class ThemeJSON
          */
         $content["settings"]["layout"] = [
             "allowEditing" => true,
+            "contentSize" => "",
+            "wideSize" => "",
         ];
 
         /**
@@ -296,6 +298,7 @@ class ThemeJSON
             "customDuotone" => true, // Enables custom duotone add
             "background" => true, // Enable background color
             "text" => true, // Enable text color
+            "palette" => [],
         ];
 
         /**
@@ -320,6 +323,7 @@ class ThemeJSON
                 "mediumStep" => 1.5,
                 "unit" => "rem",
             ],
+            "spacingSizes" => [],
         ];
 
         /**
@@ -335,7 +339,10 @@ class ThemeJSON
             "textColumns" => true, // Enable text columns
             "textDecoration" => true, // Enable text decoration
             "textTransform" => true, // Enable text transform
-            "writingMode" => true, // Enable writing mode
+            "writingMode" => true, // Enable writing mode,
+            "fluid" => true, // Enable fluid
+            "fontSizes" => [],
+            "fontFamilies" => [],
         ];
 
         /**
@@ -395,6 +402,18 @@ class ThemeJSON
             );
             if (is_null($current_value)) {
                 $array2[$key] = $value;
+                continue;
+            }
+
+            /**
+             * If current value is empty string
+             * replace don't do anything
+             */
+            if (
+                is_string($current_value) &&
+                is_string($value) &&
+                empty(trim($value))
+            ) {
                 continue;
             }
 
@@ -515,12 +534,26 @@ class ThemeJSON
             self::get_current_theme_name() .
             "/theme.json";
         if (FileSystem::is_file_exists_inside_wp_content($backup_file_name)) {
-            $initial_content = json_decode(
+            $backup_file_content = json_decode(
                 FileSystem::get_file_content_inside_wp_content(
                     $backup_file_name
                 ),
                 true
             );
+
+            /**
+             * Check version
+             *
+             * @since 0.2.2
+             */
+            if (
+                Util::get_value_if_present_in_array(
+                    $backup_file_content,
+                    "xynityContentVersion"
+                ) === self::$_current_xynity_content_version
+            ) {
+                $initial_content = $backup_file_content;
+            }
         }
 
         /**

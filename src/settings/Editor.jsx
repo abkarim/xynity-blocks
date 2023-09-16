@@ -17,9 +17,11 @@ const initialState = {
     layout: {
         ...editor_options_from_backend.layout,
         contentSize: getUnitAndValue(
-            editor_options_from_backend.layout.contentSize
+            editor_options_from_backend.layout.contentSize || "1200px"
         ),
-        wideSize: getUnitAndValue(editor_options_from_backend.layout.wideSize),
+        wideSize: getUnitAndValue(
+            editor_options_from_backend.layout.wideSize || "1200px"
+        ),
     },
 };
 
