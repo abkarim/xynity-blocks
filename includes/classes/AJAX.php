@@ -1,4 +1,5 @@
 <?php
+
 namespace Xynity_Blocks;
 
 /**
@@ -34,6 +35,30 @@ class AJAX
             $this,
             "update_shadow_options",
         ]);
+
+        /**
+         * Customization 
+         * 
+         * @since 0.2.4
+         */
+        add_action("wp_ajax_xynity_blocks__get_site_icon_url", [
+            $this,
+            "get_site_icon_url",
+        ]);
+        add_action("wp_ajax_xynity_blocks__update_site_icon", [
+            $this,
+            "update_site_icon",
+        ]);
+        add_action("wp_ajax_xynity_blocks__get_site_logo_url", [
+            $this,
+            "get_site_logo_url",
+        ]);
+        add_action("wp_ajax_xynity_blocks__update_site_logo", [
+            $this,
+            "update_site_logo",
+        ]);
+
+
 
         /**
          * Blocks settings
@@ -310,5 +335,69 @@ class AJAX
         }
 
         $this->send_response_and_close_request("updated successfully");
+    }
+
+    /**
+     * Get site icon url
+     * 
+     * @access public
+     * @since 0.2.4
+     */
+    public function get_site_icon_url()
+    {
+        $this->block_incoming_request_if_invalid("GET");
+
+        $url = Customization::get_current_site_icon_url();
+
+        $this->send_response_and_close_request($url);
+    }
+
+    /**
+     * Update site icon
+     * 
+     * @access public
+     * @since 0.2.4
+     */
+    public function update_site_icon()
+    {
+        [$data, $decoded_data] = $this->get_request_data("POST");
+
+        $is_updated = Customization::update_site_icon($decoded_data['id']);
+
+        $icon_url = Customization::get_current_site_icon_url();
+
+        $this->send_response_and_close_request($icon_url);
+    }
+
+    /**
+     * Get site logo url
+     * 
+     * @access public
+     * @since 0.2.4
+     */
+    public function get_site_logo_url()
+    {
+        $this->block_incoming_request_if_invalid("GET");
+
+        $url = Customization::get_current_site_logo_url();
+
+        $this->send_response_and_close_request($url);
+    }
+
+    /**
+     * Update site logo
+     * 
+     * @access public
+     * @since 0.2.4
+     */
+    public function update_site_logo()
+    {
+        [$data, $decoded_data] = $this->get_request_data("POST");
+
+        $is_updated = Customization::update_site_logo($decoded_data['id']);
+
+        $logo_url = Customization::get_current_site_logo_url();
+
+        $this->send_response_and_close_request($logo_url);
     }
 }
