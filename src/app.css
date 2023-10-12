@@ -6,3 +6,9 @@
 #wpwrap {
     background: #f3f3f3;
 }
+
+/* Menu */
+#toplevel_page_xynity-blocks > .wp-submenu > li:last-child {
+    border-top: 1px solid white !important;
+    margin-top: 5px !important;
+}
