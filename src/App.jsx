@@ -1,6 +1,7 @@
 import { Suspense, lazy, useState } from "react";
 import getSearchParam from "./util/getSearchParam.js";
 import appendSearchParam from "./util/appendSearchParam.js";
+import Customization from "./customization/App.jsx";
 const Intro = lazy(() => import("./intro/App.jsx"));
 const Settings = lazy(() => import("./settings/App.jsx"));
 const Blocks = lazy(() => import("./blocks/App.jsx"));
@@ -31,6 +32,12 @@ const Header = ({ currentPath, changePath }) => {
                         currentPath={currentPath}
                         changePath={changePath}>
                         Welcome
+                    </MenuButton>
+                    <MenuButton
+                        targetPath="customization"
+                        currentPath={currentPath}
+                        changePath={changePath}>
+                        Customization
                     </MenuButton>
                     <MenuButton
                         targetPath="blocks"
@@ -81,12 +88,19 @@ const App = () => {
     if (prevLink) {
         prevLink.classList.remove("current");
     }
-    if (path === null) {
-        links[1].classList.add("current");
-    } else if (path === "blocks") {
-        links[2].classList.add("current");
-    } else {
-        links[3].classList.add("current");
+
+    switch (path) {
+        case null:
+            links[1].classList.add("current");
+            break;
+        case "customization":
+            links[2].classList.add("current");
+            break;
+        case "blocks":
+            links[3].classList.add("current");
+            break;
+        default:
+            links[links.length - 1].classList.add("current");
     }
 
     return (
@@ -97,6 +111,7 @@ const App = () => {
                     {path === null && <Intro />}
                     {path === "blocks" && <Blocks />}
                     {path === "settings" && <Settings />}
+                    {path === "customization" && <Customization />}
                 </Suspense>
             </div>
         </div>
