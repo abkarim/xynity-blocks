@@ -1,4 +1,5 @@
 <?php
+
 namespace Xynity_Blocks;
 
 /**
@@ -45,6 +46,8 @@ class Dashboard
             "includes/classes/settings/Typography.php";
         require_once XYNITY_BLOCKS_PATH .
             "includes/classes/settings/Shadow.php";
+        require_once XYNITY_BLOCKS_PATH .
+            "includes/customization/Customization.php";
     }
 
     /**
@@ -68,6 +71,20 @@ class Dashboard
             [$this, "render_element_cb"],
             null,
             30
+        );
+
+        /**
+         * Add customization submenu
+         *
+         * @since 0.2.4
+         */
+        add_submenu_page(
+            "xynity-blocks",
+            "Customization",
+            "Customization",
+            "manage_options",
+            "xynity-blocks&path=customization",
+            [$this, "render_element_cb"]
         );
 
         /**
@@ -109,9 +126,9 @@ class Dashboard
      */
     public function render_element_cb()
     {
-        ?>
-            <main id="xynity-blocks-main-container"></main>
-        <?php
+?>
+        <main id="xynity-blocks-main-container"></main>
+<?php
     }
 
     /**
@@ -182,6 +199,14 @@ class Dashboard
                     ";",
                 "before"
             );
+
+            /**
+             * Include wp media
+             * required for MediaUpload component in Frontend
+             * 
+             * @since 0.2.4
+             */
+            wp_enqueue_media();
         }
     }
 }
