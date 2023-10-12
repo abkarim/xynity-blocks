@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --mode=production --no-cache",
     "start": "webpack --mode=development --watch",
-    "extract": "rm -rf ./plugin && node extract-plugin"
+    "extract": "rm -rf ./plugin && npm run build && node extract-plugin"
   },
   "repository": {
     "type": "git",
