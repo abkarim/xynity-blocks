@@ -2,6 +2,8 @@
 
 namespace Xynity_Blocks;
 
+echo json_encode(get_registered_nav_menus());
+
 /**
  * Prevent direct access
  */
