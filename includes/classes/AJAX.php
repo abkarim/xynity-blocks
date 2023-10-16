@@ -36,6 +36,11 @@ class AJAX
             "update_shadow_options",
         ]);
 
+        add_action("wp_ajax_xynity_blocks__image_upload_options_update", [
+            $this,
+            "image_upload_options_update",
+        ]);
+
         /**
          * Customization 
          * 
@@ -173,6 +178,16 @@ class AJAX
              * @var array
              */
             if (!($decoded_data = json_decode($data, true))) {
+
+                /**
+                 * If we got [] 
+                 * we should return []
+                 * without sending error message
+                 */
+                if ($data === "[]") {
+                    return [$data, []];
+                }
+
                 wp_send_json_error("data is not valid json", 400);
                 return wp_die();
             }
@@ -333,6 +348,26 @@ class AJAX
                 500
             );
         }
+
+        $this->send_response_and_close_request("updated successfully");
+    }
+
+    /**
+     * Update image upload options
+     *
+     * @return void
+     * @since 0.2.4
+     * @access public
+     */
+    public function image_upload_options_update(): void
+    {
+        [$data, $decoded_data] = $this->get_request_data("POST");
+
+        /**
+         * Is updated successfully
+         * @var bool
+         */
+        $is_updated = Uploads::update_image_upload_types($decoded_data);
 
         $this->send_response_and_close_request("updated successfully");
     }
