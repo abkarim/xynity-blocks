@@ -1,4 +1,5 @@
 <?php
+
 namespace Xynity_Blocks;
 
 /**
@@ -23,6 +24,7 @@ class DB
      */
     private static $_options_list = [
         XYNITY_BLOCKS_TEXT_DOMAIN . "_database_version",
+        XYNITY_BLOCKS_TEXT_DOMAIN . "_image_upload_types",
     ];
 
     /**

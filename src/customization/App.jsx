@@ -2,7 +2,6 @@ import { Suspense, lazy, useState } from "react";
 import getSearchParam from "../util/getSearchParam";
 import appendSearchParam from "../util/appendSearchParam";
 const Icon = lazy(() => import("./Icon.jsx"));
-const Navigation = lazy(() => import("./Navigation.jsx"));
 
 const SideBar = ({ currentOption, setOption }) => {
     const Option = ({ targetOption, children }) => {
@@ -33,25 +32,6 @@ const SideBar = ({ currentOption, setOption }) => {
                 </span>
                 Icon
             </Option>
-            <Option targetOption="navigation">
-                <span className="inline-block w-5 h-full">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        version="1.1"
-                        id="Capa_1"
-                        x="0px"
-                        y="0px"
-                        fill="currentColor"
-                        viewBox="0 0 512 512">
-                        <g>
-                            <path d="M480,224H32c-17.673,0-32,14.327-32,32s14.327,32,32,32h448c17.673,0,32-14.327,32-32S497.673,224,480,224z" />
-                            <path d="M32,138.667h448c17.673,0,32-14.327,32-32s-14.327-32-32-32H32c-17.673,0-32,14.327-32,32S14.327,138.667,32,138.667z" />
-                            <path d="M480,373.333H32c-17.673,0-32,14.327-32,32s14.327,32,32,32h448c17.673,0,32-14.327,32-32S497.673,373.333,480,373.333z" />
-                        </g>
-                    </svg>
-                </span>
-                Navigation
-            </Option>
         </aside>
     );
 };
@@ -74,7 +54,6 @@ const Customization = () => {
                 <figure className="w-full">
                     <Suspense fallback={<h1>Loading...</h1>}>
                         {option === "icon" && <Icon />}
-                        {option === "navigation" && <Navigation />}
                     </Suspense>
                 </figure>
             </div>
