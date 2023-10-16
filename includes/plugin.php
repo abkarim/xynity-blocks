@@ -14,6 +14,7 @@ require_once XYNITY_BLOCKS_PATH . "includes/classes/AJAX.php";
 require_once XYNITY_BLOCKS_PATH . "includes/classes/Util.php";
 require_once XYNITY_BLOCKS_PATH . "includes/classes/Blocks.php";
 require_once XYNITY_BLOCKS_PATH . "includes/classes/DB.php";
+require_once XYNITY_BLOCKS_PATH . "includes/Supports.php";
 
 final class Plugin
 {
@@ -64,16 +65,16 @@ final class Plugin
      */
     public static function show_admin_error_message($massage): void
     {
-        ?>
-            <div class="notice notice-error is-dismissible">
-                <p>
-                    <?php _e($massage); ?>
+?>
+        <div class="notice notice-error is-dismissible">
+            <p>
+                <?php _e($massage); ?>
                 <b>
                     <?php _e(XYNITY_BLOCKS_NAME); ?>
                 </b>
-                </p>
-            </div>
-        <?php
+            </p>
+        </div>
+    <?php
     }
 
     /**
@@ -89,16 +90,16 @@ final class Plugin
      */
     public static function show_admin_warning_message($massage): void
     {
-        ?>
-            <div class="notice notice-warning is-dismissible">
-                <p>
-                    <?php _e($massage); ?>
+    ?>
+        <div class="notice notice-warning is-dismissible">
+            <p>
+                <?php _e($massage); ?>
                 <b>
                     <?php _e(XYNITY_BLOCKS_NAME); ?>
                 </b>
-                </p>
-            </div>
-        <?php
+            </p>
+        </div>
+    <?php
     }
 
     /**
@@ -114,16 +115,16 @@ final class Plugin
      */
     public static function show_admin_success_message($massage)
     {
-        ?>
-            <div class="notice notice-success is-dismissible">
-                <p>
-                    <?php _e($massage); ?>
+    ?>
+        <div class="notice notice-success is-dismissible">
+            <p>
+                <?php _e($massage); ?>
                 <b>
                     <?php _e(XYNITY_BLOCKS_NAME); ?>
                 </b>
-                </p>
-            </div>
-        <?php
+            </p>
+        </div>
+<?php
     }
 
     /**
@@ -163,8 +164,12 @@ final class Plugin
             "update_plugin_action_links",
         ]);
 
+        // Handle supports
+        new Supports();
+
         // Handle menu options
         new Dashboard();
+
         // Handle AJAX
         new AJAX();
     }

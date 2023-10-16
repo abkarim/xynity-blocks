@@ -47,6 +47,8 @@ class Dashboard
         require_once XYNITY_BLOCKS_PATH .
             "includes/classes/settings/Shadow.php";
         require_once XYNITY_BLOCKS_PATH .
+            "includes/classes/settings/Uploads.php";
+        require_once XYNITY_BLOCKS_PATH .
             "includes/customization/Customization.php";
     }
 
@@ -196,6 +198,15 @@ class Dashboard
                 "xynity-blocks-admin-main",
                 "const shadows_options_from_backend = " .
                     wp_json_encode(Shadow::get_current_shadow_options()) .
+                    ";",
+                "before"
+            );
+            wp_add_inline_script(
+                "xynity-blocks-admin-main",
+                "const upload_options_from_backend = " .
+                    wp_json_encode([
+                        "imageUploads" => Uploads::get_image_upload_types()
+                    ]) .
                     ";",
                 "before"
             );
