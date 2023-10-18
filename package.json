@@ -36,6 +36,7 @@
   },
   "homepage": "https://github.com/abkarim/xynity-blocks#readme",
   "dependencies": {
+    "@monaco-editor/react": "^4.6.0",
     "@wordpress/api-fetch": "^6.40.0",
     "@wordpress/media-utils": "^4.34.0",
     "babel-loader": "^9.1.3",
