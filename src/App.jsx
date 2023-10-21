@@ -5,6 +5,8 @@ import Customization from "./customization/App.jsx";
 const Intro = lazy(() => import("./intro/App.jsx"));
 const Settings = lazy(() => import("./settings/App.jsx"));
 const Blocks = lazy(() => import("./blocks/App.jsx"));
+const CustomJS = lazy(() => import("./custom_js/App.jsx"));
+const CustomCSS = lazy(() => import("./custom_css/App.jsx"));
 
 const MenuButton = ({ targetPath, currentPath, changePath, children }) => {
     return (
@@ -99,6 +101,12 @@ const App = () => {
         case "blocks":
             links[3].classList.add("current");
             break;
+        case "custom_css":
+            links[4].classList.add("current");
+            break;
+        case "custom_js":
+            links[5].classList.add("current");
+            break;
         default:
             links[links.length - 1].classList.add("current");
     }
@@ -112,6 +120,8 @@ const App = () => {
                     {path === "blocks" && <Blocks />}
                     {path === "settings" && <Settings />}
                     {path === "customization" && <Customization />}
+                    {path === "custom_css" && <CustomCSS />}
+                    {path === "custom_js" && <CustomJS />}
                 </Suspense>
             </div>
         </div>
