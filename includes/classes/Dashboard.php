@@ -104,6 +104,34 @@ class Dashboard
         );
 
         /**
+         * Add custom CSS
+         *
+         * @since 0.2.4
+         */
+        add_submenu_page(
+            "xynity-blocks",
+            "Custom CSS",
+            "Custom CSS",
+            "manage_options",
+            "xynity-blocks&path=custom_css",
+            [$this, "render_element_cb"]
+        );
+
+        /**
+         * Add custom JavaScript
+         *
+         * @since 0.2.4
+         */
+        add_submenu_page(
+            "xynity-blocks",
+            "Custom JavaScript",
+            "Custom JavaScript",
+            "manage_options",
+            "xynity-blocks&path=custom_js",
+            [$this, "render_element_cb"]
+        );
+
+        /**
          * Add default css properties page
          * Read CSS property from theme.json and display it as editable
          * Apply changes
