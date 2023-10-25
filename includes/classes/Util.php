@@ -80,4 +80,24 @@ class Util
 
         return (bool) $value;
     }
+
+    /**
+     * Generate a random string 
+     * 
+     * @param int length - default 20
+     * @return string generated_random_string
+     * @since 0.2.4
+     * @access public
+     * @static
+     */
+    public static function generate_random_string(int $length = 20): string
+    {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[random_int(0, $charactersLength - 1)];
+        }
+        return $randomString;
+    }
 }
