@@ -20,7 +20,8 @@ class Dashboard
     public function __construct()
     {
         // Load files
-        self::load_files();
+        $this->load_files();
+        $this->init();
 
         // Add menu
         add_action("admin_menu", [$this, "add_menu"]);
@@ -50,6 +51,19 @@ class Dashboard
             "includes/classes/settings/Uploads.php";
         require_once XYNITY_BLOCKS_PATH .
             "includes/customization/Customization.php";
+        require_once XYNITY_BLOCKS_PATH .
+            "includes/custom_files/CustomFiles.php";
+    }
+
+    /**
+     * Init 
+     * 
+     * @access private
+     * @since 0.2.4
+     */
+    private function init()
+    {
+        new CustomFiles();
     }
 
     /**
