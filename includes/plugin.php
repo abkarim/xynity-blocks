@@ -172,5 +172,8 @@ final class Plugin
 
         // Handle AJAX
         new AJAX();
+
+        // handle custom files
+        CustomFiles::load_custom_files();
     }
 }
