@@ -76,7 +76,7 @@ export default function Edit({ initData, goBack }) {
         }
 
         const response = await postData({
-            action: "__update_css",
+            action: "__update",
             data: preparedData,
         });
 

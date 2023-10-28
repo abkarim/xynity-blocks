@@ -48,7 +48,7 @@ export default function AddNew({ goBack }) {
         }
 
         const response = await postData({
-            action: "__update_css",
+            action: "__update",
             data: preparedData,
         });
 
