@@ -3,7 +3,6 @@ import { useState } from "react";
 import RadioSwitchInput from "./RadioSwitchInput.jsx";
 import getCookie from "../../util/cookie/get.js";
 import setCookie from "../../util/cookie/set.js";
-import DefaultButton from "../button/Default.jsx";
 
 export default function CSSInput({
     defaultValue = "// .some-class {color: black;}",
