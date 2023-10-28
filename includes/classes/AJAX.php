@@ -62,22 +62,6 @@ class AJAX
             $this,
             "update_site_logo",
         ]);
-
-
-
-        /**
-         * Blocks settings
-         *
-         * @since 0.1.4
-         */
-        // add_action("wp_ajax_xynity_blocks__get_block_data", [
-        //     $this,
-        //     "get_block_data",
-        // ]);
-        // add_action("wp_ajax_xynity_blocks__update_block_data", [
-        //     $this,
-        //     "update_block_data",
-        // ]);
     }
 
     /**
@@ -85,9 +69,9 @@ class AJAX
      *
      * @param string request_type
      * @since 0.1.0
-     * @access private
+     * @access protected
      */
-    private function block_incoming_request_if_invalid($request_type)
+    protected function block_incoming_request_if_invalid($request_type)
     {
         if (!isset($_SERVER["HTTP_X_WP_NONCE"])) {
             wp_send_json_error("unauthorized request", 403);
@@ -136,9 +120,9 @@ class AJAX
      *
      * @return array - action excluded
      * @since 0.1.4
-     * @access private
+     * @access protected
      */
-    private function get_url_parameter()
+    protected function get_url_parameter()
     {
         // Get all parameter
         $data = $_GET;
@@ -156,9 +140,9 @@ class AJAX
      * @param string request_type Default GET
      * @return array [$data, $decodedData]
      * @since 0.1.4
-     * @access private
+     * @access protected
      */
-    private function get_request_data($request_type = "GET")
+    protected function get_request_data($request_type = "GET")
     {
         $this->block_incoming_request_if_invalid($request_type);
 
@@ -202,10 +186,10 @@ class AJAX
      * @param mixed data
      * @param int status-code default 200
      * @return void
-     * @access private
+     * @access protected
      * @since 0.1.4
      */
-    private function send_response_and_close_request($data, $status_code = 200)
+    protected function send_response_and_close_request($data, $status_code = 200)
     {
         wp_send_json_success($data, $status_code);
         wp_die();
