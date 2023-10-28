@@ -34,17 +34,29 @@ class CustomFiles extends AJAX
         add_action("wp_ajax_xynity_blocks__get_all_css", function () {
             $this->get_all('css');
         });
+        add_action("wp_ajax_xynity_blocks__get_all_js", function () {
+            $this->get_all('js');
+        });
+
+
         add_action("wp_ajax_xynity_blocks__get_all_css_trashed", function () {
             $this->get_all_trashed('css');
         });
+        add_action("wp_ajax_xynity_blocks__get_all_js_trashed", function () {
+            $this->get_all_trashed('js');
+        });
+
+
         add_action("wp_ajax_xynity_blocks__add_new_css", function () {
             $this->add_new('css');
         });
-        add_action("wp_ajax_xynity_blocks__update_css", function () {
-            $this->update_metadata();
+        add_action("wp_ajax_xynity_blocks__add_new_js", function () {
+            $this->add_new('js');
         });
 
 
+
+        add_action("wp_ajax_xynity_blocks__update", [$this, 'update_metadata']);
         add_action("wp_ajax_xynity_blocks__custom_file__move_to_trash", [$this, 'move_to_trash']);
         add_action("wp_ajax_xynity_blocks__custom_file__restore_from_trash", [$this, 'restore_from_trash']);
         add_action("wp_ajax_xynity_blocks__custom_file__delete", [$this, 'delete']);
@@ -259,18 +271,28 @@ class CustomFiles extends AJAX
 
         global $wpdb;
         $table_name = DB::get_custom_files_table_name();
+
+        $file_metadata = DB::get_result($table_name, [
+            'id' => $id
+        ]);
+        if (count($file_metadata) === 0) {
+            $this->send_response_and_close_request("custom file doesn't exists", 400);
+        }
+
+        /**
+         * Update version
+         */
+        $updated_value['file_version'] = intval($file_metadata['file_version']) + 1;
+
         $is_updated = $wpdb->update(
             $table_name,
             $updated_value,
             [
-                'id' => $id
+                'id' => $id,
             ]
         );
 
         $content = Util::get_value_if_present_in_array($decoded_Data, 'content', "");
-        $file_metadata = DB::get_result($table_name, [
-            'id' => $id
-        ]);
 
         /**
          * Update file content
