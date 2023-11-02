@@ -1,6 +1,6 @@
-# xynity-blocks
+# Xynity Blocks
 
-Extends Block Themes functionality and Adds blocks. You will get every options to edit. That's mean you have the full control of your site. 
+Extends block themes functionality and blocks. You will get every options to edit. That means now you have the full control of your site. [Download latest version](https://github.com/abkarim/xynity-blocks/releases).
 
 ## Settings
 
@@ -19,30 +19,5 @@ Extends Block Themes functionality and Adds blocks. You will get every options t
 ![Screenshot from 2023-10-28 19-06-43](https://github.com/abkarim/xynity-blocks/assets/84965867/426ad4f3-45ae-45e5-8184-cfd2516a4959)
 
 
-
 ## Blocks (work in progress)
 ![Screenshot from 2023-08-15 18-27-43](https://github.com/abkarim/xynity-blocks/assets/84965867/74f3efea-381f-4f98-aeb2-44a17dcbc86a)
-
-
-## Recommendations
-
--   **Theme** Twenty Twenty Three
-
-## Commands
-
--   **Build** `npm run build`
--   **Extract plugin (xynity-blocks.zip)** `npm run extract`
-
-## Frontend Library/Framework
-
--   React
--   Webpack
--   Babel
--   Tailwindcss
--   Postcss
-
-## File structure
-
--   Frontend  
-    development dir - `/src`  
-    build dir - `/dashboard`
