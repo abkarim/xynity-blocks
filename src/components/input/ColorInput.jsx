@@ -55,7 +55,7 @@ export default function ColorInput({
     }, [edit]);
 
     return (
-        <div ref={containerRef}>
+        <div ref={containerRef} className="relative">
             {!edit && (
                 <ColorIndicator
                     onClick={() => readOnly === false && setEdit(true)}
@@ -63,10 +63,10 @@ export default function ColorInput({
                 />
             )}
             {edit && (
-                <div>
+                <div className="absolute top-0 right-0 z-50">
                     <ColorPicker
                         enableAlpha
-                        className="border shadow"
+                        className="bg-white border shadow"
                         defaultValue={value}
                         onChange={updateColor}
                     />
