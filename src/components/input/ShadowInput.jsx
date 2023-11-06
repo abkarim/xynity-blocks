@@ -93,8 +93,8 @@ const ShadowInput = ({ value, onChange }) => {
                         <fieldset className="flex items-stretch w-48">
                             <ColorInput
                                 value={data.color}
-                                onChange={(e) =>
-                                    setData({ ...data, color: e.target.value })
+                                onChange={(color) =>
+                                    setData({ ...data, color })
                                 }
                             />
                         </fieldset>
