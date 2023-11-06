@@ -12,3 +12,8 @@
     border-top: 1px solid white !important;
     margin-top: 5px !important;
 }
+
+/* Duotone preview component */
+.component-color-indicator {
+    @apply inline-block w-10 h-10 border cursor-pointer;
+}
