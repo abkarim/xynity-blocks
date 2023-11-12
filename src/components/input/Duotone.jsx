@@ -1,21 +1,40 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ColorInput from "./ColorInput.jsx";
 
 export default function Duotone({ values, onChange }) {
-    const [edit, setEdit] = useState(false);
-    const [color1, setColor1] = useState(values[0]);
-    const [color2, setColor2] = useState(values[1]);
+    const [colors, setColors] = useState({
+        first: values[0],
+        second: values[1],
+    });
 
-    useEffect(() => {
-        onChange([color1, color2]);
-    }, [color1, color2]);
+    /**
+     * Update color
+     *
+     * triggers onChange function
+     *
+     * @param {string} name
+     * @param {string} color
+     */
+    function updateColor(name, color) {
+        setColors((prev) => {
+            const newColors = { ...prev, [name]: color };
+            onChange([newColors.first, newColors.second]);
+            return newColors;
+        });
+    }
 
     return (
         <div className="flex flex-col gap-0">
             <span className="-mb-[6px]">
-                <ColorInput value={color1} onChange={setColor1} />
+                <ColorInput
+                    value={colors.first}
+                    onChange={(color) => updateColor("first", color)}
+                />
             </span>
-            <ColorInput value={color2} onChange={setColor2} />
+            <ColorInput
+                value={colors.second}
+                onChange={(color) => updateColor("second", color)}
+            />
         </div>
     );
 }
