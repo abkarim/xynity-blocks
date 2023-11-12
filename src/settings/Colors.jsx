@@ -55,7 +55,7 @@ const reducer = (state, action) => {
         case "new":
             const newColor = {
                 color: "#000",
-                name: "Untitled ",
+                name: `Untitled ${action.name}`,
                 slug: randomString(),
             };
 
