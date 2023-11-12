@@ -536,8 +536,6 @@ const Editor = () => {
                         </div>
                         <div className="mt-3 space-y-4">
                             {data.spacing.spacingSizes.map((item, index) => {
-                                const { minimum, maximum, value } =
-                                    destructFromClamp(item.size);
                                 return (
                                     <div
                                         key={index}
@@ -620,101 +618,20 @@ const Editor = () => {
                                                 <span className="inline-block w-12 font-bold">
                                                     Size: &nbsp;
                                                 </span>
-                                                <span>{item.size}</span>
-                                            </div>
-                                        </div>
-                                        <div className="space-y-2">
-                                            <div className="flex items-center justify-between">
-                                                <span className="font-bold">
-                                                    Minimum: &nbsp;
-                                                </span>
-                                                <input
-                                                    type="text"
-                                                    className="border-none !outline-none !bg-transparent"
-                                                    onInput={(e) => {
-                                                        const currentValue =
-                                                            e.target.value;
-                                                        dispatch({
-                                                            type: "spacingSizes",
-                                                            payload: {
-                                                                index: index,
-                                                                name: "size",
-                                                                value: `clamp(${currentValue.trim()}, ${value.trim()}, ${maximum.trim()})`,
-                                                            },
-                                                        });
-                                                        if (
-                                                            value.trim() === ""
-                                                        ) {
-                                                            errorFound.current = true;
-                                                            return setNotification(
-                                                                {
-                                                                    type: "error",
-                                                                    text: "minimum cannot be empty, please enter minimum value",
-                                                                }
-                                                            );
-                                                        } else {
-                                                            errorFound.current = false;
-                                                        }
-                                                    }}
-                                                    title="minimum"
-                                                    value={minimum}
-                                                />
-                                            </div>
-                                            <div className="flex items-center justify-between">
-                                                <span className="font-bold">
-                                                    Maximum: &nbsp;
-                                                </span>
-                                                <input
-                                                    type="text"
-                                                    title="maximum"
-                                                    value={maximum}
-                                                    className="inline-block !outline-none !bg-transparent"
-                                                    onInput={(e) => {
-                                                        const currentValue =
-                                                            e.target.value;
-                                                        dispatch({
-                                                            type: "spacingSizes",
-                                                            payload: {
-                                                                index: index,
-                                                                name: "size",
-                                                                value: `clamp(${minimum.trim()}, ${value.trim()}, ${currentValue.trim()})`,
-                                                            },
-                                                        });
-
-                                                        if (
-                                                            value.trim() === ""
-                                                        ) {
-                                                            errorFound.current = true;
-                                                            return setNotification(
-                                                                {
-                                                                    type: "error",
-                                                                    text: "slug cannot be empty, please enter a slug",
-                                                                }
-                                                            );
-                                                        } else {
-                                                            errorFound.current = false;
-                                                        }
-                                                    }}
-                                                />
-                                            </div>
-                                            <div className="flex items-center justify-between">
-                                                <span className="font-bold">
-                                                    Value: &nbsp;
-                                                </span>
                                                 <input
                                                     type="text"
                                                     title="slug"
-                                                    value={value}
+                                                    value={item.size}
                                                     className="inline-block !outline-none !bg-transparent"
                                                     onInput={(e) => {
                                                         const value =
-                                                            e.target.value;
+                                                            e.target.value.trim();
                                                         dispatch({
                                                             type: "spacingSizes",
                                                             payload: {
                                                                 index: index,
                                                                 name: "size",
-                                                                value: `clamp(${minimum.trim()}, ${value.trim()}, ${maximum.trim()})`,
+                                                                value,
                                                             },
                                                         });
 
@@ -725,7 +642,7 @@ const Editor = () => {
                                                             return setNotification(
                                                                 {
                                                                     type: "error",
-                                                                    text: "slug cannot be empty, please enter a slug",
+                                                                    text: "value cannot be empty, please enter a value",
                                                                 }
                                                             );
                                                         } else {
