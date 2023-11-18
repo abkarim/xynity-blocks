@@ -3,6 +3,9 @@ import Select from "../components/input/Select.jsx";
 import { useNotificationUpdate } from "../context/notification.jsx";
 import ColorInput from "../components/input/ColorInput.jsx";
 import RadioSwitchInput from "../components/input/RadioSwitchInput.jsx";
+import Duotone from "../components/input/Duotone.jsx";
+import randomString from "../util/string/randonString.js";
+import GradientInput from "../components/input/Gradient.jsx";
 
 /**
  * colors_options_from_backend is localized by WordPress
@@ -15,38 +18,70 @@ const initialState = {
 const reducer = (state, action) => {
     switch (action.type) {
         case "color":
-            state.palette[action.payload.index].color = action.payload.value;
+            state[action.name][action.payload.index].color =
+                action.payload.value;
+            return { ...state };
+
+        case "colors":
+            state[action.name][action.payload.index].colors =
+                action.payload.value;
+            return { ...state };
+
+        case "gradient":
+            state[action.name][action.payload.index].gradient =
+                action.payload.value;
             return { ...state };
 
         case "name":
-            state.palette[action.payload.index].name = action.payload.value;
+            state[action.name][action.payload.index].name =
+                action.payload.value;
             return { ...state };
 
         case "slug":
-            state.palette[action.payload.index].slug = action.payload.value;
+            state[action.name][action.payload.index].slug =
+                action.payload.value;
             return { ...state };
 
         case "delete":
-            const targetItem = state.palette[action.payload.index];
-            const newData = state.palette.filter((item) => item !== targetItem);
-            return { ...state, palette: newData };
+            const targetItem = state[action.name][action.payload.index];
+            const newData = state[action.name].filter(
+                (item) => item !== targetItem
+            );
+            return { ...state, [action.name]: newData };
 
         case "duplicate":
             const copiedItem = structuredClone(
-                state.palette[action.payload.index]
+                state[action.name][action.payload.index]
             );
             copiedItem.name = copiedItem.name + " - duplicate";
-            copiedItem.slug = copiedItem.slug + "2";
-            state.palette.splice(action.payload.index + 1, 0, copiedItem);
+            copiedItem.slug = copiedItem.slug + "-duplicate";
+            state[action.name].splice(action.payload.index + 1, 0, copiedItem);
             return { ...state };
 
         case "new":
-            const newColor = {
+            const newValue = {
                 color: "#000",
-                name: "New color",
-                slug: "new-color",
+                name: `Untitled ${action.name}`,
+                slug: randomString(),
             };
-            state.palette.unshift(newColor);
+
+            if (action.name !== "palette") {
+                delete newValue["color"];
+                /**
+                 * For duotone
+                 */
+                if (action.name === "duotone") {
+                    newValue["colors"] = ["#000", "#FFF"];
+                } else if (action.name === "gradients") {
+                    /**
+                     * For Gradients
+                     */
+                    newValue["gradient"] =
+                        'linear-gradient(to bottom, #C2A990 0%, #F9F9F9 100%)", name: "Vertical soft sandstone to white';
+                }
+            }
+
+            state[action.name].unshift(newValue);
             return { ...state };
 
         case "toggleBool":
@@ -79,11 +114,13 @@ const Colors = () => {
 
         const requestData = {
             palette: data.palette,
+            duotone: data.duotone,
             text: data.text,
             background: data.background,
             link: data.link,
             defaultPalette: data.defaultPalette,
             defaultGradients: data.defaultGradients,
+            defaultDuotone: data.defaultDuotone,
             customGradient: data.customGradient,
             customDuotone: data.customDuotone,
             custom: data.custom,
@@ -148,6 +185,8 @@ const Colors = () => {
                     <option value="*">All</option>
                     <option value="settings">Settings</option>
                     <option value="palette">Palette</option>
+                    <option value="duotone">Duotone</option>
+                    <option value="gradients">Gradients</option>
                 </Select>
             </div>
             {/* Settings */}
@@ -255,6 +294,25 @@ const Colors = () => {
                     </div>
                     <div className="relative flex items-start justify-between w-full p-5 border-b">
                         <div>
+                            <h3 className="text-xl">Default Duotone </h3>
+                            <p>Enable default duotone colors</p>
+                        </div>
+                        <fieldset>
+                            <RadioSwitchInput
+                                selected={data.defaultDuotone}
+                                onClick={() => {
+                                    dispatch({
+                                        type: "toggleBool",
+                                        payload: {
+                                            name: "defaultDuotone",
+                                        },
+                                    });
+                                }}
+                            />
+                        </fieldset>
+                    </div>
+                    <div className="relative flex items-start justify-between w-full p-5 border-b">
+                        <div>
                             <h3 className="text-xl">Custom Color</h3>
                             <p>Input colors thats are not in the palette</p>
                         </div>
@@ -324,7 +382,7 @@ const Colors = () => {
                             onClick={() =>
                                 dispatch({
                                     type: "new",
-                                    category: "global",
+                                    name: "palette",
                                 })
                             }>
                             Add New
@@ -343,7 +401,7 @@ const Colors = () => {
                                             const value = e.target.value;
                                             dispatch({
                                                 type: "name",
-                                                category: "global",
+                                                name: "palette",
                                                 payload: {
                                                     index: i,
                                                     value,
@@ -370,7 +428,7 @@ const Colors = () => {
                                             const value = e.target.value;
                                             dispatch({
                                                 type: "slug",
-                                                category: "global",
+                                                name: "palette",
                                                 payload: {
                                                     index: i,
                                                     value: value.trim(),
@@ -393,11 +451,10 @@ const Colors = () => {
                             <div className="flex gap-5">
                                 <div>
                                     <ColorInput
-                                        onChange={(e) => {
-                                            const color = e.target.value;
+                                        onChange={(color) => {
                                             dispatch({
                                                 type: "color",
-                                                category: "global",
+                                                name: "palette",
                                                 payload: {
                                                     index: i,
                                                     value: color,
@@ -413,6 +470,7 @@ const Colors = () => {
                                         onClick={() =>
                                             dispatch({
                                                 type: "duplicate",
+                                                name: "palette",
                                                 payload: {
                                                     index: i,
                                                 },
@@ -444,6 +502,325 @@ const Colors = () => {
 
                                             dispatch({
                                                 type: "delete",
+                                                name: "palette",
+                                                payload: {
+                                                    index: i,
+                                                },
+                                            });
+                                        }}>
+                                        {/* Remove icon */}
+                                        <span className="inline-block w-5 h-5 text-red-600">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                id="Outline"
+                                                fill="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path d="M21,4H17.9A5.009,5.009,0,0,0,13,0H11A5.009,5.009,0,0,0,6.1,4H3A1,1,0,0,0,3,6H4V19a5.006,5.006,0,0,0,5,5h6a5.006,5.006,0,0,0,5-5V6h1a1,1,0,0,0,0-2ZM11,2h2a3.006,3.006,0,0,1,2.829,2H8.171A3.006,3.006,0,0,1,11,2Zm7,17a3,3,0,0,1-3,3H9a3,3,0,0,1-3-3V6H18Z" />
+                                                <path d="M10,18a1,1,0,0,0,1-1V11a1,1,0,0,0-2,0v6A1,1,0,0,0,10,18Z" />
+                                                <path d="M14,18a1,1,0,0,0,1-1V11a1,1,0,0,0-2,0v6A1,1,0,0,0,14,18Z" />
+                                            </svg>
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
+            {/* Gradients */}
+            {(visibleOption === "gradients" || visibleOption === "*") && (
+                <div>
+                    <div className="flex items-center justify-between px-5 py-1 border-b bg-gray-50">
+                        <h3 className="text-sm font-bold text-gray-600 uppercase ">
+                            Gradients
+                        </h3>
+                        <button
+                            className="p-1 px-3 text-white bg-blue-600 rounded-sm"
+                            onClick={() =>
+                                dispatch({
+                                    type: "new",
+                                    name: "gradients",
+                                })
+                            }>
+                            Add New
+                        </button>
+                    </div>
+                    {data.gradients.map((gradient, i) => (
+                        <div
+                            key={i}
+                            className="relative flex items-start justify-between w-full p-5 border-b">
+                            <div>
+                                <div className="space-y-1">
+                                    <input
+                                        type="text"
+                                        className="block w-full text-xl !border-none !outline-none !px-0"
+                                        onInput={(e) => {
+                                            const value = e.target.value;
+                                            dispatch({
+                                                type: "name",
+                                                name: "gradients",
+                                                payload: {
+                                                    index: i,
+                                                    value,
+                                                },
+                                            });
+                                            if (value.trim() === "") {
+                                                errorFound.current = true;
+                                                return setNotification({
+                                                    type: "error",
+                                                    text: "name cannot be empty, please enter a name",
+                                                });
+                                            } else {
+                                                errorFound.current = false;
+                                            }
+                                        }}
+                                        title="name"
+                                        value={gradient.name}
+                                    />
+                                    <input
+                                        title="slug"
+                                        value={gradient.slug}
+                                        className="inline-block !bg-transparent"
+                                        onInput={(e) => {
+                                            const value = e.target.value;
+                                            dispatch({
+                                                type: "slug",
+                                                name: "gradients",
+                                                payload: {
+                                                    index: i,
+                                                    value: value.trim(),
+                                                },
+                                            });
+
+                                            if (value.trim() === "") {
+                                                errorFound.current = true;
+                                                return setNotification({
+                                                    type: "error",
+                                                    text: "slug cannot be empty, please enter a slug",
+                                                });
+                                            } else {
+                                                errorFound.current = false;
+                                            }
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                            <div className="flex gap-5">
+                                <div>
+                                    <div className="w-10 h-10">
+                                        <GradientInput
+                                            gradient={gradient.gradient}
+                                            onChange={(value) =>
+                                                dispatch({
+                                                    type: "gradient",
+                                                    name: "gradients",
+                                                    payload: {
+                                                        index: i,
+                                                        value,
+                                                    },
+                                                })
+                                            }
+                                        />
+                                    </div>
+                                </div>
+                                <div className="flex flex-col gap-1">
+                                    <button
+                                        title="Duplicate"
+                                        onClick={() =>
+                                            dispatch({
+                                                type: "duplicate",
+                                                name: "gradients",
+                                                payload: {
+                                                    index: i,
+                                                },
+                                            })
+                                        }>
+                                        {/* Duplicate icon */}
+                                        <span className="inline-block w-5 h-5 ">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                id="Outline"
+                                                viewBox="0 0 24 24"
+                                                fill="currentColor">
+                                                <path d="M21.155,3.272,18.871.913A3.02,3.02,0,0,0,16.715,0H12A5.009,5.009,0,0,0,7.1,4H7A5.006,5.006,0,0,0,2,9V19a5.006,5.006,0,0,0,5,5h6a5.006,5.006,0,0,0,5-5v-.1A5.009,5.009,0,0,0,22,14V5.36A2.988,2.988,0,0,0,21.155,3.272ZM13,22H7a3,3,0,0,1-3-3V9A3,3,0,0,1,7,6v8a5.006,5.006,0,0,0,5,5h4A3,3,0,0,1,13,22Zm4-5H12a3,3,0,0,1-3-3V5a3,3,0,0,1,3-3h4V4a2,2,0,0,0,2,2h2v8A3,3,0,0,1,17,17Z" />
+                                            </svg>
+                                        </span>
+                                    </button>
+                                    <button
+                                        title="Delete"
+                                        onClick={() => {
+                                            /**
+                                             * Get delete confirmation
+                                             */
+                                            if (
+                                                !confirm(
+                                                    "are you sure want to delete this color ?"
+                                                )
+                                            )
+                                                return;
+
+                                            dispatch({
+                                                type: "delete",
+                                                name: "gradients",
+                                                payload: {
+                                                    index: i,
+                                                },
+                                            });
+                                        }}>
+                                        {/* Remove icon */}
+                                        <span className="inline-block w-5 h-5 text-red-600">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                id="Outline"
+                                                fill="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path d="M21,4H17.9A5.009,5.009,0,0,0,13,0H11A5.009,5.009,0,0,0,6.1,4H3A1,1,0,0,0,3,6H4V19a5.006,5.006,0,0,0,5,5h6a5.006,5.006,0,0,0,5-5V6h1a1,1,0,0,0,0-2ZM11,2h2a3.006,3.006,0,0,1,2.829,2H8.171A3.006,3.006,0,0,1,11,2Zm7,17a3,3,0,0,1-3,3H9a3,3,0,0,1-3-3V6H18Z" />
+                                                <path d="M10,18a1,1,0,0,0,1-1V11a1,1,0,0,0-2,0v6A1,1,0,0,0,10,18Z" />
+                                                <path d="M14,18a1,1,0,0,0,1-1V11a1,1,0,0,0-2,0v6A1,1,0,0,0,14,18Z" />
+                                            </svg>
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
+            {/* Duotone */}
+            {(visibleOption === "duotone" || visibleOption === "*") && (
+                <div>
+                    <div className="flex items-center justify-between px-5 py-1 border-b bg-gray-50">
+                        <h3 className="text-sm font-bold text-gray-600 uppercase ">
+                            Duotone
+                        </h3>
+                        <button
+                            className="p-1 px-3 text-white bg-blue-600 rounded-sm"
+                            onClick={() =>
+                                dispatch({
+                                    type: "new",
+                                    name: "duotone",
+                                })
+                            }>
+                            Add New
+                        </button>
+                    </div>
+                    {data.duotone.map((duotone, i) => (
+                        <div
+                            key={i}
+                            className="relative flex items-start justify-between w-full p-5 border-b">
+                            <div>
+                                <div className="space-y-1">
+                                    <input
+                                        type="text"
+                                        className="block w-full text-xl !border-none !outline-none !px-0"
+                                        onInput={(e) => {
+                                            const value = e.target.value;
+                                            dispatch({
+                                                type: "name",
+                                                name: "duotone",
+                                                payload: {
+                                                    index: i,
+                                                    value,
+                                                },
+                                            });
+                                            if (value.trim() === "") {
+                                                errorFound.current = true;
+                                                return setNotification({
+                                                    type: "error",
+                                                    text: "name cannot be empty, please enter a name",
+                                                });
+                                            } else {
+                                                errorFound.current = false;
+                                            }
+                                        }}
+                                        title="name"
+                                        value={duotone.name}
+                                    />
+                                    <input
+                                        title="slug"
+                                        value={duotone.slug}
+                                        className="inline-block !bg-transparent"
+                                        onInput={(e) => {
+                                            const value = e.target.value;
+                                            dispatch({
+                                                type: "slug",
+                                                name: "duotone",
+                                                payload: {
+                                                    index: i,
+                                                    value: value.trim(),
+                                                },
+                                            });
+
+                                            if (value.trim() === "") {
+                                                errorFound.current = true;
+                                                return setNotification({
+                                                    type: "error",
+                                                    text: "slug cannot be empty, please enter a slug",
+                                                });
+                                            } else {
+                                                errorFound.current = false;
+                                            }
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                            <div className="flex gap-5">
+                                <div>
+                                    <div className="w-10 h-10">
+                                        <Duotone
+                                            values={duotone.colors}
+                                            onChange={(values) =>
+                                                dispatch({
+                                                    type: "colors",
+                                                    name: "duotone",
+                                                    payload: {
+                                                        index: i,
+                                                        value: values,
+                                                    },
+                                                })
+                                            }
+                                        />
+                                    </div>
+                                </div>
+                                <div className="flex flex-col gap-1">
+                                    <button
+                                        title="Duplicate"
+                                        onClick={() =>
+                                            dispatch({
+                                                type: "duplicate",
+                                                name: "duotone",
+                                                payload: {
+                                                    index: i,
+                                                },
+                                            })
+                                        }>
+                                        {/* Duplicate icon */}
+                                        <span className="inline-block w-5 h-5 ">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                id="Outline"
+                                                viewBox="0 0 24 24"
+                                                fill="currentColor">
+                                                <path d="M21.155,3.272,18.871.913A3.02,3.02,0,0,0,16.715,0H12A5.009,5.009,0,0,0,7.1,4H7A5.006,5.006,0,0,0,2,9V19a5.006,5.006,0,0,0,5,5h6a5.006,5.006,0,0,0,5-5v-.1A5.009,5.009,0,0,0,22,14V5.36A2.988,2.988,0,0,0,21.155,3.272ZM13,22H7a3,3,0,0,1-3-3V9A3,3,0,0,1,7,6v8a5.006,5.006,0,0,0,5,5h4A3,3,0,0,1,13,22Zm4-5H12a3,3,0,0,1-3-3V5a3,3,0,0,1,3-3h4V4a2,2,0,0,0,2,2h2v8A3,3,0,0,1,17,17Z" />
+                                            </svg>
+                                        </span>
+                                    </button>
+                                    <button
+                                        title="Delete"
+                                        onClick={() => {
+                                            /**
+                                             * Get delete confirmation
+                                             */
+                                            if (
+                                                !confirm(
+                                                    "are you sure want to delete this color ?"
+                                                )
+                                            )
+                                                return;
+
+                                            dispatch({
+                                                type: "delete",
+                                                name: "duotone",
                                                 payload: {
                                                     index: i,
                                                 },

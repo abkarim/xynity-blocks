@@ -1,4 +1,5 @@
 <?php
+
 namespace Xynity_Blocks;
 
 /**
@@ -52,6 +53,16 @@ class Color extends ThemeJSON
         $palette = Util::get_value_if_present_in_array($data, "palette", null);
         if (!is_null($palette)) {
             $updated_data["settings"]["color"]["palette"] = $palette;
+        }
+
+        /**
+         * Replace current duotone with old duotone
+         *
+         * @since 0.2.5
+         */
+        $duotone = Util::get_value_if_present_in_array($data, "duotone", null);
+        if (!is_null($palette)) {
+            $updated_data["settings"]["color"]["duotone"] = $duotone;
         }
 
         return self::write_into_theme_json($updated_data);

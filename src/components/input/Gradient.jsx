@@ -1,24 +1,18 @@
-import { ColorIndicator, ColorPicker } from "@wordpress/components";
 import { useEffect, useRef, useState } from "react";
 
-export default function ColorInput({
-    value,
-    onChange,
-    readOnly = false,
-    ...props
-}) {
+export default function GradientInput({ gradient = "", onChange }) {
     const [edit, setEdit] = useState(false);
     const containerRef = useRef(null);
 
     /**
-     * Update color value after 1 seconds of last change
+     * Update value after 1 seconds of last change
      */
     let timer = null;
-    function updateColor(color) {
+    function update(value) {
         if (timer) {
             clearTimeout(timer);
         }
-        timer = setTimeout(() => onChange(color), 1000);
+        timer = setTimeout(() => onChange(value), 1000);
     }
 
     /**
@@ -31,7 +25,7 @@ export default function ColorInput({
             /**
              * Don't do anything if user clicks color to open editor
              */
-            if (target.classList.contains("component-color-indicator")) return;
+            if (target.classList.contains("gradient-preview")) return;
 
             /**
              * Don't do anything if user click inside container
@@ -57,19 +51,14 @@ export default function ColorInput({
     return (
         <div ref={containerRef} className="relative">
             {!edit && (
-                <ColorIndicator
-                    onClick={() => readOnly === false && setEdit(true)}
-                    colorValue={value}
-                />
+                <div
+                    className="border cursor-pointer w-14 h-14 gradient-preview"
+                    // onClick={() => setEdit((prev) => !prev)}
+                    style={{ background: gradient }}></div>
             )}
             {edit && (
                 <div className="absolute top-0 right-0 z-50">
-                    <ColorPicker
-                        enableAlpha
-                        className="bg-white border shadow"
-                        defaultValue={value}
-                        onChange={updateColor}
-                    />
+                    {/* TODO gradient input */}
                 </div>
             )}
         </div>
