@@ -18,6 +18,9 @@
 /**
  * !Prevent direct access
  */
+
+use Xynity_Blocks\ThemeJSON;
+
 if (!defined("ABSPATH")) {
     exit();
 }
@@ -34,6 +37,8 @@ if (!class_exists("Xynity_Blocks")) {
 
             // Load plugin file
             require_once XYNITY_BLOCKS_DIR . "includes/plugin.php";
+            require_once XYNITY_BLOCKS_DIR .
+                "includes/classes/ThemeJSON.php";
 
             /**
              * Register plugin activation hook
@@ -68,6 +73,11 @@ if (!class_exists("Xynity_Blocks")) {
              * @since 0.2.0
              */
             add_action("after_switch_theme", [$this, "handle_theme_change"]);
+
+            /**
+             * Handle update 
+             */
+            add_action('admin_init', [$this, 'handle_update']);
 
             /**
              * Load plugin
@@ -180,6 +190,23 @@ if (!class_exists("Xynity_Blocks")) {
         }
 
         /**
+         * Handle update
+         * 
+         * @access public
+         * @since 0.2.5
+         * @return void
+         */
+        public function handle_update(): void
+        {
+            /**
+             * Is config required
+             */
+            if (!ThemeJSON::is_backup_content_theme_version_and_current_theme_version_same()) {
+                $this->handle_activation();
+            }
+        }
+
+        /**
          * Is compatible
          *
          * @since 0.2.0
@@ -245,8 +272,6 @@ if (!class_exists("Xynity_Blocks")) {
                  *
                  * @since 0.2.0
                  */
-                require_once XYNITY_BLOCKS_DIR .
-                    "includes/classes/ThemeJSON.php";
                 \Xynity_Blocks\ThemeJSON::replace_theme_json_file_in_theme();
 
                 /**
