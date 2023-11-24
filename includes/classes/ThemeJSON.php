@@ -1,4 +1,5 @@
 <?php
+
 namespace Xynity_Blocks;
 
 /**
@@ -30,7 +31,7 @@ class ThemeJSON
      * @access private
      * @since 0.2.0
      */
-    private static $_current_xynity_content_version = "1.0.1";
+    private static $_current_xynity_content_version = "1.0.2";
 
     /**
      * Rename theme.json to default.theme.json
@@ -225,6 +226,65 @@ class ThemeJSON
     }
 
     /**
+     * Get configured theme version
+     * returns from backup content directory
+     * 
+     * @return string - version | empty string
+     * @access public
+     * @static
+     * @since 0.2.5
+     */
+    public static function get_configured_theme_version(): string
+    {
+        $version = "";
+
+        /**
+         * Check for a backup file if backup file exists
+         * merge current content with backup file content
+         */
+        require_once XYNITY_BLOCKS_DIR . "includes/classes/FileSystem.php";
+        $backup_file_name =
+            self::$_xynity_blocks_content_folder_name .
+            "/" .
+            self::get_current_theme_name() .
+            "/theme.json";
+
+        if (FileSystem::is_file_exists_inside_wp_content($backup_file_name)) {
+            $backup_file_content = json_decode(
+                FileSystem::get_file_content_inside_wp_content(
+                    $backup_file_name
+                ),
+                true
+            );
+
+
+            $version =  Util::get_value_if_present_in_array(
+                $backup_file_content,
+                "configuredThemeVersion",
+                ""
+            );
+        }
+
+        return $version;
+    }
+
+    /**
+     * Is backup file content theme version and current theme version same
+     * 
+     * @return bool is same
+     * @access public
+     * @static
+     * @since 0.2.5
+     */
+    public static function is_backup_content_theme_version_and_current_theme_version_same(): bool
+    {
+        $current_theme_version = wp_get_theme()->get("Version");
+        $backup_file_content_theme_version = self::get_configured_theme_version();
+
+        return $current_theme_version === $backup_file_content_theme_version;
+    }
+
+    /**
      * Get default theme.json content
      *
      * @return string
@@ -273,6 +333,18 @@ class ThemeJSON
             self::$_current_xynity_content_version;
 
         /**
+         * Configured theme version
+         * 
+         * Track theme version
+         * Necessary to handle theme update
+         * 
+         * ! Make sure to modify this value in self::replace_theme_json_file_in_theme() too
+         * 
+         * @since 0.2.5
+         */
+        $content["configuredThemeVersion"] = wp_get_theme()->get('Version');
+
+        /**
          * Enable appearance tools
          */
         $content["settings"]["appearanceTools"] = true;
@@ -299,6 +371,8 @@ class ThemeJSON
             "background" => true, // Enable background color
             "text" => true, // Enable text color
             "palette" => [],
+            "gradients" => [],
+            "duotone" => []
         ];
 
         /**
@@ -517,6 +591,7 @@ class ThemeJSON
         if (
             $is_using_theme_json_from_xynity === true &&
             $xynity_content_version === self::$_current_xynity_content_version
+            && self::is_backup_content_theme_version_and_current_theme_version_same()
         ) {
             return;
         }
@@ -546,17 +621,32 @@ class ThemeJSON
              *
              * @since 0.2.2
              */
+            $backup_file_content_version = Util::get_value_if_present_in_array(
+                $backup_file_content,
+                "xynityContentVersion"
+            );
             if (
-                Util::get_value_if_present_in_array(
-                    $backup_file_content,
-                    "xynityContentVersion"
-                ) === self::$_current_xynity_content_version
+                $backup_file_content_version === self::$_current_xynity_content_version && self::is_backup_content_theme_version_and_current_theme_version_same()
             ) {
                 $initial_content = $backup_file_content;
+            } else {
+                /**
+                 * Merge old data with initial content
+                 * 
+                 * Merge initial data with old data
+                 */
+                $initial_content = self::merge_array1_with_array2($backup_file_content, $initial_content);
+                /**
+                 * Update version
+                 */
+                $initial_content = self::merge_array1_with_array2([
+                    "configuredThemeVersion" => wp_get_theme()->get('Version'),
+                    "xynityContentVersion" => self::$_current_xynity_content_version
+                ], $initial_content);
             }
         }
 
-        /**
+        /** 
          * Configure data
          */
         $configured_data = self::merge_configuration_with_theme_json_data(

@@ -1,0 +1,7 @@
+{
+    "name": "karim/xynity-blocks",
+    "type": "project",
+    "require-dev": {
+        "phpunit/phpunit": "^10.4"
+    }
+}
