@@ -2,8 +2,6 @@
 
 namespace Xynity_Blocks;
 
-use Xynity_Blocks;
-
 /**
  * Prevent direct access
  */
