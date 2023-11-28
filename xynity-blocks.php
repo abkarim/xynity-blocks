@@ -3,7 +3,7 @@
  * Plugin Name:       Xynity Blocks
  * Plugin URI:        https://github.com/abkarim/xynity-blocks
  * Description:       Extends wordpress blocks functionality to make better experience with Full Site Editing
- * Version:           0.2.5
+ * Version:           0.2.6
  * Requires at least: 6.0
  * Requires PHP:      8.0
  * Author:            Karim
@@ -37,6 +37,7 @@ if (!class_exists("Xynity_Blocks")) {
 
             // Load plugin file
             require_once XYNITY_BLOCKS_DIR . "includes/plugin.php";
+            require_once XYNITY_BLOCKS_DIR . "includes/Blocks.php";
             require_once XYNITY_BLOCKS_DIR .
                 "includes/classes/ThemeJSON.php";
 
@@ -83,6 +84,12 @@ if (!class_exists("Xynity_Blocks")) {
              * Load plugin
              */
             add_action("plugins_loaded", [$this, "init"]);
+
+            /**
+             * Initialize plugin 
+             * @since 0.2.6
+             */
+            add_action('init', [$this, "initialize"]);
         }
 
         /**
@@ -187,6 +194,21 @@ if (!class_exists("Xynity_Blocks")) {
         {
             // Run the plugin
             \Xynity_Blocks\Plugin::instance();
+        }
+
+        /**
+         * Init 
+         * 
+         * called by init hook
+         * 
+         * @access public 
+         * @since 0.2.6
+         * @return void
+         */
+        public function initialize(): void
+        {
+            // Initiate blocks
+            new \Xynity_Blocks\Blocks();
         }
 
         /**
