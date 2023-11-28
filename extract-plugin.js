@@ -112,6 +112,18 @@ fse.copySync(
 print("copying files in /plugin/includes/ from /includes done");
 
 /**
+ * Copy blocks folder
+ */
+fse.copySync(
+    CURRENT_DIRECTORY + "/blocks/build/",
+    CURRENT_DIRECTORY + "/plugin/blocks/build/",
+    {
+        overwrite: true,
+    }
+);
+print("copying files in /plugin/blocks/build from /plugin/blocks/build done");
+
+/**
  * Copy dashboard folder
  */
 fse.copySync(
