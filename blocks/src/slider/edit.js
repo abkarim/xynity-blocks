@@ -29,6 +29,19 @@ import "./editor.scss";
  *
  * @return {Element} Element to render.
  */
-export default function Edit() {
-	return <p {...useBlockProps()}>{"Slider – hello from the editor!"}</p>;
+export default function Edit({ attributes, isSelected, setAttributes }) {
+	return (
+		<div {...useBlockProps()}>
+			<div className="content">Hello</div>
+			{/* Controller */}
+			<div className="controller">
+				<span>Prev</span>
+				<span>Next</span>
+			</div>
+			{/* Indicator */}
+			<div className="indicator">
+				<span>1</span>
+			</div>
+		</div>
+	);
 }

@@ -2,16 +2,41 @@
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
 	"name": "xynity-blocks/slider",
+	"keywords": [
+		"slider",
+		"xynity",
+		"blocks",
+		"gallery"
+	],
 	"version": "0.1.0",
 	"title": "Slider",
 	"category": "media",
 	"icon": "smiley",
-	"description": "Example block scaffolded with Create Block tool.",
+	"description": "Create a image slider",
 	"example": {},
 	"supports": {
-		"html": false
+		"html": false,
+		"color": {
+			"background": true,
+			"text": false,
+			"gradients": true
+		},
+		"dimensions": {
+			"minHeight": true
+		},
+		"spacing": {
+			"margin": true
+		}
 	},
-	"textdomain": "slider",
+	"attributes": {
+		"message": {
+			"type": "string",
+			"source": "text",
+			"selector": "div",
+			"default": ""
+		}
+	},
+	"textdomain": "xynity-blocks",
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css",
 	"style": "file:./style-index.css",
