@@ -15,5 +15,9 @@
 	},
 	"devDependencies": {
 		"@wordpress/scripts": "^26.17.0"
+	},
+	"dependencies": {
+		"@wordpress/block-editor": "^12.15.0",
+		"@wordpress/icons": "^9.38.0"
 	}
 }
