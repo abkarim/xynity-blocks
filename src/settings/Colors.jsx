@@ -77,7 +77,7 @@ const reducer = (state, action) => {
                      * For Gradients
                      */
                     newValue["gradient"] =
-                        'linear-gradient(to bottom, #C2A990 0%, #F9F9F9 100%)", name: "Vertical soft sandstone to white';
+                        "linear-gradient(to bottom, #C2A990 0%, #F9F9F9 100%)";
                 }
             }
 
@@ -123,6 +123,7 @@ const Colors = () => {
             defaultDuotone: data.defaultDuotone,
             customGradient: data.customGradient,
             customDuotone: data.customDuotone,
+            gradients: data.gradients,
             custom: data.custom,
         };
 

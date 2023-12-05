@@ -1,19 +1,11 @@
 import { useEffect, useRef, useState } from "react";
+import ColorPicker from "react-best-gradient-color-picker";
 
 export default function GradientInput({ gradient = "", onChange }) {
     const [edit, setEdit] = useState(false);
     const containerRef = useRef(null);
 
-    /**
-     * Update value after 1 seconds of last change
-     */
-    let timer = null;
-    function update(value) {
-        if (timer) {
-            clearTimeout(timer);
-        }
-        timer = setTimeout(() => onChange(value), 1000);
-    }
+    const [data, setData] = useState(gradient);
 
     /**
      * Set edit to false when user clicked outside of color picker container
@@ -36,6 +28,13 @@ export default function GradientInput({ gradient = "", onChange }) {
              * Outside click set edit to false
              */
             setEdit(false);
+
+            /**
+             * Update data
+             */
+            if (data !== gradient) {
+                onChange(data);
+            }
         }
 
         if (edit) {
@@ -53,12 +52,17 @@ export default function GradientInput({ gradient = "", onChange }) {
             {!edit && (
                 <div
                     className="border cursor-pointer w-14 h-14 gradient-preview"
-                    // onClick={() => setEdit((prev) => !prev)}
+                    onClick={() => setEdit((prev) => !prev)}
                     style={{ background: gradient }}></div>
             )}
             {edit && (
                 <div className="absolute top-0 right-0 z-50">
-                    {/* TODO gradient input */}
+                    <ColorPicker
+                        value={data}
+                        hideColorTypeBtns={true}
+                        className="bg-white border shadow-md"
+                        onChange={(data) => setData(data)}
+                    />
                 </div>
             )}
         </div>
