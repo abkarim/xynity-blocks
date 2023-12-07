@@ -20,6 +20,24 @@ class Blocks
     public function __construct()
     {
         $this->register_blocks();
+
+        add_action('enqueue_block_assets', [$this, 'enqueue_block_assets']);
+    }
+
+    /**
+     * Enqueue blocks assets
+     * 
+     * @access public
+     * @since 0.2.6
+     */
+    public function enqueue_block_assets()
+    {
+        /**
+         * Load dashicons 
+         * 
+         * required for: slider
+         */
+        wp_enqueue_style("dashicons");
     }
 
     /**
