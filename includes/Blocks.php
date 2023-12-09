@@ -50,5 +50,6 @@ class Blocks
     protected function register_blocks(): void
     {
         register_block_type(XYNITY_BLOCKS_DIR . 'blocks/build/slider');
+        register_block_type(XYNITY_BLOCKS_DIR . 'blocks/build/slider-child');
     }
 }
