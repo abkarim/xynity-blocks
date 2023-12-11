@@ -29,13 +29,25 @@
 		}
 	},
 	"attributes": {
-		"message": {
+		"indicator": {
 			"type": "string",
-			"source": "text",
-			"selector": "div",
-			"default": ""
+			"default": "dots"
+		},
+		"control": {
+			"type": "string",
+			"default": "arrow"
+		},
+		"controlTextValues": {
+			"type": "object",
+			"default": {
+				"previous": "Previous",
+				"next": "Next"
+			}
 		}
 	},
+	"ancestor": [
+		"xynity-blocks/slider-child"
+	],
 	"textdomain": "xynity-blocks",
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css",

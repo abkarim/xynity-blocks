@@ -4,7 +4,8 @@
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#useblockprops
  */
-import { useBlockProps } from "@wordpress/block-editor";
+import { InnerBlocks, useBlockProps } from "@wordpress/block-editor";
+import { Dashicon } from "@wordpress/components";
 
 /**
  * The save function defines the way in which the different attributes should
@@ -16,5 +17,38 @@ import { useBlockProps } from "@wordpress/block-editor";
  * @return {Element} Element to render.
  */
 export default function save({ attributes }) {
-	return <p {...useBlockProps.save()}>{attributes.message}</p>;
+	return (
+		<div {...useBlockProps.save()}>
+			<div className="content">
+				<InnerBlocks.Content for />
+			</div>
+			{/* Controller */}
+			{attributes.control !== "none" && (
+				<div className="controller">
+					{attributes.control === "text" && (
+						<>
+							<span>{attributes.controlTextValues.previous}</span>
+							<span>{attributes.controlTextValues.next}</span>
+						</>
+					)}
+					{attributes.control === "arrow" && (
+						<>
+							<span>
+								<Dashicon icon="arrow-left-alt2" />
+							</span>
+							<span>
+								<Dashicon icon="arrow-right-alt2" />
+							</span>
+						</>
+					)}
+				</div>
+			)}
+			{/* Indicator */}
+			{attributes.indicator !== "none" && (
+				<div className="indicator">
+					<span>&bull;</span>
+				</div>
+			)}
+		</div>
+	);
 }
