@@ -11,6 +11,7 @@
 	.indicator {
 		width: 100%;
 		position: absolute;
+		z-index: 5;
 		bottom: 0;
 		display: flex;
 		align-items: flex-end;
@@ -18,12 +19,14 @@
 
 		span {
 			display: inline-block;
+			cursor: pointer;
 		}
 	}
 
 	.controller {
 		width: 100%;
 		position: absolute;
+		z-index: 5;
 		top: 50%;
 		display: flex;
 		align-content: center;
@@ -31,6 +34,30 @@
 
 		span {
 			display: inline-block;
+			cursor: pointer;
+			padding: 2px;
+		}
+	}
+
+	.content {
+		position: relative;
+
+		section.wp-block-xynity-blocks-slider-child {
+			position: absolute;
+			z-index: 0;
+			inset: 0;
+
+			// Center the image
+			figure.wp-block-image {
+				display: flex;
+				flex-direction: row !important;
+				align-items: center;
+				justify-content: center;
+			}
+		}
+
+		section.wp-block-xynity-blocks-slider-child[currentSlideItem="true"] {
+			z-index: 2;
 		}
 	}
 }

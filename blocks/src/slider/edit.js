@@ -1,9 +1,5 @@
 import { __ } from "@wordpress/i18n";
-import {
-	InnerBlocks,
-	useBlockProps,
-	useInnerBlocksProps,
-} from "@wordpress/block-editor";
+import { InnerBlocks, useBlockProps } from "@wordpress/block-editor";
 import "./editor.scss";
 import { InspectorControls, BlockControls } from "@wordpress/block-editor";
 import {
@@ -25,6 +21,10 @@ import {
 	textColor,
 	plusCircle,
 } from "@wordpress/icons";
+import { useState } from "react";
+import { useRef } from "react";
+import { useEffect } from "react";
+import Control from "./Control";
 
 /**
  * Allowed blocks in innerBlocks
@@ -74,9 +74,6 @@ export default function Edit({ clientId, attributes, setAttributes }) {
 			.dispatch("core/block-editor")
 			.insertBlock(block, undefined, clientId);
 	}
-
-	const { children, ...innerBlocksProps } = useInnerBlocksProps.save();
-	console.log({ children });
 
 	return (
 		<div {...useBlockProps()}>
@@ -162,9 +159,14 @@ export default function Edit({ clientId, attributes, setAttributes }) {
 }
 
 function Slider({ attributes }) {
+	const contentRef = useRef(null);
+	const sliderTrackerRef = useRef(1);
+
+	const control = new Control(sliderTrackerRef, contentRef);
+
 	return (
 		<>
-			<div className="content">
+			<div className="content" ref={contentRef}>
 				<div>
 					<InnerBlocks
 						renderAppender={false}
@@ -175,22 +177,20 @@ function Slider({ attributes }) {
 			{/* Controller */}
 			{attributes.control !== "none" && (
 				<div className="controller">
-					{attributes.control === "text" && (
-						<>
-							<span>{attributes.controlTextValues.previous}</span>
-							<span>{attributes.controlTextValues.next}</span>
-						</>
-					)}
-					{attributes.control === "arrow" && (
-						<>
-							<span>
-								<Dashicon icon="arrow-left-alt2" />
-							</span>
-							<span>
-								<Dashicon icon="arrow-right-alt2" />
-							</span>
-						</>
-					)}
+					<span onClick={() => control.previousSlide()}>
+						{attributes.control === "text" &&
+							attributes.controlTextValues.previous}
+						{attributes.control === "arrow" && (
+							<Dashicon icon="arrow-left-alt2" />
+						)}
+					</span>
+					<span onClick={() => control.nextSlide()}>
+						{attributes.control === "text" &&
+							attributes.controlTextValues.next}
+						{attributes.control === "arrow" && (
+							<Dashicon icon="arrow-right-alt2" />
+						)}
+					</span>
 				</div>
 			)}
 			{/* Indicator */}
