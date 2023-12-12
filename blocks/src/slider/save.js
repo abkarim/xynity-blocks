@@ -1,46 +1,38 @@
-/**
- * React hook that is used to mark the block wrapper element.
- * It provides all the necessary props like the class name.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#useblockprops
- */
 import { InnerBlocks, useBlockProps } from "@wordpress/block-editor";
 import { Dashicon } from "@wordpress/components";
+import { useRef } from "react";
+import Control from "./Control";
 
-/**
- * The save function defines the way in which the different attributes should
- * be combined into the final markup, which is then serialized by the block
- * editor into `post_content`.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#save
- *
- * @return {Element} Element to render.
- */
 export default function save({ attributes }) {
+	const contentRef = useRef(null);
+	const sliderTrackerRef = useRef(1);
+
+	const control = new Control(sliderTrackerRef, contentRef);
+
 	return (
 		<div {...useBlockProps.save()}>
-			<div className="content">
-				<InnerBlocks.Content for />
+			<div className="content" ref={contentRef}>
+				<div>
+					<InnerBlocks.Content />
+				</div>
 			</div>
 			{/* Controller */}
 			{attributes.control !== "none" && (
 				<div className="controller">
-					{attributes.control === "text" && (
-						<>
-							<span>{attributes.controlTextValues.previous}</span>
-							<span>{attributes.controlTextValues.next}</span>
-						</>
-					)}
-					{attributes.control === "arrow" && (
-						<>
-							<span>
-								<Dashicon icon="arrow-left-alt2" />
-							</span>
-							<span>
-								<Dashicon icon="arrow-right-alt2" />
-							</span>
-						</>
-					)}
+					<span onClick={() => control.previousSlide()}>
+						{attributes.control === "text" &&
+							attributes.controlTextValues.previous}
+						{attributes.control === "arrow" && (
+							<Dashicon icon="arrow-left-alt2" />
+						)}
+					</span>
+					<span onClick={() => control.nextSlide()}>
+						{attributes.control === "text" &&
+							attributes.controlTextValues.next}
+						{attributes.control === "arrow" && (
+							<Dashicon icon="arrow-right-alt2" />
+						)}
+					</span>
 				</div>
 			)}
 			{/* Indicator */}
