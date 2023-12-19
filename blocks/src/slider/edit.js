@@ -21,10 +21,9 @@ import {
 	textColor,
 	plusCircle,
 } from "@wordpress/icons";
-import { useState } from "react";
-import { useRef } from "react";
-import { useEffect } from "react";
+import { useRef, useEffect } from "react";
 import Control from "./Control";
+import { v4 as uuid } from "uuid";
 
 /**
  * Allowed blocks in innerBlocks
@@ -74,6 +73,34 @@ export default function Edit({ clientId, attributes, setAttributes }) {
 			.dispatch("core/block-editor")
 			.insertBlock(block, undefined, clientId);
 	}
+
+	/**
+	 * Generate a random id
+	 * it should be generate once
+	 * if not already available
+	 */
+	useEffect(() => {
+		if (attributes.uniqueID === undefined) {
+			setAttributes({ uniqueID: uuid().slice(0, 10) });
+		} else {
+			/**
+			 * Replace id
+			 * when block is duplicated via duplicate button
+			 */
+			const sliderBlocks = wp.data
+				.select("core/block-editor")
+				.getBlocks()
+				.filter((block) => block.name === "xynity-blocks/slider");
+
+			const matchedUniqueID = sliderBlocks.filter(
+				(block) => block.attributes.uniqueID === attributes.uniqueID
+			);
+
+			if (matchedUniqueID.length > 1) {
+				setAttributes({ uniqueID: uuid().slice(0, 10) });
+			}
+		}
+	}, [attributes.uniqueID]);
 
 	return (
 		<div {...useBlockProps()}>
@@ -160,9 +187,8 @@ export default function Edit({ clientId, attributes, setAttributes }) {
 
 function Slider({ attributes }) {
 	const contentRef = useRef(null);
-	const sliderTrackerRef = useRef(1);
 
-	const control = new Control(sliderTrackerRef, contentRef);
+	const control = new Control(contentRef.current);
 
 	return (
 		<>
