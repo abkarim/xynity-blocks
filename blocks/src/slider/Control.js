@@ -1,36 +1,28 @@
 class Control {
-	currentSliderReference = null;
-	containerReference = null;
+	currentSliderNumber = 1;
+	containerElement = null;
 	sliderElements = [];
 	currentSliderAttributeName = "currentSlideItem";
 	isLoopActivated = true;
 
-	/**
-	 * Constructor
-	 *
-	 * @param {import("react").RefObject} counterRef
-	 * @param {import("react").RefObject} containerRef
-	 */
-	constructor(counterRef, containerRef) {
-		this.currentSliderReference = counterRef;
-		this.containerReference = containerRef;
+	constructor(containerElement) {
+		this.containerElement = containerElement;
 
-		if (this.containerReference.current != null) {
-			const elements = this.containerReference.current.querySelectorAll(
-				"section.wp-block-xynity-blocks-slider-child"
-			);
+		if (this.containerElement === null) return;
 
-			this.sliderElements = [...elements];
-		}
+		const elements = this.containerElement.querySelectorAll(
+			"section.wp-block-xynity-blocks-slider-child"
+		);
+
+		this.sliderElements = [...elements];
 	}
 
 	/**
 	 * Go to previous slide
 	 */
 	previousSlide() {
-		if (this.currentSliderReference.current > 1) {
-			this.currentSliderReference.current =
-				this.currentSliderReference.current - 1;
+		if (this.currentSliderNumber > 1) {
+			this.currentSliderNumber = this.currentSliderNumber - 1;
 		} else {
 			/**
 			 * This is the first slide
@@ -39,8 +31,7 @@ class Control {
 			 * Set to the last slide if loop activated
 			 */
 			if (this.isLoopActivated) {
-				this.currentSliderReference.current =
-					this.sliderElements.length || 1;
+				this.currentSliderNumber = this.sliderElements.length || 1;
 			}
 		}
 
@@ -54,21 +45,18 @@ class Control {
 		/**
 		 * Is this is the last slide available
 		 */
-		if (
-			this.currentSliderReference.current === this.sliderElements.length
-		) {
+		if (this.currentSliderNumber === this.sliderElements.length) {
 			/**
 			 * This is the last slide and there are no next slide available
 			 *
 			 * Set slide to the first slide if loop activated
 			 */
 			if (this.isLoopActivated) {
-				this.currentSliderReference.current = 1;
+				this.currentSliderNumber = 1;
 			}
 		} else {
 			// This is not the last slide, carry on
-			this.currentSliderReference.current =
-				this.currentSliderReference.current + 1;
+			this.currentSliderNumber = this.currentSliderNumber + 1;
 		}
 
 		this.handleSlideTransition();
@@ -88,9 +76,10 @@ class Control {
 		}
 
 		// Show current slide
-		this.sliderElements[
-			this.currentSliderReference.current - 1
-		].setAttribute(this.currentSliderAttributeName, true);
+		this.sliderElements[this.currentSliderNumber - 1].setAttribute(
+			this.currentSliderAttributeName,
+			true
+		);
 	}
 }
 
