@@ -1,17 +1,11 @@
 import { InnerBlocks, useBlockProps } from "@wordpress/block-editor";
 import { Dashicon } from "@wordpress/components";
-import { useRef } from "react";
-import Control from "./Control";
 
 export default function save({ attributes }) {
-	const contentRef = useRef(null);
-	const sliderTrackerRef = useRef(1);
-
-	const control = new Control(sliderTrackerRef, contentRef);
-
+	const uniqueID = attributes.uniqueID;
 	return (
 		<div {...useBlockProps.save()}>
-			<div className="content" ref={contentRef}>
+			<div className="content" id={uniqueID}>
 				<div>
 					<InnerBlocks.Content />
 				</div>
@@ -19,14 +13,14 @@ export default function save({ attributes }) {
 			{/* Controller */}
 			{attributes.control !== "none" && (
 				<div className="controller">
-					<span onClick={() => control.previousSlide()}>
+					<span className="previous">
 						{attributes.control === "text" &&
 							attributes.controlTextValues.previous}
 						{attributes.control === "arrow" && (
 							<Dashicon icon="arrow-left-alt2" />
 						)}
 					</span>
-					<span onClick={() => control.nextSlide()}>
+					<span className="next">
 						{attributes.control === "text" &&
 							attributes.controlTextValues.next}
 						{attributes.control === "arrow" && (
