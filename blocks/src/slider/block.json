@@ -43,11 +43,11 @@
 				"previous": "Previous",
 				"next": "Next"
 			}
+		},
+		"uniqueID": {
+			"type": "string"
 		}
 	},
-	"ancestor": [
-		"xynity-blocks/slider-child"
-	],
 	"textdomain": "xynity-blocks",
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css",
