@@ -2,10 +2,9 @@ import { InnerBlocks, useBlockProps } from "@wordpress/block-editor";
 import { Dashicon } from "@wordpress/components";
 
 export default function save({ attributes }) {
-	const uniqueID = attributes.uniqueID;
 	return (
 		<div {...useBlockProps.save()}>
-			<div className="content" id={uniqueID}>
+			<div className="content">
 				<div>
 					<InnerBlocks.Content />
 				</div>

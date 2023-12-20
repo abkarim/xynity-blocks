@@ -74,34 +74,6 @@ export default function Edit({ clientId, attributes, setAttributes }) {
 			.insertBlock(block, undefined, clientId);
 	}
 
-	/**
-	 * Generate a random id
-	 * it should be generate once
-	 * if not already available
-	 */
-	useEffect(() => {
-		if (attributes.uniqueID === undefined) {
-			setAttributes({ uniqueID: uuid().slice(0, 10) });
-		} else {
-			/**
-			 * Replace id
-			 * when block is duplicated via duplicate button
-			 */
-			const sliderBlocks = wp.data
-				.select("core/block-editor")
-				.getBlocks()
-				.filter((block) => block.name === "xynity-blocks/slider");
-
-			const matchedUniqueID = sliderBlocks.filter(
-				(block) => block.attributes.uniqueID === attributes.uniqueID
-			);
-
-			if (matchedUniqueID.length > 1) {
-				setAttributes({ uniqueID: uuid().slice(0, 10) });
-			}
-		}
-	}, [attributes.uniqueID]);
-
 	return (
 		<div {...useBlockProps()}>
 			<BlockControls>
@@ -197,6 +169,7 @@ function Slider({ attributes }) {
 					<InnerBlocks
 						renderAppender={false}
 						allowedBlocks={ALLOWED_BLOCKS}
+						template={[[SLIDER_CHILD_BLOCK_NAME, {}]]}
 					/>
 				</div>
 			</div>

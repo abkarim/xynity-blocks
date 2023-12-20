@@ -29,6 +29,17 @@
 		}
 	},
 	"attributes": {
+		"style": {
+			"type": "object",
+			"default": {
+				"color": {
+					"background": "#FFF"
+				},
+				"dimensions": {
+					"minHeight": "500px"
+				}
+			}
+		},
 		"indicator": {
 			"type": "string",
 			"default": "dots"
@@ -43,9 +54,6 @@
 				"previous": "Previous",
 				"next": "Next"
 			}
-		},
-		"uniqueID": {
-			"type": "string"
 		}
 	},
 	"textdomain": "xynity-blocks",
