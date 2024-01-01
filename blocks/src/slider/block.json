@@ -54,6 +54,10 @@
 				"previous": "Previous",
 				"next": "Next"
 			}
+		},
+		"loop": {
+			"type": "boolean",
+			"default": true
 		}
 	},
 	"textdomain": "xynity-blocks",

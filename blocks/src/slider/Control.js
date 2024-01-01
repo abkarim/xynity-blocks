@@ -1,12 +1,21 @@
 class Control {
 	currentSliderNumber = 1;
+	previousSliderNumber = 1;
 	containerElement = null;
 	sliderElements = [];
 	currentSliderAttributeName = "currentSlideItem";
 	isLoopActivated = true;
+	isNavigationOccurred = false;
 
-	constructor(containerElement) {
+	/**
+	 *
+	 * @param {Element} containerElement
+	 * @param {Boolean} loop
+	 * @returns
+	 */
+	constructor(containerElement, loop = true) {
 		this.containerElement = containerElement;
+		this.isLoopActivated = loop;
 
 		if (this.containerElement === null) return;
 
@@ -35,7 +44,11 @@ class Control {
 			}
 		}
 
-		this.handleSlideTransition();
+		// Change slide if current and previous slide number is different
+		if (this.previousSliderNumber !== this.currentSliderNumber) {
+			this.removePreviousSlide("backward");
+			this.showCurrentSlide("backward");
+		}
 	}
 
 	/**
@@ -59,27 +72,66 @@ class Control {
 			this.currentSliderNumber = this.currentSliderNumber + 1;
 		}
 
-		this.handleSlideTransition();
+		// Change slide if current and previous slide number is different
+		if (this.previousSliderNumber !== this.currentSliderNumber) {
+			this.removePreviousSlide("forward");
+			this.showCurrentSlide("forward");
+		}
 	}
 
 	/**
-	 * Handle slide transition
+	 * Removes previous slide if exists
 	 */
-	handleSlideTransition() {
+	removePreviousSlide(animation = "forward") {
 		// Remove previous slide
-		const [previousSlide] = this.sliderElements.filter(
-			(item) =>
-				item.getAttribute(this.currentSliderAttributeName) === "true"
+		let [previousSlide] = this.sliderElements.filter((item) =>
+			item.classList.contains("center")
 		);
-		if (previousSlide) {
-			previousSlide.removeAttribute(this.currentSliderAttributeName);
+		if (!previousSlide) {
+			// The first child is the active slide
+			previousSlide = this.sliderElements[0];
 		}
 
-		// Show current slide
-		this.sliderElements[this.currentSliderNumber - 1].setAttribute(
-			this.currentSliderAttributeName,
-			true
-		);
+		// Add removed class for remove animation
+		if (animation === "forward") {
+			previousSlide.classList.add("right");
+		} else {
+			previousSlide.classList.add("left");
+		}
+
+		setTimeout(() => {
+			previousSlide.classList.remove("center", "left", "right");
+		}, 50);
+	}
+
+	/**
+	 * Show current slide
+	 */
+	showCurrentSlide(animation = "forward") {
+		if (this.isNavigationOccurred === false) {
+			// Remove no navigation class from content element
+			this.containerElement.classList.remove("no-navigation");
+
+			// Set isNavigationOccurred to true
+			this.isNavigationOccurred = true;
+		}
+
+		const currentItem = this.sliderElements[this.currentSliderNumber - 1];
+
+		if (animation === "backward") {
+			this.containerElement.classList.add("right-init");
+			currentItem.classList.add("right");
+			setTimeout(() => currentItem.classList.remove("right"), 50);
+		} else {
+			this.containerElement.classList.remove("right-init");
+		}
+
+		currentItem.classList.add("center");
+
+		// Set previous slider number to current slider number
+		// this is the last move until now
+		// so this should be the previous number
+		this.previousSliderNumber = this.currentSliderNumber;
 	}
 }
 

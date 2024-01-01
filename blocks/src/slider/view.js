@@ -9,7 +9,9 @@ const sliders = [
 
 sliders.map((sliderContainer) => {
 	const contentElement = sliderContainer.querySelector(".content");
-	const control = new Control(contentElement);
+	const loopActivated =
+		contentElement.getAttribute("loop-activated") === "true" ? true : false;
+	const control = new Control(contentElement, loopActivated);
 
 	/**
 	 * Add events to controller if exists

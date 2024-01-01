@@ -1,12 +1,6 @@
-/**
- * The following styles get applied both on the front of your site
- * and in the editor.
- *
- * Replace them with your own styles or remove the file completely.
- */
-
 .wp-block-xynity-blocks-slider {
 	position: relative;
+	overflow: hidden;
 
 	.indicator {
 		width: 100%;
@@ -44,8 +38,13 @@
 
 		section.wp-block-xynity-blocks-slider-child {
 			position: absolute;
-			z-index: 0;
-			inset: 0;
+			z-index: -1;
+			top: 0;
+			bottom: 0;
+			left: -100%;
+			width: 100%;
+			transition-property: right, left;
+			transition-duration: 200ms;
 
 			// Center the image
 			figure.wp-block-image {
@@ -56,8 +55,31 @@
 			}
 		}
 
-		section.wp-block-xynity-blocks-slider-child[currentSlideItem="true"] {
-			z-index: 2;
+		&.right-init section.wp-block-xynity-blocks-slider-child {
+			left: unset;
+			right: -100%;
+		}
+
+		// Move to center
+		section.wp-block-xynity-blocks-slider-child.center,
+		// Center the first child 
+		// Until any navigation action occurs
+		&.no-navigation section.wp-block-xynity-blocks-slider-child:first-child {
+			left: 0;
+			right: 0;
+			z-index: 5;
+		}
+
+		// Move to right
+		section.wp-block-xynity-blocks-slider-child.right {
+			left: unset;
+			right: -100%;
+		}
+
+		// Move to left
+		section.wp-block-xynity-blocks-slider-child.left {
+			right: unset;
+			left: -100%;
 		}
 	}
 }

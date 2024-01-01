@@ -4,10 +4,10 @@ import { Dashicon } from "@wordpress/components";
 export default function save({ attributes }) {
 	return (
 		<div {...useBlockProps.save()}>
-			<div className="content">
-				<div>
-					<InnerBlocks.Content />
-				</div>
+			<div
+				className="content no-navigation"
+				loop-activated={attributes.loop ? "true" : "false"}>
+				<InnerBlocks.Content />
 			</div>
 			{/* Controller */}
 			{attributes.control !== "none" && (

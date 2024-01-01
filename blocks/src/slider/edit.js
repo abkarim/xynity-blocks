@@ -21,9 +21,10 @@ import {
 	textColor,
 	plusCircle,
 } from "@wordpress/icons";
-import { useRef, useEffect } from "react";
+import { useRef } from "react";
 import Control from "./Control";
-import { v4 as uuid } from "uuid";
+import { ToggleControl } from "@wordpress/components";
+import { useEffect } from "react";
 
 /**
  * Allowed blocks in innerBlocks
@@ -74,6 +75,18 @@ export default function Edit({ clientId, attributes, setAttributes }) {
 			.insertBlock(block, undefined, clientId);
 	}
 
+	const currentBlock = wp.data.select("core/block-editor").getSelectedBlock();
+
+	/**
+	 * Count sliders child
+	 */
+	useEffect(() => {
+		if (currentBlock && currentBlock.clientId === clientId) {
+			const sliderChildCount = currentBlock.innerBlocks.length;
+			console.log({ sliderChildCount });
+		}
+	}, [currentBlock]);
+
 	return (
 		<div {...useBlockProps()}>
 			<BlockControls>
@@ -88,6 +101,12 @@ export default function Edit({ clientId, attributes, setAttributes }) {
 			</BlockControls>
 			<InspectorControls>
 				<PanelBody title="Controls">
+					{/* Handle loop */}
+					<ToggleControl
+						label="Activate Loop"
+						checked={attributes.loop}
+						onChange={(value) => setAttributes({ loop: value })}
+					/>
 					<ToggleGroupControl
 						label="Previous Next Controls"
 						value={controlType}
@@ -159,19 +178,18 @@ export default function Edit({ clientId, attributes, setAttributes }) {
 
 function Slider({ attributes }) {
 	const contentRef = useRef(null);
+	const indicatorRef = useRef(null);
 
-	const control = new Control(contentRef.current);
+	const control = new Control(contentRef.current, attributes.loop);
 
 	return (
 		<>
-			<div className="content" ref={contentRef}>
-				<div>
-					<InnerBlocks
-						renderAppender={false}
-						allowedBlocks={ALLOWED_BLOCKS}
-						template={[[SLIDER_CHILD_BLOCK_NAME, {}]]}
-					/>
-				</div>
+			<div className="content no-navigation" ref={contentRef}>
+				<InnerBlocks
+					renderAppender={false}
+					allowedBlocks={ALLOWED_BLOCKS}
+					template={[[SLIDER_CHILD_BLOCK_NAME, {}]]}
+				/>
 			</div>
 			{/* Controller */}
 			{attributes.control !== "none" && (
@@ -194,7 +212,7 @@ function Slider({ attributes }) {
 			)}
 			{/* Indicator */}
 			{attributes.indicator !== "none" && (
-				<div className="indicator">
+				<div className="indicator" ref={indicatorRef}>
 					<span>&bull;</span>
 				</div>
 			)}
