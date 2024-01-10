@@ -12,6 +12,7 @@
 		justify-content: center;
 
 		span {
+			user-select: none;
 			display: inline-block;
 			cursor: pointer;
 		}
@@ -27,6 +28,7 @@
 		justify-content: space-between;
 
 		span {
+			user-select: none;
 			display: inline-block;
 			cursor: pointer;
 			padding: 2px;
@@ -39,11 +41,10 @@
 		section.wp-block-xynity-blocks-slider-child {
 			position: absolute;
 			z-index: -1;
-			top: 0;
-			bottom: 0;
-			left: -100%;
+			inset: 0;
 			width: 100%;
-			transition-property: right, left;
+			opacity: 0;
+			transition-property: opacity;
 			transition-duration: 200ms;
 
 			// Center the image
@@ -55,31 +56,14 @@
 			}
 		}
 
-		&.right-init section.wp-block-xynity-blocks-slider-child {
-			left: unset;
-			right: -100%;
-		}
-
 		// Move to center
 		section.wp-block-xynity-blocks-slider-child.center,
-		// Center the first child 
-		// Until any navigation action occurs
-		&.no-navigation section.wp-block-xynity-blocks-slider-child:first-child {
-			left: 0;
-			right: 0;
-			z-index: 5;
-		}
 
-		// Move to right
-		section.wp-block-xynity-blocks-slider-child.right {
-			left: unset;
-			right: -100%;
-		}
-
-		// Move to left
-		section.wp-block-xynity-blocks-slider-child.left {
-			right: unset;
-			left: -100%;
+		// Show the first child 
+		// Initial
+		&[currentslideitem="1"] section.wp-block-xynity-blocks-slider-child:first-child {
+			z-index: 2;
+			opacity: 1;
 		}
 	}
 }

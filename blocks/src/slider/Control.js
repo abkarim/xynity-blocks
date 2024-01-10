@@ -3,9 +3,8 @@ class Control {
 	previousSliderNumber = 1;
 	containerElement = null;
 	sliderElements = [];
-	currentSliderAttributeName = "currentSlideItem";
+	currentSliderAttributeName = "currentslideitem";
 	isLoopActivated = true;
-	isNavigationOccurred = false;
 
 	/**
 	 *
@@ -22,6 +21,23 @@ class Control {
 		const elements = this.containerElement.querySelectorAll(
 			"section.wp-block-xynity-blocks-slider-child"
 		);
+
+		/**
+		 * Initiate current slider number
+		 */
+		let currentSliderNumber = this.containerElement.getAttribute(
+			this.currentSliderAttributeName
+		);
+		if (currentSliderNumber) {
+			/**
+			 * Convert to number
+			 * @type {Number}
+			 */
+			currentSliderNumber = parseInt(currentSliderNumber);
+
+			this.currentSliderNumber = currentSliderNumber;
+			this.previousSliderNumber = currentSliderNumber;
+		}
 
 		this.sliderElements = [...elements];
 	}
@@ -46,8 +62,8 @@ class Control {
 
 		// Change slide if current and previous slide number is different
 		if (this.previousSliderNumber !== this.currentSliderNumber) {
-			this.removePreviousSlide("backward");
-			this.showCurrentSlide("backward");
+			this.removePreviousSlide();
+			this.showCurrentSlide();
 		}
 	}
 
@@ -74,15 +90,15 @@ class Control {
 
 		// Change slide if current and previous slide number is different
 		if (this.previousSliderNumber !== this.currentSliderNumber) {
-			this.removePreviousSlide("forward");
-			this.showCurrentSlide("forward");
+			this.removePreviousSlide();
+			this.showCurrentSlide();
 		}
 	}
 
 	/**
 	 * Removes previous slide if exists
 	 */
-	removePreviousSlide(animation = "forward") {
+	removePreviousSlide() {
 		// Remove previous slide
 		let [previousSlide] = this.sliderElements.filter((item) =>
 			item.classList.contains("center")
@@ -92,39 +108,16 @@ class Control {
 			previousSlide = this.sliderElements[0];
 		}
 
-		// Add removed class for remove animation
-		if (animation === "forward") {
-			previousSlide.classList.add("right");
-		} else {
-			previousSlide.classList.add("left");
-		}
-
 		setTimeout(() => {
-			previousSlide.classList.remove("center", "left", "right");
+			previousSlide.classList.remove("center");
 		}, 50);
 	}
 
 	/**
 	 * Show current slide
 	 */
-	showCurrentSlide(animation = "forward") {
-		if (this.isNavigationOccurred === false) {
-			// Remove no navigation class from content element
-			this.containerElement.classList.remove("no-navigation");
-
-			// Set isNavigationOccurred to true
-			this.isNavigationOccurred = true;
-		}
-
+	showCurrentSlide() {
 		const currentItem = this.sliderElements[this.currentSliderNumber - 1];
-
-		if (animation === "backward") {
-			this.containerElement.classList.add("right-init");
-			currentItem.classList.add("right");
-			setTimeout(() => currentItem.classList.remove("right"), 50);
-		} else {
-			this.containerElement.classList.remove("right-init");
-		}
 
 		currentItem.classList.add("center");
 
@@ -132,6 +125,15 @@ class Control {
 		// this is the last move until now
 		// so this should be the previous number
 		this.previousSliderNumber = this.currentSliderNumber;
+
+		/**
+		 * Update current slide attribute
+		 * to content element
+		 */
+		this.containerElement.setAttribute(
+			this.currentSliderAttributeName,
+			this.currentSliderNumber
+		);
 	}
 }
 

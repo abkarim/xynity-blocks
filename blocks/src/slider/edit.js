@@ -1,7 +1,11 @@
 import { __ } from "@wordpress/i18n";
-import { InnerBlocks, useBlockProps } from "@wordpress/block-editor";
+import {
+	InnerBlocks,
+	useBlockProps,
+	InspectorControls,
+	BlockControls,
+} from "@wordpress/block-editor";
 import "./editor.scss";
-import { InspectorControls, BlockControls } from "@wordpress/block-editor";
 import {
 	PanelBody,
 	__experimentalToggleGroupControl as ToggleGroupControl,
@@ -11,6 +15,7 @@ import {
 	Toolbar,
 	TextControl,
 	ToolbarButton,
+	ToggleControl,
 } from "@wordpress/components";
 
 import {
@@ -21,10 +26,9 @@ import {
 	textColor,
 	plusCircle,
 } from "@wordpress/icons";
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
+import { useSelect } from "@wordpress/data";
 import Control from "./Control";
-import { ToggleControl } from "@wordpress/components";
-import { useEffect } from "react";
 
 /**
  * Allowed blocks in innerBlocks
@@ -73,19 +77,13 @@ export default function Edit({ clientId, attributes, setAttributes }) {
 		wp.data
 			.dispatch("core/block-editor")
 			.insertBlock(block, undefined, clientId);
+
+		setAttributes({ sliderCount: attributes.sliderCount + 1 });
 	}
 
-	const currentBlock = wp.data.select("core/block-editor").getSelectedBlock();
-
 	/**
-	 * Count sliders child
+	 * Update slider count on delete slider
 	 */
-	useEffect(() => {
-		if (currentBlock && currentBlock.clientId === clientId) {
-			const sliderChildCount = currentBlock.innerBlocks.length;
-			console.log({ sliderChildCount });
-		}
-	}, [currentBlock]);
 
 	return (
 		<div {...useBlockProps()}>
@@ -171,20 +169,130 @@ export default function Edit({ clientId, attributes, setAttributes }) {
 					</ToggleGroupControl>
 				</PanelBody>
 			</InspectorControls>
-			<Slider attributes={attributes} />
+			<Slider attributes={attributes} clientId={clientId} />
 		</div>
 	);
 }
 
-function Slider({ attributes }) {
+function Slider({ attributes, clientId }) {
 	const contentRef = useRef(null);
 	const indicatorRef = useRef(null);
+	const [css, setCss] = useState("");
+	const isInitialRender = useRef(true);
 
 	const control = new Control(contentRef.current, attributes.loop);
 
+	/**
+	 * Class is removed from innerBlocks content on select unselect
+	 * let's handle it
+	 */
+	useEffect(() => {
+		// Return if no reference found
+		if (!contentRef.current) return;
+
+		// Add a mutation observer to container and listen for attribute change
+		const observer = new MutationObserver((mutations) => {
+			/**
+			 * @type {string}
+			 */
+			let currentSliderNumber =
+				contentRef.current.getAttribute("currentslideitem");
+
+			// Return if no slider number found
+			if (!currentSliderNumber) return;
+
+			/**
+			 * @type {number}
+			 */
+			currentSliderNumber = parseInt(currentSliderNumber);
+
+			// Update CSS
+			setCss(`.wp-block-xynity-blocks-slider .content[currentslideitem="${currentSliderNumber}"] section.wp-block-xynity-blocks-slider-child:nth-child(${currentSliderNumber}) {
+					z-index: 2;
+					opacity: 1;
+				}`);
+		});
+
+		const config = {
+			attributes: true,
+			attributeFilter: ["currentslideitem"],
+		};
+
+		observer.observe(contentRef.current, config);
+	}, [contentRef]);
+
+	// Show last slide when new slide added
+	useEffect(() => {
+		if (isInitialRender.current) {
+			/**
+			 * Show first slide
+			 */
+			contentRef.current.setAttribute("currentslideitem", 1);
+			return;
+		}
+
+		/**
+		 * Get all sliders
+		 * @type {Array}
+		 */
+		const sliders = [
+			...contentRef.current.querySelectorAll(
+				"section.wp-block-xynity-blocks-slider-child"
+			),
+		];
+
+		/**
+		 * Total slider count
+		 * @type {Number}
+		 */
+		const sliderLength = sliders.length;
+
+		/**
+		 * Get current slider number
+		 * @type {Number}
+		 */
+		const currentSliderNumber = parseInt(
+			contentRef.current.getAttribute("currentslideitem")
+		);
+
+		/**
+		 * Show last slider
+		 * if currentSliderNumber is less than sliderLength
+		 */
+		if (currentSliderNumber < sliderLength) {
+			/**
+			 * Remove previous slider that already may be active
+			 */
+			const [previousSlider] = sliders.filter((slider) =>
+				slider.classList.contains("center")
+			);
+			if (previousSlider) {
+				previousSlider.classList.remove("center");
+			}
+
+			/**
+			 * Set current slide number attribute to content container
+			 */
+			contentRef.current.setAttribute("currentslideitem", sliderLength);
+
+			/**
+			 * Add current class to newly added slider
+			 */
+			sliders[sliderLength - 1].classList.add("center");
+		}
+	}, [attributes.sliderCount]);
+
+	/**
+	 * Track initial render
+	 */
+	useEffect(() => {
+		isInitialRender.current = false;
+	}, []);
+
 	return (
 		<>
-			<div className="content no-navigation" ref={contentRef}>
+			<style>{css}</style>
+			<div className="content" ref={contentRef}>
 				<InnerBlocks
 					renderAppender={false}
 					allowedBlocks={ALLOWED_BLOCKS}
@@ -213,7 +321,11 @@ function Slider({ attributes }) {
 			{/* Indicator */}
 			{attributes.indicator !== "none" && (
 				<div className="indicator" ref={indicatorRef}>
-					<span>&bull;</span>
+					{Array(attributes.sliderCount)
+						.fill(0)
+						.map(() => (
+							<span>&bull;</span>
+						))}
 				</div>
 			)}
 		</>

@@ -12,7 +12,7 @@
 	"title": "Slider",
 	"category": "media",
 	"icon": "smiley",
-	"description": "Create a image slider",
+	"description": "Create a slider of images",
 	"example": {},
 	"supports": {
 		"html": false,
@@ -43,6 +43,10 @@
 		"indicator": {
 			"type": "string",
 			"default": "dots"
+		},
+		"sliderCount": {
+			"type": "integer",
+			"default": 1
 		},
 		"control": {
 			"type": "string",

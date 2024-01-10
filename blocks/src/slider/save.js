@@ -5,7 +5,8 @@ export default function save({ attributes }) {
 	return (
 		<div {...useBlockProps.save()}>
 			<div
-				className="content no-navigation"
+				className="content"
+				currentslideitem="1"
 				loop-activated={attributes.loop ? "true" : "false"}>
 				<InnerBlocks.Content />
 			</div>
