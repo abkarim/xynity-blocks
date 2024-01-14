@@ -48,6 +48,10 @@
 			"type": "integer",
 			"default": 1
 		},
+		"lastSliderAction": {
+			"type": "string",
+			"default": ""
+		},
 		"control": {
 			"type": "string",
 			"default": "arrow"

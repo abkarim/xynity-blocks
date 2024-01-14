@@ -27,8 +27,8 @@ import {
 	plusCircle,
 } from "@wordpress/icons";
 import { useRef, useEffect, useState } from "react";
-import { useSelect } from "@wordpress/data";
 import Control from "./Control";
+import { select } from "@wordpress/data";
 
 /**
  * Allowed blocks in innerBlocks
@@ -78,12 +78,11 @@ export default function Edit({ clientId, attributes, setAttributes }) {
 			.dispatch("core/block-editor")
 			.insertBlock(block, undefined, clientId);
 
-		setAttributes({ sliderCount: attributes.sliderCount + 1 });
+		setAttributes({
+			sliderCount: attributes.sliderCount + 1,
+			lastSliderAction: "add",
+		});
 	}
-
-	/**
-	 * Update slider count on delete slider
-	 */
 
 	return (
 		<div {...useBlockProps()}>
@@ -169,12 +168,12 @@ export default function Edit({ clientId, attributes, setAttributes }) {
 					</ToggleGroupControl>
 				</PanelBody>
 			</InspectorControls>
-			<Slider attributes={attributes} clientId={clientId} />
+			<Slider attributes={attributes} setAttributes={setAttributes} />
 		</div>
 	);
 }
 
-function Slider({ attributes, clientId }) {
+function Slider({ attributes, setAttributes }) {
 	const contentRef = useRef(null);
 	const indicatorRef = useRef(null);
 	const [css, setCss] = useState("");
@@ -188,7 +187,7 @@ function Slider({ attributes, clientId }) {
 	 */
 	useEffect(() => {
 		// Return if no reference found
-		if (!contentRef.current) return;
+		if (contentRef.current === null) return;
 
 		// Add a mutation observer to container and listen for attribute change
 		const observer = new MutationObserver((mutations) => {
@@ -221,7 +220,9 @@ function Slider({ attributes, clientId }) {
 		observer.observe(contentRef.current, config);
 	}, [contentRef]);
 
-	// Show last slide when new slide added
+	/**
+	 * Show last slide when new slide added
+	 */
 	useEffect(() => {
 		if (isInitialRender.current) {
 			/**
@@ -255,11 +256,7 @@ function Slider({ attributes, clientId }) {
 			contentRef.current.getAttribute("currentslideitem")
 		);
 
-		/**
-		 * Show last slider
-		 * if currentSliderNumber is less than sliderLength
-		 */
-		if (currentSliderNumber < sliderLength) {
+		function showLastSlide() {
 			/**
 			 * Remove previous slider that already may be active
 			 */
@@ -280,7 +277,74 @@ function Slider({ attributes, clientId }) {
 			 */
 			sliders[sliderLength - 1].classList.add("center");
 		}
-	}, [attributes.sliderCount]);
+
+		/**
+		 * Slider added
+		 *
+		 * Show last slider
+		 * if currentSliderNumber is less than sliderLength
+		 */
+		if (
+			currentSliderNumber < sliderLength &&
+			attributes.lastSliderAction === "add"
+		) {
+			showLastSlide();
+		} else if (
+			currentSliderNumber > sliderLength &&
+			attributes.lastSliderAction === "remove"
+		) {
+			/**
+			 * Slider removed and current slider number is not valid
+			 */
+			showLastSlide();
+		}
+	}, [attributes.sliderCount, attributes.lastSliderAction]);
+
+	/**
+	 * Track block remove via the list view section
+	 */
+	useEffect(() => {
+		if (contentRef.current === null || !setAttributes) return;
+
+		const observer = new MutationObserver(() => {
+			/**
+			 * Total of current slider
+			 * @type {Number}
+			 */
+			const sliderCount = [
+				...contentRef.current.querySelectorAll(
+					"section.wp-block-xynity-blocks-slider-child"
+				),
+			].length;
+
+			/**
+			 * Is element removed
+			 *
+			 * when content's child count is less than attributes.sliderCount
+			 * that considered as slider remove
+			 */
+			if (
+				sliderCount < attributes.sliderCount &&
+				attributes.lastSliderAction !== "add"
+			) {
+				setAttributes({ sliderCount, lastSliderAction: "remove" });
+			} else {
+				// Remove last action
+				setAttributes({ lastSliderAction: "" });
+			}
+		});
+
+		observer.observe(contentRef.current, {
+			attributes: false,
+			subtree: true,
+			childList: true,
+		});
+	}, [
+		contentRef.current,
+		attributes.sliderCount,
+		attributes.lastSliderAction,
+		setAttributes,
+	]);
 
 	/**
 	 * Track initial render
