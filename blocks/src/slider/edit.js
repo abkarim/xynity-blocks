@@ -179,7 +179,7 @@ function Slider({ attributes, setAttributes }) {
 	const [css, setCss] = useState("");
 	const isInitialRender = useRef(true);
 
-	const control = new Control(contentRef.current, attributes.loop);
+	const control = new Control(contentRef.current, indicatorRef.current);
 
 	/**
 	 * Class is removed from innerBlocks content on select unselect
@@ -249,6 +249,12 @@ function Slider({ attributes, setAttributes }) {
 		const sliderLength = sliders.length;
 
 		/**
+		 * Get all indicators
+		 * @type {Array}
+		 */
+		const indicators = [...indicatorRef.current.querySelectorAll("span")];
+
+		/**
 		 * Get current slider number
 		 * @type {Number}
 		 */
@@ -276,6 +282,21 @@ function Slider({ attributes, setAttributes }) {
 			 * Add current class to newly added slider
 			 */
 			sliders[sliderLength - 1].classList.add("center");
+
+			/**
+			 * Remove previous active indicator
+			 */
+			const [activeIndicator] = indicators.filter((indicator) =>
+				indicator.classList.contains("active")
+			);
+			if (activeIndicator) {
+				activeIndicator.classList.remove("active");
+			}
+
+			/**
+			 * Add active class to last indicator
+			 */
+			indicators[sliderLength - 1].classList.add("active");
 		}
 
 		/**
@@ -356,7 +377,10 @@ function Slider({ attributes, setAttributes }) {
 	return (
 		<>
 			<style>{css}</style>
-			<div className="content" ref={contentRef}>
+			<div
+				className="content"
+				ref={contentRef}
+				loop-activated={attributes.loop ? "true" : "false"}>
 				<InnerBlocks
 					renderAppender={false}
 					allowedBlocks={ALLOWED_BLOCKS}
@@ -387,8 +411,10 @@ function Slider({ attributes, setAttributes }) {
 				<div className="indicator" ref={indicatorRef}>
 					{Array(attributes.sliderCount)
 						.fill(0)
-						.map(() => (
-							<span>&bull;</span>
+						.map((value, index) => (
+							<span className={`${index === 0 ? "active" : ""}`}>
+								&bull;
+							</span>
 						))}
 				</div>
 			)}

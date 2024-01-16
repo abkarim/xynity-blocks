@@ -5,6 +5,8 @@ class Control {
 	sliderElements = [];
 	currentSliderAttributeName = "currentslideitem";
 	isLoopActivated = true;
+	indicatorContainerElement = null;
+	indicatorElements = [];
 
 	/**
 	 *
@@ -12,15 +14,24 @@ class Control {
 	 * @param {Boolean} loop
 	 * @returns
 	 */
-	constructor(containerElement, loop = true) {
+	constructor(containerElement, indicatorContainerElement = null) {
 		this.containerElement = containerElement;
-		this.isLoopActivated = loop;
+		this.indicatorContainerElement = indicatorContainerElement;
 
 		if (this.containerElement === null) return;
+
+		/**
+		 * Handle loop
+		 */
+		this.isLoopActivated =
+			this.containerElement.getAttribute("loop-activated") === "true"
+				? true
+				: false;
 
 		const elements = this.containerElement.querySelectorAll(
 			"section.wp-block-xynity-blocks-slider-child"
 		);
+		this.sliderElements = [...elements];
 
 		/**
 		 * Initiate current slider number
@@ -39,7 +50,14 @@ class Control {
 			this.previousSliderNumber = currentSliderNumber;
 		}
 
-		this.sliderElements = [...elements];
+		/**
+		 * Initiate indicators
+		 */
+		if (this.indicatorContainerElement) {
+			this.indicatorElements = [
+				...this.indicatorContainerElement.querySelectorAll("span"),
+			];
+		}
 	}
 
 	/**
@@ -133,6 +151,38 @@ class Control {
 		this.containerElement.setAttribute(
 			this.currentSliderAttributeName,
 			this.currentSliderNumber
+		);
+
+		/**
+		 * Update indicator
+		 */
+		this.updateIndicator();
+	}
+
+	/**
+	 * Update indicator
+	 */
+	updateIndicator() {
+		/**
+		 * Return if indicators not found
+		 */
+		if (this.indicatorElements.length === 0) return;
+
+		/**
+		 * Remove active class from previous indicator
+		 */
+		const [activeElement] = this.indicatorElements.filter((element) =>
+			element.classList.contains("active")
+		);
+		if (activeElement) {
+			activeElement.classList.remove("active");
+		}
+
+		/**
+		 * Add active class to current indicator
+		 */
+		this.indicatorElements[this.currentSliderNumber - 1].classList.add(
+			"active"
 		);
 	}
 }

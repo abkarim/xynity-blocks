@@ -32,7 +32,13 @@ export default function save({ attributes }) {
 			{/* Indicator */}
 			{attributes.indicator !== "none" && (
 				<div className="indicator">
-					<span>&bull;</span>
+					{Array(attributes.sliderCount)
+						.fill(0)
+						.map((value, index) => (
+							<span className={`${index === 0 ? "active" : ""}`}>
+								&bull;
+							</span>
+						))}
 				</div>
 			)}
 		</div>

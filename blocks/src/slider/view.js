@@ -9,15 +9,16 @@ const sliders = [
 
 sliders.map((sliderContainer) => {
 	const contentElement = sliderContainer.querySelector(".content");
-	const loopActivated =
-		contentElement.getAttribute("loop-activated") === "true" ? true : false;
-	const control = new Control(contentElement, loopActivated);
+	const indicatorContainerElement =
+		sliderContainer.querySelector(".indicator");
+	const controllerContainerElement =
+		sliderContainer.querySelector(".controller");
+
+	const control = new Control(contentElement, indicatorContainerElement);
 
 	/**
 	 * Add events to controller if exists
 	 */
-	const controllerContainerElement =
-		sliderContainer.querySelector(".controller");
 	if (controllerContainerElement) {
 		const previousControllerElement =
 			controllerContainerElement.querySelector(".previous");

@@ -8,13 +8,24 @@
 		z-index: 5;
 		bottom: 0;
 		display: flex;
-		align-items: flex-end;
+		align-items: center;
 		justify-content: center;
 
 		span {
 			user-select: none;
 			display: inline-block;
 			cursor: pointer;
+			font-size: 1.2rem;
+
+			&:not(.active) {
+				margin-top: 0.2rem;
+			}
+
+			// Active
+			&.active {
+				font-size: 2rem;
+				color: gainsboro;
+			}
 		}
 	}
 
