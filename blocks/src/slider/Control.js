@@ -114,6 +114,22 @@ class Control {
 	}
 
 	/**
+	 * Show Slide by slide number
+	 *
+	 * @param {Number} slideNumber - default 1
+	 */
+	showSlideBySlideNumber(slideNumber = 1) {
+		// Set slider number
+		this.currentSliderNumber = slideNumber;
+
+		// Change slide if current and previous slide number is different
+		if (this.previousSliderNumber !== this.currentSliderNumber) {
+			this.removePreviousSlide();
+			this.showCurrentSlide();
+		}
+	}
+
+	/**
 	 * Removes previous slide if exists
 	 */
 	removePreviousSlide() {

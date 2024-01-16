@@ -412,7 +412,11 @@ function Slider({ attributes, setAttributes }) {
 					{Array(attributes.sliderCount)
 						.fill(0)
 						.map((value, index) => (
-							<span className={`${index === 0 ? "active" : ""}`}>
+							<span
+								onClick={() =>
+									control.showSlideBySlideNumber(index + 1)
+								}
+								className={`${index === 0 ? "active" : ""}`}>
 								&bull;
 							</span>
 						))}

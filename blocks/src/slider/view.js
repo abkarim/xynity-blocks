@@ -36,4 +36,14 @@ sliders.map((sliderContainer) => {
 	/**
 	 * Add events to indicator if exists
 	 */
+	if (indicatorContainerElement) {
+		const indicators = [
+			...indicatorContainerElement.querySelectorAll("span"),
+		];
+		indicators.forEach((indicator, index) => {
+			indicator.addEventListener("click", () =>
+				control.showSlideBySlideNumber(index + 1)
+			);
+		});
+	}
 });
