@@ -1,0 +1,110 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "xynity-blocks/slider",
+	"keywords": [
+		"slider",
+		"xynity",
+		"blocks",
+		"gallery"
+	],
+	"version": "0.1.0",
+	"title": "Slider",
+	"category": "media",
+	"icon": "smiley",
+	"description": "Create a slider of images",
+	"example": {},
+	"supports": {
+		"html": false,
+		"color": {
+			"background": true,
+			"text": false,
+			"gradients": true
+		},
+		"dimensions": {
+			"minHeight": true
+		},
+		"spacing": {
+			"margin": true
+		}
+	},
+	"attributes": {
+		"style": {
+			"type": "object",
+			"default": {
+				"color": {
+					"background": "#FFF"
+				},
+				"dimensions": {
+					"minHeight": "500px"
+				}
+			}
+		},
+		"xynitySliderStyle": {
+			"type": "object",
+			"default": {
+				"slides": {
+					"verticalAlign": "center"
+				},
+				"sliderControl": {
+					"normal": {
+						"size": 25,
+						"color": "#000",
+						"backgroundColor": "RGB(0,0,0,0)"
+					}
+				},
+				"indicatorControl": {
+					"normal": {
+						"size": 20,
+						"color": "#000",
+						"gap": 0
+					},
+					"active": {
+						"size": 30,
+						"color": "#dcdcdc"
+					}
+				}
+			}
+		},
+		"customizationCSS": {
+			"type": "string",
+			"default": ""
+		},
+		"xynityUniqueId": {
+			"type": "string",
+			"default": ""
+		},
+		"indicator": {
+			"type": "string",
+			"default": "dots"
+		},
+		"sliderCount": {
+			"type": "integer",
+			"default": 1
+		},
+		"lastSliderAction": {
+			"type": "string",
+			"default": ""
+		},
+		"control": {
+			"type": "string",
+			"default": "arrow"
+		},
+		"controlTextValues": {
+			"type": "object",
+			"default": {
+				"previous": "Previous",
+				"next": "Next"
+			}
+		},
+		"loop": {
+			"type": "boolean",
+			"default": true
+		}
+	},
+	"textdomain": "xynity-blocks",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js"
+}

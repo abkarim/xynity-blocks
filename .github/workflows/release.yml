@@ -25,6 +25,16 @@ jobs:
             - name: Install dependencies
               run: npm ci
 
+            - name: Install blocks dependencies
+              run: cd blocks
+              run: npm ci
+
+            - name: Build blocks
+              run: npm run build
+
+            - name: "Back to root"
+              run: cd ..
+
             - name: Extract
               run: npm run extract
 
