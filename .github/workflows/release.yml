@@ -26,9 +26,8 @@ jobs:
               run: npm ci
 
             - name: Install blocks dependencies
-              run: cd blocks
-              run: npm ci
-
+              run: cd blocks && npm ci
+              
             - name: Build blocks
               run: npm run build
 
