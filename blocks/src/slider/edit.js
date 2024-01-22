@@ -502,8 +502,12 @@ function Slider({ attributes, setAttributes }) {
 		// Return if no reference found
 		if (contentRef.current === null || !attributes.xynityUniqueId) return;
 
-		// Add a mutation observer to container and listen for attribute change
 		const observer = new MutationObserver((mutations) => {
+			/**
+			 * Must check existence of contentRef.current before doing any operations
+			 */
+			if (contentRef.current === null) return;
+
 			/**
 			 * @type {string}
 			 */
@@ -532,6 +536,7 @@ function Slider({ attributes, setAttributes }) {
 			attributeFilter: ["currentslideitem"],
 		};
 
+		// Add a mutation observer to container and listen for attribute change
 		observer.observe(contentRef.current, config);
 	}, [contentRef, attributes.xynityUniqueId]);
 
@@ -578,6 +583,11 @@ function Slider({ attributes, setAttributes }) {
 		);
 
 		function showLastSlide() {
+			/**
+			 * Return if no sliders found
+			 */
+			if (sliderLength === 0) return;
+
 			/**
 			 * Remove previous slider that already may be active
 			 */
