@@ -43,102 +43,111 @@ const ALLOWED_BLOCKS = [SLIDER_CHILD_BLOCK_NAME];
 
 export default function Edit({ clientId, attributes, setAttributes }) {
 	const colorGradientSettings = useMultipleOriginColorsAndGradients();
+	const colorEditOptions = [];
+
+	/**
+	 * Add controller colors if controller is enabled
+	 */
+	if (attributes.control !== "none") {
+		colorEditOptions.push(
+			{
+				label: __("Slider Control Color", "xynity-blocks"),
+				colorValue:
+					attributes.xynitySliderStyle.sliderControl.normal.color,
+				onColorChange: (value) => {
+					setAttributes({
+						xynitySliderStyle: {
+							...attributes.xynitySliderStyle,
+							sliderControl: {
+								...attributes.xynitySliderStyle.sliderControl,
+								normal: {
+									...attributes.xynitySliderStyle
+										.sliderControl.normal,
+									color: value,
+								},
+							},
+						},
+					});
+				},
+			},
+			{
+				label: __("Slider Control Background Color", "xynity-blocks"),
+				colorValue:
+					attributes.xynitySliderStyle.sliderControl.normal
+						.backgroundColor,
+				onColorChange: (value) => {
+					setAttributes({
+						xynitySliderStyle: {
+							...attributes.xynitySliderStyle,
+							sliderControl: {
+								...attributes.xynitySliderStyle.sliderControl,
+								normal: {
+									...attributes.xynitySliderStyle
+										.sliderControl.normal,
+									backgroundColor: value,
+								},
+							},
+						},
+					});
+				},
+			}
+		);
+	}
+
+	/**
+	 * Add indicator colors if indicator exists
+	 */
+	if (attributes.indicator !== "none") {
+		colorEditOptions.push(
+			// If slider indicator available
+			{
+				label: __("Slide Indicator Color", "xynity-blocks"),
+				colorValue:
+					attributes.xynitySliderStyle.indicatorControl.normal.color,
+				onColorChange: (value) => {
+					setAttributes({
+						xynitySliderStyle: {
+							...attributes.xynitySliderStyle,
+							indicatorControl: {
+								...attributes.xynitySliderStyle
+									.indicatorControl,
+								normal: {
+									...attributes.xynitySliderStyle
+										.indicatorControl.normal,
+									color: value,
+								},
+							},
+						},
+					});
+				},
+			},
+			{
+				label: __("Active Slide Indicator Color", "xynity-blocks"),
+				colorValue:
+					attributes.xynitySliderStyle.indicatorControl.active.color,
+				onColorChange: (value) => {
+					setAttributes({
+						xynitySliderStyle: {
+							...attributes.xynitySliderStyle,
+							indicatorControl: {
+								...attributes.xynitySliderStyle
+									.indicatorControl,
+								active: {
+									...attributes.xynitySliderStyle
+										.indicatorControl.active,
+									color: value,
+								},
+							},
+						},
+					});
+				},
+			}
+		);
+	}
+
 	const modifiedColorsDropDown = (
 		<ColorGradientSettingsDropdown
-			settings={[
-				// If slider control available
-				{
-					label: __("Slider Control Color", "xynity-blocks"),
-					colorValue:
-						attributes.xynitySliderStyle.sliderControl.normal.color,
-					onColorChange: (value) => {
-						setAttributes({
-							xynitySliderStyle: {
-								...attributes.xynitySliderStyle,
-								sliderControl: {
-									...attributes.xynitySliderStyle
-										.sliderControl,
-									normal: {
-										...attributes.xynitySliderStyle
-											.sliderControl.normal,
-										color: value,
-									},
-								},
-							},
-						});
-					},
-				},
-				{
-					label: __(
-						"Slider Control Background Color",
-						"xynity-blocks"
-					),
-					colorValue:
-						attributes.xynitySliderStyle.sliderControl.normal
-							.backgroundColor,
-					onColorChange: (value) => {
-						setAttributes({
-							xynitySliderStyle: {
-								...attributes.xynitySliderStyle,
-								sliderControl: {
-									...attributes.xynitySliderStyle
-										.sliderControl,
-									normal: {
-										...attributes.xynitySliderStyle
-											.sliderControl.normal,
-										backgroundColor: value,
-									},
-								},
-							},
-						});
-					},
-				},
-				// If slider indicator available
-				{
-					label: __("Slide Indicator Color", "xynity-blocks"),
-					colorValue:
-						attributes.xynitySliderStyle.indicatorControl.normal
-							.color,
-					onColorChange: (value) => {
-						setAttributes({
-							xynitySliderStyle: {
-								...attributes.xynitySliderStyle,
-								indicatorControl: {
-									...attributes.xynitySliderStyle
-										.indicatorControl,
-									normal: {
-										...attributes.xynitySliderStyle
-											.indicatorControl.normal,
-										color: value,
-									},
-								},
-							},
-						});
-					},
-				},
-				{
-					label: __("Active Slide Indicator Color", "xynity-blocks"),
-					colorValue:
-						attributes.xynitySliderStyle.indicatorControl.active
-							.color,
-					onColorChange: (value) => {
-						setAttributes({
-							xynitySliderStyle: {
-								...attributes.xynitySliderStyle,
-								indicatorControl: {
-									...attributes.xynitySliderStyle
-										.indicatorControl,
-									active: {
-										...attributes.xynitySliderStyle
-											.indicatorControl.active,
-										color: value,
-									},
-								},
-							},
-						});
-					},
-				},
-			]}
+			settings={colorEditOptions}
 			panelId={clientId}
 			hasColorsOrGradients={false}
 			disableCustomColors={false}
@@ -428,54 +437,62 @@ export default function Edit({ clientId, attributes, setAttributes }) {
 					</ToggleGroupControl>
 				</PanelBody>
 				{/* Slider controls style */}
-				<PanelBody title="Slider Controls">
-					<RangeControl
-						label="Size (px)"
-						value={
-							attributes.xynitySliderStyle.sliderControl.normal
-								.size
-						}
-						min={0}
-						onChange={(value) => updateSliderControl("size", value)}
-					/>
-				</PanelBody>
-				<PanelBody title="Indicator">
-					<RangeControl
-						label="Size (px)"
-						value={
-							attributes.xynitySliderStyle.indicatorControl.normal
-								.size
-						}
-						min={0}
-						onChange={(value) =>
-							updateNormalIndicator("size", value)
-						}
-					/>
-					<RangeControl
-						label="Gap (px)"
-						value={
-							attributes.xynitySliderStyle.indicatorControl.normal
-								.gap
-						}
-						min={0}
-						onChange={(value) =>
-							updateNormalIndicator("gap", value)
-						}
-					/>
-				</PanelBody>
-				<PanelBody title="Active Indicator">
-					<RangeControl
-						label="Size (px)"
-						value={
-							attributes.xynitySliderStyle.indicatorControl.active
-								.size
-						}
-						min={0}
-						onChange={(value) =>
-							updateActiveIndicator("size", value)
-						}
-					/>
-				</PanelBody>
+				{controlType !== "none" && (
+					<PanelBody title="Slider Controls">
+						<RangeControl
+							label="Size (px)"
+							value={
+								attributes.xynitySliderStyle.sliderControl
+									.normal.size
+							}
+							min={0}
+							onChange={(value) =>
+								updateSliderControl("size", value)
+							}
+						/>
+					</PanelBody>
+				)}
+				{attributes.indicator !== "none" && (
+					<PanelBody title="Indicator">
+						<RangeControl
+							label="Size (px)"
+							value={
+								attributes.xynitySliderStyle.indicatorControl
+									.normal.size
+							}
+							min={0}
+							onChange={(value) =>
+								updateNormalIndicator("size", value)
+							}
+						/>
+						<RangeControl
+							label="Gap (px)"
+							value={
+								attributes.xynitySliderStyle.indicatorControl
+									.normal.gap
+							}
+							min={0}
+							onChange={(value) =>
+								updateNormalIndicator("gap", value)
+							}
+						/>
+					</PanelBody>
+				)}
+				{attributes.indicator !== "none" && (
+					<PanelBody title="Active Indicator">
+						<RangeControl
+							label="Size (px)"
+							value={
+								attributes.xynitySliderStyle.indicatorControl
+									.active.size
+							}
+							min={0}
+							onChange={(value) =>
+								updateActiveIndicator("size", value)
+							}
+						/>
+					</PanelBody>
+				)}
 			</InspectorControls>
 			{/* Add custom color options */}
 			<InspectorControls group="color">
@@ -572,7 +589,10 @@ function Slider({ attributes, setAttributes }) {
 		 * Get all indicators
 		 * @type {Array}
 		 */
-		const indicators = [...indicatorRef.current.querySelectorAll("span")];
+		const indicators = [];
+		if (indicatorRef.current !== null) {
+			indicators.push(...indicatorRef.current.querySelectorAll("span"));
+		}
 
 		/**
 		 * Get current slider number
@@ -607,6 +627,12 @@ function Slider({ attributes, setAttributes }) {
 			 * Add current class to newly added slider
 			 */
 			sliders[sliderLength - 1].classList.add("center");
+
+			/**
+			 * These code is based on indication return if no indicator found
+			 * applicable when indicator is disabled
+			 */
+			if (indicators.length === 0) return;
 
 			/**
 			 * Remove previous active indicator
@@ -653,6 +679,11 @@ function Slider({ attributes, setAttributes }) {
 		if (contentRef.current === null || !setAttributes) return;
 
 		const observer = new MutationObserver(() => {
+			/**
+			 * Don't do anything if content not found
+			 */
+			if (contentRef.current === null) return;
+
 			/**
 			 * Total of current slider
 			 * @type {Number}
