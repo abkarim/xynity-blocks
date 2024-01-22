@@ -15,3 +15,12 @@
 		}
 	}
 }
+
+// Required for some @wordpress/icons icon
+.rotate-90 {
+	transform: rotate(90deg);
+}
+
+.-rotate-90 {
+	transform: rotate(-90deg);
+}

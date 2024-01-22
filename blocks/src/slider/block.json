@@ -40,6 +40,40 @@
 				}
 			}
 		},
+		"xynitySliderStyle": {
+			"type": "object",
+			"default": {
+				"slides": {
+					"verticalAlign": "center"
+				},
+				"sliderControl": {
+					"normal": {
+						"size": 25,
+						"color": "#000",
+						"backgroundColor": "RGB(0,0,0,0)"
+					}
+				},
+				"indicatorControl": {
+					"normal": {
+						"size": 20,
+						"color": "#000",
+						"gap": 0
+					},
+					"active": {
+						"size": 30,
+						"color": "#dcdcdc"
+					}
+				}
+			}
+		},
+		"customizationCSS": {
+			"type": "string",
+			"default": ""
+		},
+		"xynityUniqueId": {
+			"type": "string",
+			"default": ""
+		},
 		"indicator": {
 			"type": "string",
 			"default": "dots"

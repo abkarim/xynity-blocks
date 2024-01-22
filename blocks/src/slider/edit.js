@@ -4,6 +4,8 @@ import {
 	useBlockProps,
 	InspectorControls,
 	BlockControls,
+	__experimentalColorGradientSettingsDropdown as ColorGradientSettingsDropdown,
+	__experimentalUseMultipleOriginColorsAndGradients as useMultipleOriginColorsAndGradients,
 } from "@wordpress/block-editor";
 import "./editor.scss";
 import {
@@ -16,19 +18,22 @@ import {
 	TextControl,
 	ToolbarButton,
 	ToggleControl,
+	RangeControl,
 } from "@wordpress/components";
 
 import {
 	arrowRight,
-	image,
 	close,
 	moreHorizontalMobile,
 	textColor,
 	plusCircle,
+	justifyStretch,
+	justifySpaceBetween,
+	justifyLeft,
 } from "@wordpress/icons";
 import { useRef, useEffect, useState } from "react";
+import { v4 as uuid } from "uuid";
 import Control from "./Control";
-import { select } from "@wordpress/data";
 
 /**
  * Allowed blocks in innerBlocks
@@ -37,8 +42,112 @@ const SLIDER_CHILD_BLOCK_NAME = "xynity-blocks/slider-child";
 const ALLOWED_BLOCKS = [SLIDER_CHILD_BLOCK_NAME];
 
 export default function Edit({ clientId, attributes, setAttributes }) {
+	const colorGradientSettings = useMultipleOriginColorsAndGradients();
+	const modifiedColorsDropDown = (
+		<ColorGradientSettingsDropdown
+			settings={[
+				// If slider control available
+				{
+					label: __("Slider Control Color", "xynity-blocks"),
+					colorValue:
+						attributes.xynitySliderStyle.sliderControl.normal.color,
+					onColorChange: (value) => {
+						setAttributes({
+							xynitySliderStyle: {
+								...attributes.xynitySliderStyle,
+								sliderControl: {
+									...attributes.xynitySliderStyle
+										.sliderControl,
+									normal: {
+										...attributes.xynitySliderStyle
+											.sliderControl.normal,
+										color: value,
+									},
+								},
+							},
+						});
+					},
+				},
+				{
+					label: __(
+						"Slider Control Background Color",
+						"xynity-blocks"
+					),
+					colorValue:
+						attributes.xynitySliderStyle.sliderControl.normal
+							.backgroundColor,
+					onColorChange: (value) => {
+						setAttributes({
+							xynitySliderStyle: {
+								...attributes.xynitySliderStyle,
+								sliderControl: {
+									...attributes.xynitySliderStyle
+										.sliderControl,
+									normal: {
+										...attributes.xynitySliderStyle
+											.sliderControl.normal,
+										backgroundColor: value,
+									},
+								},
+							},
+						});
+					},
+				},
+				// If slider indicator available
+				{
+					label: __("Slide Indicator Color", "xynity-blocks"),
+					colorValue:
+						attributes.xynitySliderStyle.indicatorControl.normal
+							.color,
+					onColorChange: (value) => {
+						setAttributes({
+							xynitySliderStyle: {
+								...attributes.xynitySliderStyle,
+								indicatorControl: {
+									...attributes.xynitySliderStyle
+										.indicatorControl,
+									normal: {
+										...attributes.xynitySliderStyle
+											.indicatorControl.normal,
+										color: value,
+									},
+								},
+							},
+						});
+					},
+				},
+				{
+					label: __("Active Slide Indicator Color", "xynity-blocks"),
+					colorValue:
+						attributes.xynitySliderStyle.indicatorControl.active
+							.color,
+					onColorChange: (value) => {
+						setAttributes({
+							xynitySliderStyle: {
+								...attributes.xynitySliderStyle,
+								indicatorControl: {
+									...attributes.xynitySliderStyle
+										.indicatorControl,
+									active: {
+										...attributes.xynitySliderStyle
+											.indicatorControl.active,
+										color: value,
+									},
+								},
+							},
+						});
+					},
+				},
+			]}
+			panelId={clientId}
+			hasColorsOrGradients={false}
+			disableCustomColors={false}
+			__experimentalIsRenderedInSidebar
+			{...colorGradientSettings}
+		/>
+	);
+
 	const controlType = attributes.control;
-	const indicatorType = attributes.indicator;
 
 	/**
 	 * Update indicator type
@@ -68,6 +177,120 @@ export default function Edit({ clientId, attributes, setAttributes }) {
 	}
 
 	/**
+	 * Update sliders align property
+	 */
+	function updateSlidersAlign(value) {
+		setAttributes({
+			xynitySliderStyle: {
+				...attributes.xynitySliderStyle,
+				slides: {
+					...attributes.xynitySliderStyle.slides,
+					verticalAlign: value,
+				},
+			},
+		});
+	}
+
+	/**
+	 * Update slider control style
+	 *
+	 * @param {String} key
+	 * @param {String} value
+	 */
+	function updateSliderControl(key, value) {
+		setAttributes({
+			xynitySliderStyle: {
+				...attributes.xynitySliderStyle,
+				sliderControl: {
+					...attributes.xynitySliderStyle.sliderControl,
+					normal: {
+						...attributes.xynitySliderStyle.sliderControl.normal,
+						[key]: value,
+					},
+				},
+			},
+		});
+	}
+
+	/**
+	 * Update normal indicator style
+	 *
+	 * @param {String} key
+	 * @param {String} value
+	 */
+	function updateNormalIndicator(key, value) {
+		setAttributes({
+			xynitySliderStyle: {
+				...attributes.xynitySliderStyle,
+				indicatorControl: {
+					...attributes.xynitySliderStyle.indicatorControl,
+					normal: {
+						...attributes.xynitySliderStyle.indicatorControl.normal,
+						[key]: value,
+					},
+				},
+			},
+		});
+	}
+
+	/**
+	 * Update active indicator style
+	 *
+	 * @param {String} key
+	 * @param {String} value
+	 */
+	function updateActiveIndicator(key, value) {
+		setAttributes({
+			xynitySliderStyle: {
+				...attributes.xynitySliderStyle,
+				indicatorControl: {
+					...attributes.xynitySliderStyle.indicatorControl,
+					active: {
+						...attributes.xynitySliderStyle.indicatorControl.active,
+						[key]: value,
+					},
+				},
+			},
+		});
+	}
+
+	/**
+	 * Generate a random id
+	 * it should be generate once
+	 * if not already available
+	 */
+	useEffect(() => {
+		const attributePrefix = "xynity-";
+
+		if (attributes.xynityUniqueId === "") {
+			setAttributes({
+				xynityUniqueId: attributePrefix + uuid().slice(0, 10),
+			});
+		} else {
+			/**
+			 * Replace id
+			 * when block is duplicated via duplicate button
+			 */
+			const sliderBlocks = wp.data
+				.select("core/block-editor")
+				.getBlocks()
+				.filter((block) => block.name === "xynity-blocks/slider");
+
+			const matchedxynityUniqueId = sliderBlocks.filter(
+				(block) =>
+					block.attributes.xynityUniqueId ===
+					attributes.xynityUniqueId
+			);
+
+			if (matchedxynityUniqueId.length > 1) {
+				setAttributes({
+					xynityUniqueId: attributePrefix + uuid().slice(0, 10),
+				});
+			}
+		}
+	}, [attributes.xynityUniqueId]);
+
+	/**
 	 * Add new slide
 	 *
 	 * adds a new slider child block
@@ -85,7 +308,7 @@ export default function Edit({ clientId, attributes, setAttributes }) {
 	}
 
 	return (
-		<div {...useBlockProps()}>
+		<div {...useBlockProps({ className: attributes.xynityUniqueId })}>
 			<BlockControls>
 				<Toolbar label="Slider Controls">
 					<ToolbarButton
@@ -96,7 +319,8 @@ export default function Edit({ clientId, attributes, setAttributes }) {
 					</ToolbarButton>
 				</Toolbar>
 			</BlockControls>
-			<InspectorControls>
+			{/* Controls settings */}
+			<InspectorControls group="settings">
 				<PanelBody title="Controls">
 					{/* Handle loop */}
 					<ToggleControl
@@ -105,7 +329,7 @@ export default function Edit({ clientId, attributes, setAttributes }) {
 						onChange={(value) => setAttributes({ loop: value })}
 					/>
 					<ToggleGroupControl
-						label="Previous Next Controls"
+						label="Controls type"
 						value={controlType}
 						onChange={updateControl}>
 						<ToggleGroupControlOptionIcon
@@ -152,8 +376,8 @@ export default function Edit({ clientId, attributes, setAttributes }) {
 						)
 					}
 					<ToggleGroupControl
-						label="Indicator"
-						value={indicatorType}
+						label="Indicator type"
+						value={attributes.indicator}
 						onChange={updateIndicator}>
 						<ToggleGroupControlOptionIcon
 							value="dots"
@@ -167,6 +391,95 @@ export default function Edit({ clientId, attributes, setAttributes }) {
 						/>
 					</ToggleGroupControl>
 				</PanelBody>
+			</InspectorControls>
+			{/* Styles */}
+			<InspectorControls group="styles">
+				<PanelBody title="Slides">
+					<ToggleGroupControl
+						label="Vertical align"
+						value={
+							attributes.xynitySliderStyle.slides.verticalAlign
+						}
+						onChange={updateSlidersAlign}>
+						<ToggleGroupControlOptionIcon
+							value="start"
+							label="Start"
+							icon={justifyLeft}
+							className="rotate-90"
+						/>
+						<ToggleGroupControlOptionIcon
+							value="center"
+							label="Center"
+							icon={justifySpaceBetween}
+							className="rotate-90"
+						/>
+						<ToggleGroupControlOptionIcon
+							value="end"
+							label="End"
+							icon={justifyLeft}
+							className="-rotate-90"
+						/>
+						<ToggleGroupControlOptionIcon
+							value="stretch"
+							label="Stretch"
+							icon={justifyStretch}
+							className="rotate-90"
+						/>
+					</ToggleGroupControl>
+				</PanelBody>
+				{/* Slider controls style */}
+				<PanelBody title="Slider Controls">
+					<RangeControl
+						label="Size (px)"
+						value={
+							attributes.xynitySliderStyle.sliderControl.normal
+								.size
+						}
+						min={0}
+						onChange={(value) => updateSliderControl("size", value)}
+					/>
+				</PanelBody>
+				<PanelBody title="Indicator">
+					<RangeControl
+						label="Size (px)"
+						value={
+							attributes.xynitySliderStyle.indicatorControl.normal
+								.size
+						}
+						min={0}
+						onChange={(value) =>
+							updateNormalIndicator("size", value)
+						}
+					/>
+					<RangeControl
+						label="Gap (px)"
+						value={
+							attributes.xynitySliderStyle.indicatorControl.normal
+								.gap
+						}
+						min={0}
+						onChange={(value) =>
+							updateNormalIndicator("gap", value)
+						}
+					/>
+				</PanelBody>
+				<PanelBody title="Active Indicator">
+					<RangeControl
+						label="Size (px)"
+						value={
+							attributes.xynitySliderStyle.indicatorControl.active
+								.size
+						}
+						min={0}
+						onChange={(value) =>
+							updateActiveIndicator("size", value)
+						}
+					/>
+				</PanelBody>
+			</InspectorControls>
+			{/* Add custom color options */}
+			<InspectorControls group="color">
+				{modifiedColorsDropDown}
 			</InspectorControls>
 			<Slider attributes={attributes} setAttributes={setAttributes} />
 		</div>
@@ -187,7 +500,7 @@ function Slider({ attributes, setAttributes }) {
 	 */
 	useEffect(() => {
 		// Return if no reference found
-		if (contentRef.current === null) return;
+		if (contentRef.current === null || !attributes.xynityUniqueId) return;
 
 		// Add a mutation observer to container and listen for attribute change
 		const observer = new MutationObserver((mutations) => {
@@ -205,8 +518,10 @@ function Slider({ attributes, setAttributes }) {
 			 */
 			currentSliderNumber = parseInt(currentSliderNumber);
 
+			const prefix = `.wp-block-xynity-blocks-slider.${attributes.xynityUniqueId} `;
+
 			// Update CSS
-			setCss(`.wp-block-xynity-blocks-slider .content[currentslideitem="${currentSliderNumber}"] section.wp-block-xynity-blocks-slider-child:nth-child(${currentSliderNumber}) {
+			setCss(`${prefix} .content[currentslideitem="${currentSliderNumber}"] section.wp-block-xynity-blocks-slider-child:nth-child(${currentSliderNumber}) {
 					z-index: 2;
 					opacity: 1;
 				}`);
@@ -218,7 +533,7 @@ function Slider({ attributes, setAttributes }) {
 		};
 
 		observer.observe(contentRef.current, config);
-	}, [contentRef]);
+	}, [contentRef, attributes.xynityUniqueId]);
 
 	/**
 	 * Show last slide when new slide added
@@ -368,6 +683,51 @@ function Slider({ attributes, setAttributes }) {
 	]);
 
 	/**
+	 * Update customization CSS
+	 */
+	useEffect(() => {
+		/**
+		 * Destruct data
+		 */
+
+		/**
+		 * Get biggest value of indicator
+		 * and divide via 2
+		 */
+		const indicatorLineHeight =
+			attributes.xynitySliderStyle.indicatorControl.normal.size >
+			attributes.xynitySliderStyle.indicatorControl.active.size
+				? attributes.xynitySliderStyle.indicatorControl.normal.size / 2
+				: attributes.xynitySliderStyle.indicatorControl.active.size / 2;
+
+		const prefix = `.wp-block-xynity-blocks-slider.${attributes.xynityUniqueId} `;
+
+		// Create initial css
+		let css = `${prefix} .content section.wp-block-xynity-blocks-slider-child figure.wp-block-image {align-items: ${attributes.xynitySliderStyle.slides.verticalAlign};}`;
+		css += `${prefix} .controller span { font-size: ${attributes.xynitySliderStyle.sliderControl.normal.size}px; color: ${attributes.xynitySliderStyle.sliderControl.normal.color}; background-color: ${attributes.xynitySliderStyle.sliderControl.normal.backgroundColor}; }`;
+		css += `${prefix} .indicator span { font-size: ${attributes.xynitySliderStyle.indicatorControl.normal.size}px; color: ${attributes.xynitySliderStyle.indicatorControl.normal.color}; }`;
+		css += `${prefix} .indicator { column-gap: ${
+			attributes.xynitySliderStyle.indicatorControl.normal.gap
+		}px; line-height: ${indicatorLineHeight + 5}px;}`;
+		css += `${prefix} .indicator span.active { font-size: ${attributes.xynitySliderStyle.indicatorControl.active.size}px; color: ${attributes.xynitySliderStyle.indicatorControl.active.color}; }`;
+
+		if (isInitialRender.current === true) {
+			if (attributes.customizationCSS === "") {
+				setAttributes({ customizationCSS: css });
+			}
+
+			return;
+		}
+
+		setAttributes({ customizationCSS: css });
+	}, [
+		attributes.xynitySliderStyle,
+		attributes.customizationCSS,
+		attributes.xynityUniqueId,
+		setAttributes,
+	]);
+
+	/**
 	 * Track initial render
 	 */
 	useEffect(() => {
@@ -377,6 +737,7 @@ function Slider({ attributes, setAttributes }) {
 	return (
 		<>
 			<style>{css}</style>
+			<style>{attributes.customizationCSS}</style>
 			<div
 				className="content"
 				ref={contentRef}

@@ -10,22 +10,16 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		// column-gap, line-height are generating dynamically
 
 		span {
 			user-select: none;
-			display: inline-block;
+			display: table;
 			cursor: pointer;
-			font-size: 1.2rem;
-
-			&:not(.active) {
-				margin-top: 0.2rem;
-			}
+			// font-size, color are generating dynamically
 
 			// Active
-			&.active {
-				font-size: 2rem;
-				color: gainsboro;
-			}
+			// font-size, color are generating dynamically
 		}
 	}
 
@@ -40,9 +34,9 @@
 
 		span {
 			user-select: none;
-			display: inline-block;
 			cursor: pointer;
-			padding: 2px;
+			line-height: 0;
+			display: inline;
 		}
 	}
 
@@ -62,7 +56,7 @@
 				height: 100%;
 				display: flex;
 				flex-direction: row !important;
-				align-items: center;
+				// align-content is generating dynamically via Edit
 				justify-content: center;
 			}
 		}
