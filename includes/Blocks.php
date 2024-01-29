@@ -12,6 +12,12 @@ if (!defined("ABSPATH")) {
 class Blocks
 {
     /**
+     * Blocks to register 
+     * @var array
+     */
+    protected $_blocks_to_register = ["slider", "slider-child"];
+
+    /**
      * Constructor
      * 
      * @since 0.2.6
@@ -22,6 +28,28 @@ class Blocks
         $this->register_blocks();
 
         add_action('enqueue_block_assets', [$this, 'enqueue_block_assets']);
+    }
+
+    /**
+     * Remove disabled block from $_blocks_to_register 
+     * this will prevent disabled blocks from being register 
+     * 
+     * @return void
+     * @access protected
+     * @since 0.2.7
+     */
+    protected function remove_disabled_block_names(): void
+    {
+        /**
+         * Get Disabled blocks from Database
+         * @var array
+         */
+        $disabled_blocks = [];
+
+        /**
+         * Remove disabled blocks
+         */
+        $this->_blocks_to_register = array_diff($this->_blocks_to_register, $disabled_blocks);
     }
 
     /**
@@ -49,7 +77,8 @@ class Blocks
      */
     protected function register_blocks(): void
     {
-        register_block_type(XYNITY_BLOCKS_DIR . 'blocks/build/slider');
-        register_block_type(XYNITY_BLOCKS_DIR . 'blocks/build/slider-child');
+        foreach ($this->_blocks_to_register as $block) {
+            register_block_type(XYNITY_BLOCKS_DIR . 'blocks/build/' . $block);
+        }
     }
 }
