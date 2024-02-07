@@ -48,18 +48,19 @@ const Blocks = () => {
 					className="!bg-white text-base p-1 px-2 outline-none"
 				/>
 			</div>
-			<main className="mt-5">
+			<main className="mt-5 space-y-4">
+				{(category === "Xynity Blocks" || category === "All") && (
+					<XynityBlocks
+						sectionTitle="Xynity Blocks"
+						search={search.trim()}
+						setEditElement={setEditElement}
+					/>
+				)}
 				{(category === "Core" || category === "All") && (
 					<CoreBlocks
 						search={search.trim()}
 						setEditElement={setEditElement}
 						sectionTitle="Core"
-					/>
-				)}
-				{(category === "Xynity Blocks" || category === "All") && (
-					<XynityBlocks
-						search={search.trim()}
-						setEditElement={setEditElement}
 					/>
 				)}
 			</main>
@@ -73,19 +74,20 @@ const Blocks = () => {
 	);
 };
 
-function XynityBlocks({ search, setEditElement, showTitle }) {
-	const blocks = [];
+function XynityBlocks({ ...props }) {
+	const [data, setData] = useState([]);
 
-	return <section></section>;
+	/**
+	 * Get xynity-blocks blocks from backend
+	 */
+	useEffect(() => {}, []);
+
+	return <BlocksWrapper {...props} data={data} setData={setData} />;
 }
 
 const CoreBlocks = ({ ...props }) => {
-	const [data, setData] = useState([]);
-	return (
-		<>
-			<BlocksWrapper {...props} data={data} setData={setData} />
-		</>
-	);
+	const [data, setData] = useState(coreBlocks);
+	return <BlocksWrapper {...props} data={data} setData={setData} />;
 };
 
 export default Blocks;
