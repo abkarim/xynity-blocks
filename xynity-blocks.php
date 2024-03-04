@@ -28,6 +28,12 @@ if (!defined("ABSPATH")) {
 if (!class_exists("Xynity_Blocks")) {
     class Xynity_Blocks
     {
+
+        /**
+         * TODO handle update constant define
+         * XYNITY_BLOCKS_PLUGIN_UPDATED
+         */
+
         /**
          * Constructor
          */
