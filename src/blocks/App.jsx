@@ -5,6 +5,7 @@ import getSearchParam from "../util/getSearchParam.js";
 import Editor from "./Editor.jsx";
 import BlocksWrapper from "./BlocksWrapper.jsx";
 import getCoreBlocks from "../util/getCoreBlocks";
+import getData from "../util/fetch/getData.js";
 
 const coreBlocks = getCoreBlocks();
 
@@ -80,7 +81,18 @@ function XynityBlocks({ ...props }) {
 	/**
 	 * Get xynity-blocks blocks from backend
 	 */
-	useEffect(() => {}, []);
+	useEffect(() => {
+		async function get_data() {
+			const response = await getData({
+				action: "__get_all_registered_xynity_blocks__blocks_list",
+			});
+			const response_data = (await response.json()).data;
+
+			setData(response_data);
+		}
+
+		get_data();
+	}, []);
 
 	return <BlocksWrapper {...props} data={data} setData={setData} />;
 }
