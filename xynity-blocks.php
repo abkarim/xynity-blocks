@@ -30,16 +30,16 @@ if (!class_exists("Xynity_Blocks")) {
     {
 
         /**
-         * TODO handle update constant define
-         * XYNITY_BLOCKS_PLUGIN_UPDATED
-         */
-
-        /**
          * Constructor
          */
         public function __construct()
         {
             $this->define_constants();
+
+            /**
+             * @since 0.2.7
+             */
+            $this->define_constant_if_plugin_updated();
 
             // Load plugin file
             require_once XYNITY_BLOCKS_DIR . "includes/plugin.php";
@@ -185,6 +185,44 @@ if (!class_exists("Xynity_Blocks")) {
                 "XYNITY_BLOCKS_NONCE",
                 "2abd9731S07S1b7e9f1DSD2f4E5912e523bc4c80255e3e"
             );
+            /**
+             * Plugin version option name
+             * @var string
+             * @since 0.2.7
+             */
+            define("XYNITY_BLOCKS_PLUGIN_VERSION_OPTION_NAME", XYNITY_BLOCKS_TEXT_DOMAIN . "_plugin_version");
+        }
+
+        /**
+         * Detect if plugin is updated
+         * and define updated constant
+         * 
+         * XYNITY_BLOCKS_PLUGIN_UPDATED
+         * 
+         * @since 0.2.7
+         * @access private
+         * @return void
+         */
+        private function define_constant_if_plugin_updated(): void
+        {
+            // Get plugin version from DB
+            $plugin_version_on_db = get_option(XYNITY_BLOCKS_PLUGIN_VERSION_OPTION_NAME, null);
+
+            // Add plugin version if not found
+            if ($plugin_version_on_db === null) {
+                update_option(XYNITY_BLOCKS_PLUGIN_VERSION_OPTION_NAME, XYNITY_BLOCKS_VERSION);
+
+                // No version check required 
+                return;
+            }
+
+            // Return if not updated
+            if ($plugin_version_on_db === XYNITY_BLOCKS_VERSION) return;
+
+            // Update plugin version on db to latest version
+            update_option(XYNITY_BLOCKS_PLUGIN_VERSION_OPTION_NAME,  XYNITY_BLOCKS_VERSION);
+
+            define("XYNITY_BLOCKS_PLUGIN_UPDATED", true);
         }
 
         /**
