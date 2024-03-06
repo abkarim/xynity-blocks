@@ -31,6 +31,10 @@ class DB
         XYNITY_BLOCKS_TEXT_DOMAIN . "_image_upload_types",
         XYNITY_BLOCKS_TEXT_DOMAIN . "_activated_blocks",
         XYNITY_BLOCKS_TEXT_DOMAIN . "_deactivated_blocks",
+        /**
+         * @since 0.2.7
+         */
+        XYNITY_BLOCKS_PLUGIN_VERSION_OPTION_NAME
     ];
 
     /**
