@@ -315,7 +315,7 @@ class Blocks extends AJAX
     protected function register_blocks(): void
     {
         foreach ($this->_activated_blocks_list as $block) {
-            register_block_type(XYNITY_BLOCKS_DIR . 'blocks/build/' . $this->_blocks_prefix . '/' . $block);
+            register_block_type(XYNITY_BLOCKS_DIR . 'blocks/build/' . $block);
         }
     }
 }
