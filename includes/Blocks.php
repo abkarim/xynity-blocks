@@ -109,6 +109,12 @@ class Blocks extends AJAX
         add_action("wp_ajax_xynity_blocks__get_all_registered_xynity_blocks__blocks_list", function () {
             $this->get_all_registered_xynity_blocks__blocks_list();
         });
+        add_action("wp_ajax_xynity_blocks__activate_xynity_blocks_block", function () {
+            $this->activate_block_ajax_handler();
+        });
+        add_action("wp_ajax_xynity_blocks__deactivate_xynity_blocks_block", function () {
+            $this->deactivate_block_ajax_handler();
+        });
     }
 
     /**
@@ -140,6 +146,50 @@ class Blocks extends AJAX
         }
 
         $this->send_response_and_close_request($blocks);
+    }
+
+
+
+    /**
+     * Ajax handler method to activate xynity block
+     * 
+     * @access protected
+     * @since 0.2.7
+     */
+    protected function activate_block_ajax_handler(): void
+    {
+        $this->block_incoming_request_if_invalid("PATCH");
+
+        [$data, $decoded_data] = $this->get_request_data("PATCH");
+
+        $block_name = $decoded_data["block_name"];
+        if (!empty(trim($block_name))) {
+            $this->activate_block($block_name);
+            $this->send_response_and_close_request("block activated successfully");
+        }
+
+        $this->send_response_and_close_request("block not found", 400);
+    }
+
+    /**
+     * Ajax handler method to deactivate xynity block
+     * 
+     * @access protected
+     * @since 0.2.7
+     */
+    protected function deactivate_block_ajax_handler(): void
+    {
+        $this->block_incoming_request_if_invalid("PATCH");
+
+        [$data, $decoded_data] = $this->get_request_data("PATCH");
+
+        $block_name = $decoded_data["block_name"];
+        if (!empty(trim($block_name))) {
+            $this->deactivate_block($block_name);
+            $this->send_response_and_close_request("block deactivated successfully");
+        }
+
+        $this->send_response_and_close_request("block not found", 400);
     }
 
     /**
@@ -241,10 +291,8 @@ class Blocks extends AJAX
         /**
          * Remove from deactivated_blocks list option
          */
-        foreach ($block_names as $block) {
-            unset($this->_deactivated_blocks_list[$block]);
-        }
-        update_option(self::$_deactivated_blocks_option_name, serialize($this->_deactivated_blocks_list));
+        $updated_list = array_diff($this->_deactivated_blocks_list, $block_names);
+        update_option(self::$_deactivated_blocks_option_name, serialize($updated_list));
 
         /**
          * Add to activated_blocks list option
@@ -275,10 +323,8 @@ class Blocks extends AJAX
         /**
          * Remove from activated_blocks list option
          */
-        foreach ($block_names as $block) {
-            unset($this->_activated_blocks_list[$block]);
-        }
-        update_option(self::$_activated_blocks_option_name, serialize($this->_activated_blocks_list));
+        $updated_list = array_diff($this->_activated_blocks_list, $block_names);
+        update_option(self::$_activated_blocks_option_name, serialize($updated_list));
 
         /**
          * Add to deactivated_blocks list option
