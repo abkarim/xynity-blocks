@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import RadioSwitchInput from "../components/input/RadioSwitchInput.jsx";
+import patchData from "../util/fetch/patchData.js";
+import { useNotificationUpdate } from "../context/notification.jsx";
 
 /**
  * Blocks wrapper function
@@ -79,6 +82,59 @@ export default function BlocksWrapper({
  * @returns {React.JSX.Element}
  */
 function Block({ item, iconElement, title }) {
+	const [isBlockActive, setIsBlockActive] = useState(item.is_activated);
+	const setNotification = useNotificationUpdate();
+
+	async function activate_block() {
+		setIsBlockActive(true);
+
+		const response = await patchData({
+			action: "__activate_xynity_blocks_block",
+			data: {
+				block_name: item.name,
+			},
+		});
+		const response_data = (await response.json()).data;
+
+		if (response.ok) {
+			setNotification({
+				text: response_data,
+				type: "success",
+			});
+		} else {
+			setIsBlockActive(item.is_activated);
+			setNotification({
+				text: response_data,
+				type: "error",
+			});
+		}
+	}
+
+	async function deactivate_block() {
+		setIsBlockActive(false);
+
+		const response = await patchData({
+			action: "__deactivate_xynity_blocks_block",
+			data: {
+				block_name: item.name,
+			},
+		});
+		const response_data = (await response.json()).data;
+
+		if (response.ok) {
+			setNotification({
+				text: response_data,
+				type: "success",
+			});
+		} else {
+			setIsBlockActive(item.is_activated);
+			setNotification({
+				text: response_data,
+				type: "error",
+			});
+		}
+	}
+
 	return (
 		<div className="flex items-start justify-between w-full gap-2 px-4 py-2 bg-white rounded">
 			<div className="flex items-start gap-2">
@@ -97,7 +153,18 @@ function Block({ item, iconElement, title }) {
 					<h5 className="text-lg capitalize">{title}</h5>
 				</div>
 			</div>
-			<div className="flex flex-col">
+			<div className="flex flex-col gap-2">
+				{/* Enable disable block options for xynity's blocks */}
+				{item.from === "xynity-blocks" && (
+					<RadioSwitchInput
+						selected={isBlockActive}
+						title={isBlockActive ? "Disable" : "Enable"}
+						smaller={true}
+						onClick={
+							isBlockActive ? deactivate_block : activate_block
+						}
+					/>
+				)}
 				<button
 					onClick={() => setEditElement(item)}
 					className="p-1 rounded cursor-pointer hover:bg-yellow-500 hover:text-black"
