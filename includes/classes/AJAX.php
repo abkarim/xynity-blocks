@@ -151,7 +151,7 @@ class AJAX
 
         if ($request_type === "GET") {
             $data = $this->get_url_parameter();
-        } elseif ($request_type === "POST") {
+        } elseif ($request_type === "POST" || $request_type == "PATCH") {
             /**
              * Get data
              * @var string

@@ -63,6 +63,35 @@ class Util
     }
 
     /**
+     * Get value if present
+     *
+     * use's isset to check if the value is present or not
+     * if present returns value
+     *
+     * defaults to default value
+     *
+     * @param array
+     * @param string
+     * @return array
+     * 
+     * @since 0.2.7
+     * @access public
+     */
+    public static function get_array_from_array_by_key_and_value(
+        $array,
+        $key,
+        $value,
+    ): array {
+        $found = [];
+
+        foreach ($array as $item) {
+            if ($item[$key] === $value) $found = $item;
+        }
+
+        return $found;
+    }
+
+    /**
      * Is valid value in a array
      *
      * @param array

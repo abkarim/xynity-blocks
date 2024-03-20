@@ -2,12 +2,16 @@
 
 namespace Xynity_Blocks;
 
+use Xynity_Blocks;
+
 /**
  * Prevent direct access
  */
 if (!defined("ABSPATH")) {
     exit();
 }
+
+
 
 class DB
 {
@@ -25,6 +29,12 @@ class DB
     private static $_options_list = [
         XYNITY_BLOCKS_TEXT_DOMAIN . "_database_version",
         XYNITY_BLOCKS_TEXT_DOMAIN . "_image_upload_types",
+        XYNITY_BLOCKS_TEXT_DOMAIN . "_activated_blocks",
+        XYNITY_BLOCKS_TEXT_DOMAIN . "_deactivated_blocks",
+        /**
+         * @since 0.2.7
+         */
+        XYNITY_BLOCKS_PLUGIN_VERSION_OPTION_NAME
     ];
 
     /**
